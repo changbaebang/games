@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>벽돌 팡팡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 통통 튀고 경쾌한 캔디 아케이드
+   IDEA: 젤리 벽돌로 쌓은 과자 상자
+   PICTURE: 반짝이는 벽돌 벽과 튀는 공 (화면 전체)
+   COLOUR and TYPE: 짙은 자주 바탕, 무지개 젤리 벽돌, 민트 패들 / Jua + Press Start 2P
+   LAYOUT: 세로 플레이필드 중앙, 상단 점수·목숨, 아래 패들 */
+:root{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#24122e radial-gradient(circle at 50% 0,#4a2060,transparent 70%);font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+#wrap{position:fixed;inset:0;display:grid;place-items:center}
+canvas{display:block;border-radius:14px;box-shadow:0 0 0 3px #3a1f4a,0 20px 60px rgba(0,0,0,.5)}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(20,8,28,.6);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fff8fb;color:#3a1f4a;border-radius:20px;padding:24px 26px;max-width:400px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 #c2368a}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 8px;color:#c2368a;font-weight:400}
+.card p{margin:4px 0 16px;font-size:17px;color:#6b5070}
+.items{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;text-align:left;margin:0 auto 18px;font-size:15px;color:#6b5070}
+.items span{display:inline-grid;place-items:center;width:28px;height:18px;border-radius:9px;color:#fff;font-size:12px;margin-right:6px;background:var(--c)}
+.big{font-family:'Press Start 2P',monospace;font-size:22px;color:#c2368a;margin:4px 0 6px}
+.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 34px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:50px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c79400}
+.btn:focus-visible{outline:3px solid #c2368a;outline-offset:3px}
+@media(max-height:500px){.card{padding:16px 20px}.card h1{font-size:32px}.card p{margin-bottom:10px}}
+</style></head><body>
+<div id="wrap"><canvas id="c"></canvas></div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>벽돌 팡팡</h1>
+  <p>패들로 공을 튕겨 젤리 벽돌을 모두 깨세요. 패들 어디에 맞느냐에 따라 공의 각도가 바뀌어요.</p>
+  <div class="items">
+    <div><span style="--c:#3fbf8a">W</span>패들 넓게</div><div><span style="--c:#4a7dff">M</span>공 3개로</div>
+    <div><span style="--c:#ff9a3d">S</span>공 느리게</div><div><span style="--c:#ff5a8a">♥</span>목숨 +1</div>
+  </div>
+  <p style="font-size:15px;margin-top:-6px">화면 아무 데나 좌우로 끌어 패들을 움직이고, 탭하면 공이 발사돼요. PC는 마우스나 ← →, Space.</p>
+  <button class="btn" id="startBtn">시작하기</button>
+  <p style="margin:14px 0 0;font-size:15px"><a href="../" style="color:inherit">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">게임 오버</h1><div class="big" id="eScore">0</div><p id="eTxt"></p><button class="btn" id="againBtn">다시 하기</button></div></div>
+<script>
+{
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2;
+const GW=480,GH=760;let S=1,DPR=1;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);S=Math.min(innerWidth/GW,innerHeight/GH);cv.style.width=GW*S+'px';cv.style.height=GH*S+'px';cv.width=Math.round(GW*S*DPR);cv.height=Math.round(GH*S*DPR)}
+addEventListener('resize',resize);resize();
+const LV=[
+ ["..........","aaaaaaaaaa","bbbbbbbbbb","cccccccccc","dddddddddd","eeeeeeeeee"],
+ ["....aa....","...bbbb...","..cccccc..",".dddddddd.","eeeeeeeeee","SSSSSSSSSS"],
+ ["SaSaSaSaSa","aSaSaSaSaS","bbbbbbbbbb","..........","cScScScScS","dddddddddd"],
+ ["X........X","XaaaaaaaaX","XbbSbbSbbX","XccccccccX","X..dddd..X","XeeeeeeeeX"],
+ [".TT....TT.","TaaT..TbbT","TaaaTTbbbT",".TccccccT.","..TddddT..","...TeeT...","....TT...."],
+ ["abcdeabcde","S.S.S.S.S.","TTTTTTTTTT","..........","XX..XX..XX","edcbaedcba","SSSSSSSSSS"]];
+const COL={a:'#ff5a8a',b:'#ff9a3d',c:'#ffd23f',d:'#3fbf8a',e:'#4a9dff',S:'#c9c9e0',T:'#9a8cff',X:'#8a6f3a'};
+const PW={W:'#3fbf8a',M:'#4a7dff',S:'#ff9a3d',L:'#ff5a8a'};
+const BW=44.8,BH=22,BX=16,BY=96;
+let st='title',level,score,lives,bricks,balls,pad,caps,fx,pops,slowT,wideT,shake=0,best=0,flash=0;
+try{best=+localStorage.getItem('brickBest')||0}catch(e){}
+function loadLevel(n){const L=n<LV.length?LV[n]:randomLevel(n);bricks=[];
+  L.forEach((row,y)=>[...row].forEach((ch,x)=>{if(ch==='.')return;const hp=ch==='S'?2:ch==='T'?3:ch==='X'?Infinity:1;bricks.push({x:BX+x*BW,y:BY+y*BH,w:BW,h:BH,ch,hp,max:hp,hit:0})}));
+  resetBall();caps=[];slowT=0;wideT=0}
+function randomLevel(n){const keys='abcdeSST',rows=[];for(let y=0;y<Math.min(9,6+(n>>2));y++){let r='';for(let x=0;x<5;x++){const c=Math.random()<.15?'.':Math.random()<.1+n*.01?'X':keys[Math.random()*keys.length|0];r+=c}rows.push(r+[...r].reverse().join(''))}return rows}
+function resetBall(){pad={x:GW/2,w:90,y:GH-70};balls=[{x:GW/2,y:pad.y-12,vx:0,vy:0,r:8,stuck:true,sp:speedFor()}]}
+const speedFor=()=>Math.min(720,430+level*28);
+function newGame(){level=0;score=0;lives=3;fx=[];pops=[];loadLevel(0)}
+function launch(){for(const b of balls)if(b.stuck){b.stuck=false;const a=-Math.PI/2+(Math.random()-.5)*.5;b.vx=Math.cos(a)*b.sp;b.vy=Math.sin(a)*b.sp}}
+function pop(x,y,t,c='#fff'){pops.push({x,y,t,c,life:.9})}
+function burst(x,y,c,n=8){for(let i=0;i<n;i++){const a=Math.random()*TAU,v=60+Math.random()*180;fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:.5,c,r:2+Math.random()*4})}}
+function hitBrick(br){if(br.hp===Infinity){br.hit=.12;return}br.hp--;br.hit=.12;
+  if(br.hp<=0){br.dead=true;score+=br.max*50+level*10;burst(br.x+br.w/2,br.y+br.h/2,COL[br.ch],10);shake=Math.max(shake,.08);
+    if(Math.random()<.14){const k=Math.random()<.08?'L':['W','M','S'][Math.random()*3|0];caps.push({x:br.x+br.w/2,y:br.y+br.h/2,k})}}
+  else score+=10}
+function collideBall(b,dt){
+  b.x+=b.vx*dt;b.y+=b.vy*dt;
+  if(b.x<b.r){b.x=b.r;b.vx=Math.abs(b.vx)}if(b.x>GW-b.r){b.x=GW-b.r;b.vx=-Math.abs(b.vx)}if(b.y<b.r+52){b.y=b.r+52;b.vy=Math.abs(b.vy)}
+  const pw=pad.w*(wideT>0?1.5:1);
+  if(b.vy>0&&b.y+b.r>=pad.y&&b.y-b.r<pad.y+14&&b.x>pad.x-pw/2-b.r&&b.x<pad.x+pw/2+b.r){
+    const off=Math.max(-1,Math.min(1,(b.x-pad.x)/(pw/2))),a=-Math.PI/2+off*1.05;const sp=b.sp*(slowT>0?.65:1);b.vx=Math.cos(a)*sp;b.vy=Math.sin(a)*sp;b.y=pad.y-b.r;pad.squash=.15}
+  for(const br of bricks){if(br.dead)continue;const cx=Math.max(br.x,Math.min(b.x,br.x+br.w)),cy=Math.max(br.y,Math.min(b.y,br.y+br.h)),dx=b.x-cx,dy=b.y-cy;
+    if(dx*dx+dy*dy<=b.r*b.r){const ox=Math.min(b.x+b.r-br.x,br.x+br.w-(b.x-b.r)),oy=Math.min(b.y+b.r-br.y,br.y+br.h-(b.y-b.r));
+      if(ox<oy){b.vx=b.x<br.x+br.w/2?-Math.abs(b.vx):Math.abs(b.vx)}else{b.vy=b.y<br.y+br.h/2?-Math.abs(b.vy):Math.abs(b.vy)}
+      hitBrick(br);return}}
+}
+function update(dt){
+  slowT=Math.max(0,slowT-dt);wideT=Math.max(0,wideT-dt);pad.squash=Math.max(0,(pad.squash||0)-dt);
+  if(keys.ArrowLeft||keys.KeyA)pad.x-=520*dt;if(keys.ArrowRight||keys.KeyD)pad.x+=520*dt;
+  const pw=pad.w*(wideT>0?1.5:1);pad.x=Math.max(pw/2,Math.min(GW-pw/2,pad.x));
+  for(const b of balls){if(b.stuck){b.x=pad.x;b.y=pad.y-b.r;continue}
+    const sp=Math.hypot(b.vx,b.vy),target=b.sp*(slowT>0?.65:1);if(Math.abs(sp-target)>1){b.vx*=target/sp;b.vy*=target/sp}
+    if(Math.abs(b.vy)<target*.22){b.vy=(b.vy<0?-1:1)*target*.22;const k=Math.sqrt(Math.max(0,target*target-b.vy*b.vy));b.vx=Math.sign(b.vx||1)*k}
+    const steps=Math.ceil(target*dt/5);for(let i=0;i<steps;i++)collideBall(b,dt/steps);
+    if(b.y>GH+20)b.lost=true}
+  bricks=bricks.filter(b=>!b.dead);for(const br of bricks)br.hit=Math.max(0,br.hit-dt);
+  balls=balls.filter(b=>!b.lost);
+  if(!balls.length){lives--;flash=.4;shake=.3;if(lives<0){lives=0;end(false);return}pop(GW/2,GH/2,'앗! 목숨 -1','#ff8aa8');resetBall();wideT=0;slowT=0}
+  for(const c of caps){c.y+=150*dt;if(c.y>pad.y-8&&c.y<pad.y+18&&Math.abs(c.x-pad.x)<pw/2+14){c.got=true;
+      if(c.k==='W'){wideT=14;pop(c.x,c.y-20,'넓게!')}else if(c.k==='S'){slowT=10;pop(c.x,c.y-20,'느리게!')}else if(c.k==='L'){lives++;pop(c.x,c.y-20,'목숨 +1','#ff8aa8')}
+      else{const src=balls.find(b=>!b.stuck)||balls[0];for(const da of [-.5,.5]){const a=Math.atan2(src.vy||-1,src.vx||0)+da;balls.push({x:src.x,y:src.y,r:8,sp:src.sp,stuck:false,vx:Math.cos(a)*src.sp,vy:Math.sin(a)*src.sp})}pop(c.x,c.y-20,'멀티볼!')}}}
+  caps=caps.filter(c=>!c.got&&c.y<GH+20);
+  if(!bricks.some(b=>b.hp!==Infinity)){level++;score+=1000;pop(GW/2,GH/2,`스테이지 ${level+1}!`,'#ffd23f');loadLevel(level)}
+}
+function end(win){st='end';if(score>best){best=score;try{localStorage.setItem('brickBest',best)}catch(e){}}$('eScore').textContent=score.toLocaleString();$('eTxt').textContent=`스테이지 ${level+1}까지 · 최고 ${best.toLocaleString()}`;$('endOv').hidden=false;$('againBtn').focus()}
+// ---------- input
+const keys={};
+addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(e.code==='Space'&&st==='play')launch()});
+addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
+let tp=null;
+const toField=x=>(x-cv.getBoundingClientRect().left)/S;
+addEventListener('pointerdown',e=>{if(st!=='play'||e.target.closest('.overlay'))return;tp={id:e.pointerId,x:e.clientX,sx:e.clientX,t:performance.now(),moved:false}});
+addEventListener('pointermove',e=>{if(st!=='play')return;
+  if(e.pointerType==='mouse'){pad.x=toField(e.clientX);return}
+  if(!tp||tp.id!==e.pointerId)return;const dx=(e.clientX-tp.x)/S*1.25;tp.x=e.clientX;pad.x+=dx;if(Math.abs(e.clientX-tp.sx)>8)tp.moved=true});
+addEventListener('pointerup',e=>{if(!tp||tp.id!==e.pointerId)return;if(!tp.moved||e.pointerType==='mouse')launch();tp=null});
+addEventListener('pointercancel',()=>tp=null);
+const go=()=>{newGame();st='play';$('titleOv').hidden=true;$('endOv').hidden=true};
+$('startBtn').onclick=go;$('againBtn').onclick=go;
+// ---------- draw
+function jelly(x,y,w,h,c,hit){ctx.fillStyle=hit>0?'#fff':c;ctx.beginPath();ctx.roundRect(x+1.5,y+1.5,w-3,h-3,6);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.roundRect(x+5,y+4,w*.5,4,2);ctx.fill();ctx.fillStyle='rgba(0,0,0,.15)';ctx.fillRect(x+4,y+h-6,w-8,3)}
+function draw(dt){
+  ctx.setTransform(S*DPR,0,0,S*DPR,0,0);shake=Math.max(0,shake-dt);if(shake)ctx.translate((Math.random()-.5)*shake*16,(Math.random()-.5)*shake*16);
+  const g=ctx.createLinearGradient(0,0,0,GH);g.addColorStop(0,'#3a1850');g.addColorStop(1,'#1f0f2a');ctx.fillStyle=g;ctx.fillRect(-20,-20,GW+40,GH+40);
+  ctx.fillStyle='rgba(255,255,255,.04)';for(let x=0;x<GW;x+=32)for(let y=(x/32&1)*16;y<GH;y+=32)ctx.beginPath(),ctx.arc(x,y,2,0,TAU),ctx.fill();
+  if(!bricks)return;
+  for(const br of bricks){jelly(br.x,br.y,br.w,br.h,COL[br.ch],br.hit);
+    if(br.hp===Infinity){ctx.fillStyle='rgba(255,230,160,.5)';ctx.fillRect(br.x+br.w/2-6,br.y+br.h/2-1,12,2)}
+    else if(br.max>1){ctx.fillStyle='rgba(60,40,90,.55)';for(let i=0;i<br.hp;i++){ctx.beginPath();ctx.arc(br.x+br.w/2+(i-(br.hp-1)/2)*8,br.y+br.h/2+1,2.4,0,TAU);ctx.fill()}}}
+  for(const c of caps){ctx.fillStyle=PW[c.k];ctx.beginPath();ctx.roundRect(c.x-16,c.y-9,32,18,9);ctx.fill();ctx.fillStyle='#fff';ctx.font='12px "Press Start 2P",monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(c.k==='L'?'♥':c.k,c.x+.5,c.y+1)}
+  const pw=pad.w*(wideT>0?1.5:1),sq=pad.squash>0?3:0;ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.roundRect(pad.x-pw/2+4,pad.y+6,pw,14,7);ctx.fill();
+  const pg=ctx.createLinearGradient(0,pad.y,0,pad.y+14);pg.addColorStop(0,'#9ff5d6');pg.addColorStop(1,'#2fb38a');ctx.fillStyle=pg;ctx.beginPath();ctx.roundRect(pad.x-pw/2-sq,pad.y+sq*.5,pw+sq*2,14-sq,7);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.6)';ctx.fillRect(pad.x-pw/2+8,pad.y+3,pw-16,2);
+  for(const b of balls){ctx.fillStyle='rgba(255,255,255,.18)';ctx.beginPath();ctx.arc(b.x-b.vx*.02,b.y-b.vy*.02,b.r,0,TAU);ctx.fill();ctx.fillStyle=slowT>0?'#ffd2a8':'#fff';ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,TAU);ctx.fill();ctx.fillStyle='rgba(255,90,138,.8)';ctx.beginPath();ctx.arc(b.x-2.5,b.y-2.5,2.5,0,TAU);ctx.fill()}
+  for(const f of fx){f.t-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=500*dt;ctx.globalAlpha=Math.max(0,f.t*2);ctx.fillStyle=f.c;ctx.fillRect(f.x-f.r/2,f.y-f.r/2,f.r,f.r)}ctx.globalAlpha=1;fx=fx.filter(f=>f.t>0);
+  ctx.fillStyle='rgba(0,0,0,.25)';ctx.fillRect(0,0,GW,52);ctx.textBaseline='middle';ctx.textAlign='left';ctx.font='14px "Press Start 2P",monospace';ctx.fillStyle='#fff';ctx.fillText(String(score).padStart(6,'0'),14,27);
+  ctx.textAlign='center';ctx.font='18px Jua,sans-serif';ctx.fillStyle='#ffd2ea';ctx.fillText(`스테이지 ${level+1}`,GW/2,27);
+  ctx.textAlign='right';ctx.fillStyle='#ff5a8a';ctx.font='18px Jua,sans-serif';ctx.fillText('♥'.repeat(Math.min(6,lives))+(lives>6?'+':''),GW-14,27);
+  if(balls.some(b=>b.stuck)&&st==='play'){ctx.textAlign='center';ctx.font='18px Jua,sans-serif';ctx.fillStyle=`rgba(255,255,255,${.6+Math.sin(performance.now()/250)*.3})`;ctx.fillText('탭해서 발사',GW/2,pad.y-60)}
+  for(const p of pops){p.life-=dt;p.y-=30*dt;ctx.globalAlpha=Math.min(1,p.life*2);ctx.textAlign='center';ctx.font='24px Jua,sans-serif';ctx.lineWidth=5;ctx.strokeStyle='#24122e';ctx.strokeText(p.t,p.x,p.y);ctx.fillStyle=p.c;ctx.fillText(p.t,p.x,p.y)}ctx.globalAlpha=1;pops=pops.filter(p=>p.life>0);
+  if(flash>0){flash=Math.max(0,flash-dt);ctx.fillStyle=`rgba(255,60,100,${flash*.5})`;ctx.fillRect(0,0,GW,GH)}
+  ctx.textBaseline='alphabetic';
+}
+if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
+level=0;loadLevel(0);
+let last=performance.now();
+function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play')update(dt);draw(dt);requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+}
+</script>
+</body></html>

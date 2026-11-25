@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>미니 레이서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 장난감 자동차 경주, 빠르고 유쾌
+   IDEA: 위에서 내려다본 장난감 서킷 매트
+   PICTURE: 내 차 뒤를 따라가는 회전 카메라, 커브와 연석
+   COLOUR and TYPE: 잔디 초록, 아스팔트 회색, 빨강-흰 연석, 차량 원색 / Jua + Press Start 2P
+   LAYOUT: 풀스크린, 상단 순위·랩·시간, 우상단 미니맵, 하단 조향 버튼 */
+:root{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#4c9a3f;font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+canvas{display:block;position:fixed;inset:0}
+.ctl{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));display:none;gap:12px;z-index:5}
+.ctl button{font:inherit;font-size:30px;border:0;border-radius:22px;width:84px;height:84px;color:#fff;background:rgba(0,0,0,.28);box-shadow:0 4px 0 rgba(0,0,0,.3);touch-action:none}
+.ctl button.on{background:rgba(255,255,255,.35);transform:translateY(2px)}
+#cl{left:calc(14px + env(safe-area-inset-left))}#cr{right:calc(14px + env(safe-area-inset-right))}
+#bBrake{font-size:18px!important;background:rgba(224,64,48,.55)!important}
+@media(pointer:coarse){.ctl{display:flex}.desk{display:none}}
+.mob{display:none}@media(pointer:coarse){.mob{display:grid}}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(20,30,20,.5);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fffdf6;color:#222;border-radius:20px;padding:24px 26px;max-width:400px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 #e04030}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 8px;color:#e04030;font-weight:400}
+.card p{margin:4px 0 16px;font-size:17px;color:#555}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;text-align:left;margin:0 auto 18px;width:fit-content;font-size:16px}
+.keys kbd{font:inherit;background:#fff;border:1.5px solid #f0d6d0;border-bottom-width:3px;border-radius:7px;padding:1px 8px;color:#e04030;white-space:nowrap}
+table{width:100%;border-collapse:collapse;margin:6px 0 16px;font-size:16px}td{padding:6px 4px;border-bottom:1px solid #eee;text-align:left}td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+tr.me td{color:#e04030}
+.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 34px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:50px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c79400}
+.btn:focus-visible{outline:3px solid #e04030;outline-offset:3px}
+@media(max-height:500px){.card{padding:16px 20px}.card h1{font-size:32px}.card p{margin-bottom:10px}.keys{margin-bottom:12px}.ctl button{width:70px;height:70px}}
+</style></head><body>
+<canvas id="c"></canvas>
+<div class="ctl" id="cl"><button id="bL" aria-label="왼쪽">◀</button><button id="bR" aria-label="오른쪽">▶</button></div>
+<div class="ctl" id="cr"><button id="bBrake" aria-label="브레이크">브레이크</button></div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>미니 레이서</h1>
+  <p>장난감 서킷에서 AI 세 대와 3바퀴 경주! 잔디로 나가면 느려져요.</p>
+  <div class="keys desk"><kbd>↑ · W</kbd><span>가속</span><kbd>← → · A D</kbd><span>조향</span><kbd>↓ · S</kbd><span>브레이크 · 후진</span></div>
+  <div class="keys mob"><kbd>자동 가속</kbd><span>손대지 않아도 달려요</span><kbd>◀ ▶</kbd><span>왼쪽 아래 버튼으로 조향</span><kbd>브레이크</kbd><span>오른쪽 아래, 커브 전에 살짝</span></div>
+  <button class="btn" id="startBtn">출발!</button>
+  <p style="margin:14px 0 0;font-size:15px"><a href="../" style="color:inherit">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">완주!</h1><table id="res"></table><p id="eTxt"></p><button class="btn" id="againBtn">다시 경주</button></div></div>
+<script>
+{
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,MOBILE=matchMedia('(pointer:coarse)').matches;
+let W,H,DPR,Z;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';Z=Math.max(.55,Math.min(1.2,Math.min(W,H)/620))}
+addEventListener('resize',resize);resize();
+
+// ---------- track
+const CP=[[200,200],[900,120],[1500,250],[1750,650],[1500,1000],[1100,900],[900,1150],[1150,1450],[1700,1500],[1850,1900],[1400,2150],[700,2050],[350,1700],[450,1250],[150,900],[120,500]];
+const RW=110,HALF=RW/2,LAPS=3;
+const TR=[];
+for(let i=0;i<CP.length;i++){const p0=CP[(i-1+CP.length)%CP.length],p1=CP[i],p2=CP[(i+1)%CP.length],p3=CP[(i+2)%CP.length];
+  for(let k=0;k<24;k++){const t=k/24,t2=t*t,t3=t2*t;TR.push([0,1].map(j=>.5*((2*p1[j])+(-p0[j]+p2[j])*t+(2*p0[j]-5*p1[j]+4*p2[j]-p3[j])*t2+(-p0[j]+3*p1[j]-3*p2[j]+p3[j])*t3)))}}
+const N=TR.length;
+const tang=i=>{const a=TR[(i-1+N)%N],b=TR[(i+1)%N];return Math.atan2(b[1]-a[1],b[0]-a[0])};
+const curv=[];for(let i=0;i<N;i++){let d=tang((i+6)%N)-tang(i);d=Math.atan2(Math.sin(d),Math.cos(d));curv.push(Math.abs(d))}
+function nearest(x,y,hint){let bi=hint,bd=1e12;const scan=hint==null?N:40;for(let k=-scan;k<=scan;k++){const i=((hint??0)+k+N)%N,dx=TR[i][0]-x,dy=TR[i][1]-y,d=dx*dx+dy*dy;if(d<bd){bd=d;bi=i}}return [bi,Math.sqrt(bd)]}
+const trees=[];{let s=7;const r=()=>(s=s*16807%2147483647)/2147483647;for(let i=0;i<260;i++){const x=r()*2300-150,y=r()*2500-150;if(nearest(x,y)[1]>HALF+60)trees.push([x,y,16+r()*18])}}
+const BOUND=[-300,-300,2300,2500];
+
+// ---------- cars
+const COLORS=[['#e04030','나'],['#2f7de1','파랑이'],['#ffb31a','노랑이'],['#3fbf5a','초록이']];
+let cars,me,st='title',raceT,count,finishOrder,keys={},steerBtn=0,brakeBtn=false,shake=0;
+function mkCar(i){const a=tang(0),back=-(i>>1)*70-40,side=(i&1?1:-1)*24,[x0,y0]=TR[0];
+  return {i,c:COLORS[i][0],name:COLORS[i][1],x:x0+Math.cos(a)*back-Math.sin(a)*side,y:y0+Math.sin(a)*back+Math.cos(a)*side,a,vx:0,vy:0,idx:0,lap:0,half:false,prog:0,done:false,t:0,best:1e9,lapStart:0,
+    skill:i?[0,.9,.94,.97][i]:1,off:(Math.random()-.5)*30,ai:i>0,steer:0,skid:[]}}
+function newRace(){cars=[0,1,2,3].map(mkCar);me=cars[0];raceT=0;count=3.2;finishOrder=[]}
+newRace();
+function physics(c,dt,thr,steer){
+  const [idx,dist]=nearest(c.x,c.y,c.idx);
+  // lap logic
+  if(idx>N*.4&&idx<N*.6)c.half=true;
+  if(c.half&&c.idx>N*.9&&idx<N*.1){c.lap++;c.half=false;const lt=raceT-c.lapStart;c.lapStart=raceT;if(lt<c.best)c.best=lt;if(c.lap>=LAPS&&!c.done){c.done=true;c.t=raceT;finishOrder.push(c)}}
+  c.idx=idx;c.prog=c.lap*N+idx-(!c.half&&idx>N/2?N:0);
+  const off=dist>HALF+4,fx=Math.cos(c.a),fy=Math.sin(c.a);let sp=c.vx*fx+c.vy*fy;let lat=-c.vx*fy+c.vy*fx;
+  const maxS=(off?190:440)*c.skill;
+  if(thr>0)sp+=(sp<maxS?300*thr:-(sp-maxS)*2)*dt;else if(thr<0)sp+=(sp>0?-620:-160)*-thr*dt;
+  sp=Math.max(-120,sp-(sp*(off?1.4:.25))*dt);
+  if(sp>maxS)sp-=(sp-maxS)*3*dt;
+  const turn=steer*2.5*Math.min(1,Math.abs(sp)/140)*Math.sign(sp||1);c.a+=turn*dt;
+  lat*=Math.exp(-(off?6:9)*dt);
+  const nfx=Math.cos(c.a),nfy=Math.sin(c.a);c.vx=nfx*sp-nfy*lat;c.vy=nfy*sp+nfx*lat;
+  c.x+=c.vx*dt;c.y+=c.vy*dt;c.sp=sp;c.offr=off;
+  if(dist>HALF+220){const [tx,ty]=TR[idx];c.x+=(tx-c.x)*dt*3;c.y+=(ty-c.y)*dt*3}
+  c.x=Math.max(BOUND[0],Math.min(BOUND[2],c.x));c.y=Math.max(BOUND[1],Math.min(BOUND[3],c.y));
+  if(Math.abs(lat)>90&&!off){c.skid.push([c.x,c.y,1]);}
+  for(const s of c.skid)s[2]-=dt*.6;c.skid=c.skid.filter(s=>s[2]>0).slice(-80);
+}
+function aiDrive(c){const look=Math.round(4+Math.abs(c.sp||0)/55),j=(c.idx+look)%N,[tx,ty]=TR[j],a2=tang(j);
+  const ox=tx-Math.sin(a2)*c.off,oy=ty+Math.cos(a2)*c.off;let d=Math.atan2(oy-c.y,ox-c.x)-c.a;d=Math.atan2(Math.sin(d),Math.cos(d));
+  const steer=Math.max(-1,Math.min(1,d*3.2));let cmax=0;for(let k=4;k<26;k+=3)cmax=Math.max(cmax,curv[(c.idx+k)%N]);
+  const target=(440-cmax*520)*c.skill;return [(c.sp||0)>target+30?-.6:1,steer]}
+function update(dt){
+  if(count>0){count-=dt;if(count<=0)count=0;else return}
+  raceT+=dt;
+  for(const c of cars){let thr,steer;
+    if(c.ai||c.done){[thr,steer]=aiDrive(c);if(c.done&&!c.ai)thr*=.6}
+    else{const L=keys.ArrowLeft||keys.KeyA||steerBtn<0,R=keys.ArrowRight||keys.KeyD||steerBtn>0,br=keys.ArrowDown||keys.KeyS||brakeBtn;
+      steer=(R?1:0)-(L?1:0);thr=br?-1:(keys.ArrowUp||keys.KeyW||MOBILE)?1:0}
+    c.steer+=(steer-c.steer)*Math.min(1,dt*10);physics(c,dt,thr,c.steer)}
+  for(let i=0;i<cars.length;i++)for(let j=i+1;j<cars.length;j++){const a=cars[i],b=cars[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
+    if(d<30&&d>.01){const p=(30-d)/2,nx=dx/d,ny=dy/d;a.x-=nx*p;a.y-=ny*p;b.x+=nx*p;b.y+=ny*p;const rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rv<0){a.vx+=nx*rv*.5;a.vy+=ny*rv*.5;b.vx-=nx*rv*.5;b.vy-=ny*rv*.5;if(a===me||b===me)shake=Math.min(.3,-rv/300)}}}
+  if(me.done&&st==='play'){st='fin';setTimeout(showEnd,1600)}
+}
+function rank(){return [...cars].sort((a,b)=>a.done&&b.done?a.t-b.t:a.done?-1:b.done?1:b.prog-a.prog)}
+const fmt=t=>t>=1e8?'-':`${t/60|0}:${(t%60).toFixed(2).padStart(5,'0')}`;
+function showEnd(){const r=rank(),pos=r.indexOf(me)+1;$('eTitle').textContent=pos===1?'우승!':`${pos}위 완주`;$('eTitle').style.color=pos===1?'#e0a100':'#e04030';
+  const tb=$('res');tb.innerHTML='';r.forEach((c,i)=>{const tr=document.createElement('tr');if(c===me)tr.className='me';
+    for(const v of [`${i+1}위`,c.name,c.done?fmt(c.t):`${c.lap}/${LAPS}바퀴`]){const td=document.createElement('td');td.textContent=v;tr.append(td)}tb.append(tr)});
+  $('eTxt').textContent=`내 최고 랩 ${fmt(me.best)}`;$('endOv').hidden=false;$('againBtn').focus()}
+
+// ---------- input
+addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('Arrow'))e.preventDefault()});
+addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
+function hold(id,on,off){const b=$(id);const dn=e=>{e.preventDefault();b.setPointerCapture?.(e.pointerId);b.classList.add('on');on()},up=()=>{b.classList.remove('on');off()};
+  b.addEventListener('pointerdown',dn);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('lostpointercapture',up)}
+hold('bL',()=>steerBtn=-1,()=>{if(steerBtn<0)steerBtn=0});hold('bR',()=>steerBtn=1,()=>{if(steerBtn>0)steerBtn=0});hold('bBrake',()=>brakeBtn=true,()=>brakeBtn=false);
+const go=()=>{newRace();st='play';$('titleOv').hidden=true;$('endOv').hidden=true};
+$('startBtn').onclick=go;$('againBtn').onclick=go;
+
+// ---------- draw
+function trackPath(){ctx.beginPath();TR.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath()}
+function drawCar(c){ctx.save();ctx.translate(c.x,c.y);ctx.rotate(c.a);
+  ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.roundRect(-17,-9,38,22,6);ctx.fill();
+  ctx.fillStyle='#222';for(const [x,y] of [[-12,-12],[8,-12],[-12,8],[8,8]])ctx.fillRect(x,y,9,4);
+  ctx.fillStyle=c.c;ctx.beginPath();ctx.roundRect(-18,-10,36,20,7);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(-14,-8,24,3);
+  ctx.fillStyle='#bfe9ff';ctx.beginPath();ctx.roundRect(2,-7,8,14,3);ctx.fill();ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.roundRect(-12,-7,10,14,3);ctx.fill();
+  ctx.fillStyle='#fff6b0';ctx.fillRect(16,-8,3,4);ctx.fillRect(16,4,3,4);
+  ctx.restore();
+  if(c!==me){ctx.save();ctx.translate(c.x,c.y);ctx.rotate(-(-Math.PI/2-me.a));ctx.font='13px Jua,sans-serif';ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.5)';ctx.strokeText(c.name,0,-24);ctx.fillStyle='#fff';ctx.fillText(c.name,0,-24);ctx.restore()}}
+function draw(dt){
+  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#4c9a3f';ctx.fillRect(0,0,W,H);
+  const sp=Math.abs(me.sp||0),z=Z*(1.08-Math.min(.22,sp/2000));shake=Math.max(0,shake-dt);
+  ctx.translate(W/2+(Math.random()-.5)*shake*20,H*(H>W?.66:.62));ctx.scale(z,z);ctx.rotate(-Math.PI/2-me.a);ctx.translate(-me.x,-me.y);
+  ctx.fillStyle='#57a849';for(let x=-300;x<2300;x+=160)for(let y=-300;y<2500;y+=160)if(((x+y)/160)&1)ctx.fillRect(x,y,160,160);
+  ctx.lineJoin='round';ctx.lineCap='round';
+  trackPath();ctx.strokeStyle='#d8d2bf';ctx.lineWidth=RW+34;ctx.stroke();
+  ctx.setLineDash([22,22]);ctx.strokeStyle='#e04030';ctx.lineWidth=RW+16;ctx.stroke();ctx.setLineDash([22,22]);ctx.lineDashOffset=22;ctx.strokeStyle='#fff';ctx.stroke();ctx.setLineDash([]);ctx.lineDashOffset=0;
+  ctx.strokeStyle='#5d5f66';ctx.lineWidth=RW;ctx.stroke();
+  ctx.setLineDash([26,30]);ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=4;ctx.stroke();ctx.setLineDash([]);
+  {const [x,y]=TR[0],a=tang(0);ctx.save();ctx.translate(x,y);ctx.rotate(a);for(let i=0;i<10;i++)for(let j=0;j<2;j++){ctx.fillStyle=(i+j)&1?'#fff':'#222';ctx.fillRect(-6+j*6,-HALF+i*RW/10,6,RW/10)}ctx.restore()}
+  for(const c of cars)for(const s of c.skid){ctx.fillStyle=`rgba(30,30,30,${s[2]*.35})`;ctx.fillRect(s[0]-3,s[1]-3,6,6)}
+  for(const c of cars)drawCar(c);
+  for(const [x,y,r] of trees){ctx.fillStyle='rgba(0,0,0,.22)';ctx.beginPath();ctx.arc(x+6,y+8,r,0,TAU);ctx.fill();ctx.fillStyle='#2e7d32';ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();ctx.fillStyle='#43a047';ctx.beginPath();ctx.arc(x-r*.25,y-r*.25,r*.55,0,TAU);ctx.fill()}
+  // HUD
+  ctx.setTransform(DPR,0,0,DPR,0,0);const r=rank(),pos=r.indexOf(me)+1;
+  ctx.textBaseline='top';ctx.textAlign='left';ctx.lineWidth=5;ctx.strokeStyle='rgba(0,0,0,.45)';
+  ctx.font='34px Jua,sans-serif';const ptxt=`${pos}위`;ctx.strokeText(ptxt,16,12);ctx.fillStyle=pos===1?'#ffd23f':'#fff';ctx.fillText(ptxt,16,12);
+  ctx.font='18px Jua,sans-serif';const lt=`바퀴 ${Math.min(LAPS,me.lap+1)}/${LAPS}`;ctx.strokeText(lt,18,54);ctx.fillStyle='#fff';ctx.fillText(lt,18,54);
+  ctx.font='13px "Press Start 2P",monospace';const tt=fmt(raceT);ctx.strokeText(tt,18,82);ctx.fillText(tt,18,82);
+  const mw=Math.min(130,W*.3),mh=mw*1.1,mx=W-mw-12,my=12,sc=mw/2300;ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.roundRect(mx-6,my-6,mw+12,mh+12,12);ctx.fill();
+  ctx.beginPath();TR.forEach(([x,y],i)=>{const X=mx+(x+150)*sc,Y=my+(y+150)*sc*1.0;i?ctx.lineTo(X,Y):ctx.moveTo(X,Y)});ctx.closePath();ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=3;ctx.stroke();
+  for(const c of [...cars].reverse()){ctx.fillStyle=c.c;ctx.beginPath();ctx.arc(mx+(c.x+150)*sc,my+(c.y+150)*sc,c===me?5:4,0,TAU);ctx.fill();if(c===me){ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke()}}
+  const bw=Math.min(160,W*.35);ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(W/2-bw/2,14,bw,8);ctx.fillStyle=me.offr?'#ffb13d':'#7dffb0';ctx.fillRect(W/2-bw/2,14,bw*Math.min(1,sp/440),8);
+  if(me.offr&&st==='play'){ctx.font='18px Jua,sans-serif';ctx.textAlign='center';ctx.strokeText('잔디! 도로로 돌아가세요',W/2,30);ctx.fillStyle='#ffd23f';ctx.fillText('잔디! 도로로 돌아가세요',W/2,30)}
+  if(st==='play'&&count>0||st==='play'&&raceT<.8){const n=Math.ceil(count),t=count>0?String(n):'출발!';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`${Math.min(W,H)*.2}px Jua,sans-serif`;ctx.lineWidth=10;ctx.strokeText(t,W/2,H*.38);ctx.fillStyle=count>0?'#fff':'#ffd23f';ctx.fillText(t,W/2,H*.38)}
+  if(st==='fin'){ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`${Math.min(W,H)*.14}px Jua,sans-serif`;ctx.lineWidth=8;ctx.strokeText('결승!',W/2,H*.38);ctx.fillStyle='#ffd23f';ctx.fillText('결승!',W/2,H*.38)}
+  ctx.textBaseline='alphabetic';
+}
+if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
+let last=performance.now();
+function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play'||st==='fin')update(dt);draw(dt);requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+}
+</script>
+</body></html>

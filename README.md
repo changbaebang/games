@@ -7,6 +7,11 @@
 | 블록 헌터 | 3D 블록 액션 | [`/block-hunter/`](./block-hunter/) |
 | 에이스 스트라이크 | 세로 스크롤 비행 슈팅 | [`/ace-strike/`](./ace-strike/) |
 | 달빛 생존자 | 생존 로그라이트 | [`/moon-survivor/`](./moon-survivor/) |
+| 블록 스택 | 낙하 블록 퍼즐 | [`/block-stack/`](./block-stack/) |
+| 여우 달리기 | 러너 | [`/fox-run/`](./fox-run/) |
+| 성벽 수비대 | 타워 디펜스 | [`/castle-guard/`](./castle-guard/) |
+| 미니 레이서 | 탑뷰 레이싱 | [`/mini-racer/`](./mini-racer/) |
+| 벽돌 팡팡 | 벽돌깨기 | [`/brick-pop/`](./brick-pop/) |
 
 ## 플레이
 
