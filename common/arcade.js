@@ -143,7 +143,12 @@
         box = document.createElement('div');
         box.style.cssText = 'position:fixed;inset:0;z-index:99;display:grid;place-items:center;background:rgba(10,14,30,.85);color:#fff;font:17px/1.5 Jua,system-ui,sans-serif;text-align:center;padding:24px';
         box.innerHTML = '<div><p style="font-size:22px;margin:0 0 8px">게임 데이터를 불러오지 못했어요</p><p style="margin:0 0 16px;opacity:.8">인터넷 연결을 확인하고 다시 시도해 주세요.</p><button type="button" style="font:inherit;font-size:19px;border:0;border-radius:12px;padding:10px 24px;background:#ffcf3f;color:#3b2a00;cursor:pointer">다시 시도</button></div>';
-        if (code) box.querySelector('p+p').textContent = '새 버전으로 바뀌는 중일 수 있어요. 다시 시도를 눌러 주세요.';
+        if (code) {
+          box.querySelector('p').textContent = '게임을 시작하지 못했어요';
+          box.querySelector('p+p').textContent = /webgl/i.test(String(err && err.message)) ? '이 기기나 브라우저에서 3D 그래픽(WebGL)을 쓸 수 없어요. 다른 브라우저로 열어 보세요.' : '새 버전으로 바뀌는 중일 수 있어요. 다시 시도를 눌러 주세요.';
+          var small = document.createElement('p'); small.style.cssText = 'margin:12px 0 0;font-size:12px;opacity:.55'; small.textContent = String(err && err.message || err).slice(0, 120);
+          box.firstChild.appendChild(small);
+        }
         box.querySelector('button').onclick = function () { if (code) { location.reload(); return; } box.remove(); box = null; load(); };
         document.body.appendChild(box);
       }
