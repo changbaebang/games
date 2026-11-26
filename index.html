@@ -357,8 +357,20 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>입체 공방</h2><p>손가락으로 돌려 보는 직육면체와 쌓기나무, 접히는 정육면체 전개도. 위·앞·옆에서 본 모양까지 5단계.</p>
       <div class="tags"><span>입체도형</span><span>5~6학년 수학</span><span>돌려 보기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./fraction-pizza/" style="--c:#ffb347">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#fff8ec"/><g stroke="#f3e3c8"><path d="M0 25H320M0 50H320M0 75H320M0 100H320M0 125H320M0 150H320M0 175H320M40 0V200M80 0V200M120 0V200M160 0V200M200 0V200M240 0V200M280 0V200"/></g>
+      <g transform="translate(100,104)"><circle r="78" fill="#d9822b"/>
+        <path d="M0 0 L0 -70 A70 70 0 0 1 49.5 -49.5Z" fill="#ffb347" stroke="#7a4a1a" stroke-width="3"/><path d="M0 0 L49.5 -49.5 A70 70 0 0 1 70 0Z" fill="#ffb347" stroke="#7a4a1a" stroke-width="3"/><path d="M0 0 L70 0 A70 70 0 0 1 49.5 49.5Z" fill="#ffb347" stroke="#7a4a1a" stroke-width="3"/>
+        <path d="M0 0 L49.5 49.5 A70 70 0 0 1 0 70Z" fill="#fff7e8" stroke="#7a4a1a" stroke-width="3"/><path d="M0 0 L0 70 A70 70 0 0 1 -49.5 49.5Z" fill="#fff7e8" stroke="#7a4a1a" stroke-width="3"/><path d="M0 0 L-49.5 49.5 A70 70 0 0 1 -70 0Z" fill="#fff7e8" stroke="#7a4a1a" stroke-width="3"/><path d="M0 0 L-70 0 A70 70 0 0 1 -49.5 -49.5Z" fill="#fff7e8" stroke="#7a4a1a" stroke-width="3"/><path d="M0 0 L-49.5 -49.5 A70 70 0 0 1 0 -70Z" fill="#fff7e8" stroke="#7a4a1a" stroke-width="3"/>
+        <g fill="#e2574c"><circle cx="15" cy="-38" r="8"/><circle cx="38" cy="-15" r="8"/><circle cx="38" cy="15" r="8"/></g></g>
+      <g font-family="Jua" fill="#22324f" text-anchor="middle"><text x="240" y="92" font-size="44">3</text><rect x="214" y="102" width="52" height="5" rx="2"/><text x="240" y="150" font-size="44">8</text></g>
+    </svg>
+    <div class="info"><h2>분수 피자</h2><p>피자를 나누며 배우는 분수·소수. 색칠하기, 크기 비교, 덧셈·뺄셈, 크기가 같은 분수까지 6단계.</p>
+      <div class="tags"><span>분수·소수</span><span>3~5학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 21개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 22개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -383,7 +395,8 @@ const REC={
   'pattern-train':()=>{const v=B('patternStarTotal');return v?`별 ${v}개 / 15개`:null},
   'egg-steal':()=>{const v=B('eggStealIncome'),c=B('eggStealCount');return v?`초당 금화 ${n(v)}`+(c?` · 알 ${n(c)}개`:''):null},
   'angle-detective':()=>{const v=B('angleStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'solid-lab':()=>{const v=B('solidStarTotal');return v?`별 ${v}개 / 15개`:null}};
+  'solid-lab':()=>{const v=B('solidStarTotal');return v?`별 ${v}개 / 15개`:null},
+  'fraction-pizza':()=>{const v=B('fractionStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

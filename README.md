@@ -25,6 +25,7 @@
 | 규칙 기차 | 규칙 찾기 (2~3학년) | [`/pattern-train/`](./pattern-train/) |
 | 각도 탐정 | 각도·각 구하기 (4~5학년) | [`/angle-detective/`](./angle-detective/) |
 | 입체 공방 | 직육면체·전개도·쌓기나무 (5~6학년) | [`/solid-lab/`](./solid-lab/) |
+| 분수 피자 | 분수·소수 (3~5학년) | [`/fraction-pizza/`](./fraction-pizza/) |
 
 ## 플레이
 
@@ -51,6 +52,17 @@ GitHub Pages: https://changbaebang.github.io/games/
 2. 루트 `index.html`의 `<main class="grid">` 안에 카드(`<a class="game">`)를 하나 추가합니다.
 3. 게임 `<head>`에 `<script src="../common/arcade.js"></script>`를 넣고, 효과음은 `Arcade.play('coin')`, 기록은 `Arcade.record('키', 값)`으로 저장합니다.
 4. 루트 `index.html` 아래쪽 `REC` 표에 기록 표시 방법을, `sw.js`의 `PRECACHE`에 새 폴더와 그 안의 파일들을 추가하고 `VERSION`을 올립니다.
+
+### 학습 게임 공통 틀
+
+단계 고르기, 진행 점, 보기 버튼, 힌트와 한 번 더 기회, 별 저장, 결과 화면은 `common/learn.js`와 `common/learn.css`에 모여 있습니다.
+새 학습 게임은 `game.js`에서 문제 만드는 함수만 쓰면 됩니다.
+
+```js
+Arcade.boot(D => Learn.run({ data: D, key: 'fraction', gen: { read(설정, ctx) { return { ask, scene, choices, answer, rule, hint }; } } }));
+```
+
+문제 객체에 쓸 수 있는 필드는 `common/learn.js` 맨 위 설명에 있어요. 소리 내어 읽기는 `Learn.say('apple')`(브라우저에 들어 있는 음성)입니다.
 
 ### 컴퓨터에서 열어 보기
 

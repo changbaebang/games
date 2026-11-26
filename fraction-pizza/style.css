@@ -1,0 +1,20 @@
+/* VOICE: 동네 피자 가게, 나눠 먹으며 배우는 분수
+   IDEA: 피자와 막대를 똑같이 나누어 분수·소수를 눈으로 봐요
+   PICTURE: 크림색 체크 식탁 위 피자, 막대, 수직선
+   COLOUR and TYPE: 크림 바탕, 피자 주황, 토핑 빨강, 막대 파랑 / Jua
+   LAYOUT: 공통 틀(common/learn.css) + 분수 표기, 그림 상자 */
+:root{--paper:#fff8ec;--grid:#f3e3c8;--accent:#e2574c;--soft:#ecdcbf;--edge:#7a4a1a}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 .12em;font-size:.92em}
+.fr i{font-style:normal;padding:0 .18em}
+.fr i:first-child{border-bottom:.09em solid currentColor}
+.ch .fr{font-size:1.05em}
+.ask .fr{font-size:.95em}
+.pics{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center;width:100%;height:100%}
+.pics svg{width:min(78vw,300px);max-height:100%;height:auto}
+.pics svg[viewBox^="-4"]{width:min(86vw,420px)}
+.pics svg[viewBox^="-24"]{width:min(90vw,460px)}
+.slice.tap{cursor:pointer}
+.nl{font-size:22px;text-anchor:middle;fill:var(--ink)}
+.nl.q{fill:var(--accent);font-size:24px}
+.cmp{font-size:clamp(36px,10vw,56px)}
+.fb .fr{font-size:.95em}
