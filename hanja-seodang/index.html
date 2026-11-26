@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>한자 서당</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&text=%E4%B8%80%E4%B8%83%E4%B8%89%E4%B8%AD%E4%B9%9D%E4%BA%8C%E4%BA%94%E4%BA%BA%E5%85%84%E5%85%88%E5%85%89%E5%85%A5%E5%85%AB%E5%85%AD%E5%8A%9B%E5%8C%97%E5%8D%81%E5%8D%97%E5%9B%9B%E5%9C%8B%E5%9C%9F%E5%A4%95%E5%A4%96%E5%A4%A7%E5%A4%AA%E5%A5%B3%E5%AD%90%E5%AD%B8%E5%AE%A4%E5%AF%B8%E5%B0%8F%E5%B1%B1%E5%B9%B4%E5%BC%9F%E6%95%8E%E6%97%A5%E6%9C%88%E6%9C%A8%E6%9C%AC%E6%9D%B1%E6%A0%A1%E6%AF%8D%E6%B0%91%E6%B0%B4%E7%81%AB%E7%88%B6%E7%8A%AC%E7%8E%8B%E7%94%9F%E7%94%B0%E7%99%BD%E7%9B%AE%E8%90%AC%E8%A5%BF%E8%BB%8D%E9%87%91%E9%95%B7%E9%96%80%E9%96%93%E9%9D%91%E9%9F%93&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="../common/learn.css">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div id="app">
+  <div class="top"><button class="pill" id="menuBtn">← 단계</button><div class="stg" id="stgName"></div><span class="sp"></span></div>
+  <div class="dots" id="dots"></div>
+  <h2 class="ask" id="ask"></h2>
+  <div class="scene" id="scene"></div>
+  <div class="tools" id="tools"></div>
+  <div class="choices" id="choices"></div>
+</div>
+<div class="fb" id="fb" hidden><h3 id="fbTitle"></h3><p id="fbText"></p><button class="btn" id="nextBtn">다음 문제</button></div>
+
+<div class="overlay" id="titleOv"><div class="card">
+  <div class="logo" aria-hidden="true">📜</div>
+  <h1>한자 서당</h1>
+  <p>한자능력검정 <b>8급 50자</b>를 익혀요.<br>숫자, 훈과 음, 그림에서 나온 한자, 한자어 읽기까지!</p>
+  <div class="stages" id="stages"></div>
+  <p class="small"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+
+<div class="overlay" id="endOv" hidden><div class="card">
+  <div class="stars" id="eStars"></div>
+  <h1 id="eTitle"></h1>
+  <p id="eTxt" style="white-space:pre-line"></p>
+  <button class="btn" id="nextStageBtn">다음 단계</button>
+  <div class="row"><button class="sub" id="againBtn">다시 하기</button><button class="sub" id="pickBtn">단계 고르기</button></div>
+</div></div>
+
+<script src="../common/learn.js"></script>
+<script src="game.js"></script>
+</body></html>

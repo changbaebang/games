@@ -1,0 +1,21 @@
+/* VOICE: 서당 훈장님, 차분하고 따뜻하게
+   IDEA: 한 글자씩 훈과 음을 짝짓고, 그림과 낱말 속에서 다시 만나요
+   PICTURE: 한지 위 먹빛 큰 한자, 붉은 도장
+   COLOUR and TYPE: 한지 미색, 먹색, 인주 빨강 / 한자는 Noto Serif KR, 한글은 Jua
+   LAYOUT: 공통 틀 + 가운데 큰 한자 카드 */
+:root{--paper:#f6efe0;--grid:#ebe0c8;--accent:#b8322a;--soft:#e2d4b4;--edge:#6a4a2a}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.card-big{background:#fffaf0;border-radius:18px;padding:14px 34px;min-width:min(56vw,220px);display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 6px 0 var(--soft);border:2px solid #e9dcbc;position:relative}
+.hz,.hzs{font-family:'Noto Serif KR','Noto Serif CJK KR','Batang','AppleMyungjo',serif;font-weight:700}
+.card-big .hz{font-size:clamp(96px,30vw,150px);line-height:1.15;color:#1f1b16}
+.card-big .hz.word{font-size:clamp(56px,17vw,92px);letter-spacing:.08em}
+.hz.word u{text-decoration:none;color:var(--accent)}
+.ch .hz{font-size:46px;line-height:1}
+.num{font-size:clamp(80px,26vw,130px);line-height:1.1;color:var(--ink)}
+.hu{font-size:clamp(40px,12vw,60px);color:var(--ink)}
+.sub{font-size:20px;color:var(--mute)}
+.pic{font-size:clamp(84px,26vw,130px);line-height:1.15}
+.cal{font-size:50px}
+.cmp{width:min(80vw,320px);height:auto}
+.hzs{font-size:24px;text-anchor:middle;dominant-baseline:central;fill:#1f1b16}
+.fb .hz{font-size:1.25em}
