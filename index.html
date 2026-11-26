@@ -393,8 +393,21 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>단위 탐험대</h2><p>물건의 길이·들이·무게를 어림하고, 자로 재고, mm·cm·m·km와 mL·L, g·kg·t, 시간 단위를 바꿔요. 6단계.</p>
       <div class="tags"><span>단위·측정</span><span>2~3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./area-farm/" style="--c:#8fc96b">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#f7f1e1"/>
+      <g transform="translate(40 30)"><rect width="240" height="140" fill="#f3e7c9"/>
+        <path d="M0 0h80v40h80v100H0z" fill="#7fc96b" stroke="#3f8a3a" stroke-width="5" stroke-linejoin="round"/>
+        <g stroke="#d6c9a8" stroke-width="1.5"><path d="M0 20H240M0 40H240M0 60H240M0 80H240M0 100H240M0 120H240M20 0V140M40 0V140M60 0V140M80 0V140M100 0V140M120 0V140M140 0V140M160 0V140M180 0V140M200 0V140M220 0V140"/></g>
+        <path d="M0 0h80v40h80v100H0z" fill="none" stroke="#3f8a3a" stroke-width="5" stroke-linejoin="round"/>
+        <circle cx="160" cy="140" r="11" fill="#ef6a3a" stroke="#fff" stroke-width="3"/>
+        <text x="200" y="70" font-family="Jua" font-size="34">🌱</text></g>
+    </svg>
+    <div class="info"><h2>넓이 농장</h2><p>모눈 밭의 칸을 세어 넓이와 둘레를 알고, 밭을 직접 늘려 보며 직사각형·평행사변형·삼각형의 넓이를 구해요. 6단계.</p>
+      <div class="tags"><span>둘레·넓이</span><span>3~5학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 24개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 25개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -422,7 +435,8 @@ const REC={
   'solid-lab':()=>{const v=B('solidStarTotal');return v?`별 ${v}개 / 15개`:null},
   'fraction-pizza':()=>{const v=B('fractionStarTotal');return v?`별 ${v}개 / 18개`:null},
   'division-candy':()=>{const v=B('divisionStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'unit-quest':()=>{const v=B('unitStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'unit-quest':()=>{const v=B('unitStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'area-farm':()=>{const v=B('areaStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

@@ -28,6 +28,7 @@
 | 분수 피자 | 분수·소수 (3~5학년) | [`/fraction-pizza/`](./fraction-pizza/) |
 | 나눗셈 사탕 | 나눗셈 (3학년) | [`/division-candy/`](./division-candy/) |
 | 단위 탐험대 | 길이·들이·무게·시간 단위 (2~3학년) | [`/unit-quest/`](./unit-quest/) |
+| 넓이 농장 | 모눈 세기, 둘레·넓이, 밭 만들기, 평행사변형·삼각형, ㄴ자 도형 (3~5학년 수학) | [`/area-farm/`](./area-farm/) |
 
 ## 플레이
 

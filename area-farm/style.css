@@ -1,0 +1,12 @@
+/* VOICE: 주말 농장, 밭을 일구며 크기를 재요
+   IDEA: 모눈 밭의 칸을 세고, 밭을 직접 늘였다 줄이며 넓이·둘레를 느껴요
+   PICTURE: 흙색 모눈 위 초록 밭, 길이 표시
+   COLOUR and TYPE: 흙 크림, 밭 초록, 강조 주황 / Jua
+   LAYOUT: 공통 틀 + 모눈·도형 그림 */
+:root{--paper:#f7f1e1;--grid:#e8dcbf;--accent:#d9622b;--soft:#e0d2ae;--edge:#5a4a2a}
+.box{width:100%;height:100%;display:grid;place-items:center}
+.box svg{width:min(94vw,500px);max-height:100%;height:auto}
+.mkbox{touch-action:none;cursor:pointer}
+.dim{font-size:var(--fs,20px);fill:var(--ink);text-anchor:middle;font-family:'Jua',system-ui,sans-serif;paint-order:stroke;stroke:var(--paper);stroke-width:calc(var(--fs,20px) / 4)}
+.cn{font-size:16px;fill:#1f4a1a;text-anchor:middle;dominant-baseline:central;font-family:'Jua',system-ui,sans-serif}
+.lg{font-size:13px;fill:var(--mute);text-anchor:middle;font-family:'Jua',system-ui,sans-serif}
