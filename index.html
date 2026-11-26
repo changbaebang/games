@@ -418,8 +418,20 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>그래프 마을</h2><p>친구들에게 물어본 것을 표로 정리하고, 그림그래프·막대그래프·꺾은선그래프를 읽고 직접 그려요. 6단계.</p>
       <div class="tags"><span>표와 그래프</span><span>2~4학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./phonics-pop/" style="--c:#9b7be6">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#eaf7f3"/>
+      <g font-family="Arial Rounded MT Bold,Arial,sans-serif" font-weight="700" font-size="40" text-anchor="middle">
+        <rect x="40" y="96" width="64" height="72" rx="14" fill="#fff" stroke="#cde6de" stroke-width="3"/><text x="72" y="148" fill="#2b2f45">c</text>
+        <rect x="128" y="96" width="64" height="72" rx="14" fill="#fff" stroke="#7a4fd6" stroke-width="4"/><text x="160" y="148" fill="#7a4fd6">a</text>
+        <rect x="216" y="96" width="64" height="72" rx="14" fill="#fff" stroke="#cde6de" stroke-width="3"/><text x="248" y="148" fill="#2b2f45">t</text></g>
+      <text x="120" y="78" font-size="58">🐱</text><text x="226" y="62" font-size="34">🔊</text>
+    </svg>
+    <div class="info"><h2>파닉스 팝</h2><p>알파벳 소리를 듣고 첫소리·짧은 모음·끝소리를 찾아요. cat, dog, sun 같은 단어를 읽고 글자 카드로 만들어요. 6단계.</p>
+      <div class="tags"><span>영어 파닉스</span><span>🔊 발음 듣기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 26개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 27개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -449,7 +461,8 @@ const REC={
   'division-candy':()=>{const v=B('divisionStarTotal');return v?`별 ${v}개 / 18개`:null},
   'unit-quest':()=>{const v=B('unitStarTotal');return v?`별 ${v}개 / 18개`:null},
   'area-farm':()=>{const v=B('areaStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'graph-town':()=>{const v=B('graphStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'graph-town':()=>{const v=B('graphStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'phonics-pop':()=>{const v=B('phonicsStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

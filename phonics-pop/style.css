@@ -1,0 +1,31 @@
+/* VOICE: 톡톡 터지는 글자 풍선, 밝고 경쾌하게
+   IDEA: 듣고(🔊) 보고(그림) 고르며 글자와 소리를 짝지어요
+   PICTURE: 하얀 카드 위 큰 그림과 굵은 영어 글자
+   COLOUR and TYPE: 민트 종이, 보라 강조 / 영어는 둥근 고딕, 한글은 Jua
+   LAYOUT: 공통 틀 + 가운데 큰 카드 */
+:root{--paper:#eaf7f3;--grid:#d3eee6;--accent:#7a4fd6;--soft:#cde6de;--edge:#4b3a86}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.card-big{background:#fff;border-radius:26px;padding:18px 30px;min-width:min(64vw,260px);display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 6px 0 var(--soft)}
+.pic{font-size:clamp(70px,22vw,120px);line-height:1.1}
+.word,.letter,.lt,.wd,.tile,.slot{font-family:'Baloo 2','Arial Rounded MT Bold','Trebuchet MS',system-ui,sans-serif;font-weight:700}
+.word{font-size:clamp(34px,10vw,52px);color:var(--ink);letter-spacing:.06em;display:block;text-align:center;line-height:1.1}
+.word small{display:block;font-family:'Jua',system-ui,sans-serif;font-weight:normal;font-size:18px;color:var(--mute);letter-spacing:0}
+.word u{text-decoration:none;color:var(--accent);border-bottom:4px solid var(--accent);padding:0 .12em}
+.word.big{display:flex;gap:.18em;font-size:clamp(48px,15vw,80px)}
+.word.big b{color:var(--ink)}
+.letter{font-size:clamp(90px,28vw,150px);color:var(--accent);line-height:1}
+.letter i{font-style:normal;color:var(--ink);margin-left:.15em}
+.ear{font-size:90px;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-6deg)}}
+.lt{font-size:38px;line-height:1}.lt i{font-style:normal;margin-left:.25em;color:var(--mute);font-size:.85em}
+.wd{font-size:30px}
+.ch .pic{font-size:52px}
+.slots{display:flex;gap:8px}
+.slot{width:52px;height:60px;border-radius:12px;border:3px dashed var(--soft);background:#fff;display:grid;place-items:center;font-size:36px;color:var(--ink)}
+.slot.on{border-style:solid;border-color:var(--accent)}
+.tiles{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:100%}
+.tile{width:60px;height:64px;border:none;border-radius:14px;background:#fff;box-shadow:0 5px 0 var(--soft);font-size:36px;color:var(--ink);cursor:pointer}
+.tile:active{transform:translateY(3px);box-shadow:0 2px 0 var(--soft)}
+.tile:disabled{opacity:.25}
+.choices.custom{display:flex;flex-direction:column;align-items:center;gap:10px}
+.say{font-size:16px}

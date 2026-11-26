@@ -1,0 +1,91 @@
+{
+  "questionsPerStage": 10,
+  "starThresholds": [6, 8, 10],
+  "praise": ["Great!", "Good job!", "딩동댕!", "Excellent!", "Super!"],
+  "endTitles": ["한 번 더 해 볼까요?", "Good!", "Very good!", "Phonics Star!"],
+  "voice": { "lang": "en-US", "rate": 0.8 },
+
+  "letters": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  "lookAlike": { "b": "dpq", "d": "bpq", "p": "qbd", "q": "pbd", "m": "nw", "n": "mh", "u": "vn", "v": "uwy", "i": "jl", "j": "ig", "g": "qj", "h": "nk", "a": "eo", "e": "ac", "c": "eo", "o": "ca", "w": "mv", "f": "tl", "t": "fl", "l": "ij", "r": "nh", "s": "zc", "z": "sx", "x": "kz", "k": "hx", "y": "vj" },
+
+  "starts": {
+    "a": [["apple", "🍎", "애플"], ["ant", "🐜", "앤트"]],
+    "b": [["ball", "⚽", "볼"], ["bus", "🚌", "버스"], ["bear", "🐻", "베어"]],
+    "c": [["cat", "🐱", "캣"], ["cake", "🍰", "케이크"]],
+    "d": [["dog", "🐶", "도그"], ["duck", "🦆", "덕"]],
+    "e": [["egg", "🥚", "에그"], ["elephant", "🐘", "엘리펀트"]],
+    "f": [["fish", "🐟", "피시"], ["fox", "🦊", "폭스"]],
+    "g": [["goat", "🐐", "고트"], ["gift", "🎁", "기프트"]],
+    "h": [["hat", "🎩", "햇"], ["horse", "🐴", "호스"]],
+    "i": [["ink", "🖋️", "잉크"], ["insect", "🐞", "인섹트"]],
+    "j": [["juice", "🧃", "주스"], ["jet", "✈️", "젯"]],
+    "k": [["kite", "🪁", "카이트"], ["king", "🤴", "킹"]],
+    "l": [["lion", "🦁", "라이언"], ["leg", "🦵", "레그"]],
+    "m": [["moon", "🌙", "문"], ["monkey", "🐵", "멍키"]],
+    "n": [["nose", "👃", "노즈"], ["nut", "🥜", "넛"]],
+    "o": [["octopus", "🐙", "악토퍼스"], ["ox", "🐂", "악스"]],
+    "p": [["pig", "🐷", "피그"], ["pizza", "🍕", "피자"]],
+    "q": [["queen", "👸", "퀸"]],
+    "r": [["rabbit", "🐰", "래빗"], ["robot", "🤖", "로봇"]],
+    "s": [["sun", "☀️", "선"], ["snake", "🐍", "스네이크"]],
+    "t": [["tiger", "🐯", "타이거"], ["tent", "⛺", "텐트"]],
+    "u": [["umbrella", "☂️", "엄브렐라"], ["up", "⬆️", "업"]],
+    "v": [["van", "🚐", "밴"], ["violin", "🎻", "바이올린"]],
+    "w": [["watch", "⌚", "와치"], ["whale", "🐳", "웨일"]],
+    "y": [["yo-yo", "🪀", "요요"], ["yak", "🐃", "야크"]],
+    "z": [["zebra", "🦓", "지브라"], ["zoo", "🦒", "주"]]
+  },
+
+  "cvc": [
+    ["cat", "🐱", "캣"], ["hat", "🎩", "햇"], ["bat", "🦇", "뱃"], ["rat", "🐀", "랫"], ["map", "🗺️", "맵"], ["cap", "🧢", "캡"], ["bag", "👜", "백"], ["van", "🚐", "밴"], ["can", "🥫", "캔"], ["pan", "🍳", "팬"], ["ham", "🍖", "햄"],
+    ["bed", "🛏️", "베드"], ["pen", "🖊️", "펜"], ["hen", "🐔", "헨"], ["net", "🥅", "넷"], ["web", "🕸️", "웹"], ["leg", "🦵", "레그"], ["jet", "✈️", "젯"], ["ten", "🔟", "텐"], ["red", "🟥", "레드"],
+    ["pig", "🐷", "피그"], ["six", "6️⃣", "식스"], ["lip", "👄", "립"], ["pin", "📌", "핀"], ["kid", "🧒", "키드"], ["zip", "🤐", "집"], ["bin", "🗑️", "빈"],
+    ["dog", "🐶", "도그"], ["log", "🪵", "로그"], ["box", "📦", "박스"], ["fox", "🦊", "폭스"], ["pot", "🍲", "팟"], ["hot", "🔥", "핫"],
+    ["sun", "☀️", "선"], ["bus", "🚌", "버스"], ["cup", "☕", "컵"], ["bug", "🐛", "버그"], ["nut", "🥜", "넛"], ["hut", "🛖", "헛"], ["tub", "🛁", "텁"]
+  ],
+
+  "families": {
+    "at": ["cat", "hat", "bat", "rat", "mat", "sat"],
+    "an": ["van", "can", "pan", "man", "fan", "ran"],
+    "ap": ["map", "cap", "nap", "tap"],
+    "en": ["pen", "hen", "ten", "men"],
+    "et": ["net", "jet", "wet", "pet", "vet"],
+    "ig": ["pig", "big", "dig", "wig", "fig"],
+    "in": ["pin", "bin", "win", "fin", "tin"],
+    "op": ["mop", "top", "hop", "pop", "shop"],
+    "ot": ["pot", "hot", "dot", "not", "lot"],
+    "og": ["dog", "log", "fog", "hog", "jog"],
+    "ug": ["bug", "rug", "mug", "hug", "jug"],
+    "un": ["sun", "run", "fun", "bun"]
+  },
+
+  "digraphs": [
+    ["ship", "🚢", "쉽", "sh"], ["shell", "🐚", "셸", "sh"], ["fish", "🐟", "피시", "sh"], ["shoe", "👟", "슈", "sh"],
+    ["chick", "🐥", "칙", "ch"], ["cheese", "🧀", "치즈", "ch"], ["chair", "🪑", "체어", "ch"],
+    ["thumb", "👍", "썸", "th"], ["bath", "🛁", "배스", "th"], ["three", "3️⃣", "쓰리", "th"], ["teeth", "🦷", "티스", "th"],
+    ["whale", "🐳", "웨일", "wh"]
+  ],
+
+  "vowelTips": {
+    "a": "a 는 짧게 '애' (cat 캣)",
+    "e": "e 는 짧게 '에' (bed 베드)",
+    "i": "i 는 짧게 '이' (pig 피그)",
+    "o": "o 는 짧게 '아'에 가까워요 (hot 핫, pot 팟)",
+    "u": "u 는 짧게 '어' (sun 선)"
+  },
+
+  "stages": [
+    { "name": "알파벳 이름", "short": "알파벳", "sub": "듣고 고르기, 대문자·소문자",
+      "kinds": [ { "kind": "letterHear", "weight": 1.3 }, { "kind": "letterCase" } ] },
+    { "name": "첫소리", "short": "첫소리", "sub": "단어가 어떤 글자로 시작할까?",
+      "kinds": [ { "kind": "firstLetter", "weight": 1.3 }, { "kind": "firstPic" } ] },
+    { "name": "짧은 모음", "short": "모음", "sub": "a e i o u, 가운데 소리 찾기",
+      "kinds": [ { "kind": "midVowel" } ] },
+    { "name": "읽고 고르기", "short": "읽기", "sub": "c-a-t 소리를 이어 읽어요",
+      "kinds": [ { "kind": "readPick", "weight": 1.3 }, { "kind": "listenPick" } ] },
+    { "name": "끝소리 친구", "short": "라임", "sub": "cat · hat · bat, 끝이 같은 말",
+      "kinds": [ { "kind": "rhyme", "weight": 1.2 }, { "kind": "lastLetter" } ] },
+    { "name": "철자 대장", "short": "도전", "sub": "글자 카드로 단어 만들기, sh·ch·th", "challenge": true,
+      "kinds": [ { "kind": "spell", "weight": 1.6 }, { "kind": "digraph" } ] }
+  ]
+}
