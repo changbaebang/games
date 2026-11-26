@@ -73,3 +73,16 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--min);outline-offset
   .fb{left:auto;right:0;margin:0;width:50%;max-width:none;border-radius:22px 0 0 0}
 }
 .loaderr{background:#fff1e8;color:#c0502a;border-radius:14px;padding:12px;font-size:16px;line-height:1.5}
+/* 바늘 맞추기: 시·분 버튼 */
+.steppers{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:460px}
+.stp{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px;background:#fff;border-radius:16px;padding:8px;box-shadow:0 4px 0 rgba(0,0,0,.08)}
+.stp .nm{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:6px;font-size:20px}
+.stp .nm i{width:14px;height:14px;border-radius:50%;background:var(--hour)}
+.stp.min .nm i{background:var(--min)}
+.stp .nm small{font-size:13px;opacity:.7}
+.stp button{border:0;border-radius:12px;min-height:56px;font-size:24px;background:#eef1f7;color:var(--hour);box-shadow:0 4px 0 #d3d9e6;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.stp.min button{background:#fff0e8;color:var(--min);box-shadow:0 4px 0 #f3cdb9}
+.stp button:active{transform:translateY(3px);box-shadow:none}
+.clock.dragging .mh line{stroke-width:9}
+.clock .mh line{transition:stroke-width .12s}
+

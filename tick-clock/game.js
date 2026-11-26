@@ -45,7 +45,7 @@ function qRead(st){const {h,m}=genTime(st),ans=fmt(h,m),num=Math.floor(m/5)||12;
   if(md==='any')c.splice(1,0,fmt(h,m<59?m+1:m-1));if(md==='five')c.push(fmt(h,(m+5)%60));c.push(fmt(h-1,m));
   return {kind:'read',text:'시계가 가리키는 시각은?',clock:tot(h,m),answer:ans,options:options(ans,c,()=>{const r=genTime(st);return fmt(r.h,r.m)}),explain:[hourLine(h,m),minLine(m)],hl:m%5?-1:(m/5)%12}}
 function qSet(st){const {h,m}=genTime(st);let s0;do{const r=genTime(st);s0=tot(r.h,r.m)}while(s0===tot(h,m));
-  return {kind:'set',text:`<span>${fmt(h,m)}</span><small>바늘을 돌려서 만들어 보세요</small>`,clock:s0,target:tot(h,m),snap:STAGES[st-1].snap||1,answer:fmt(h,m),explain:[hourLine(h,m),minLine(m)],hl:m%5?-1:(m/5)%12}}
+  return {kind:'set',text:`<span>${fmt(h,m)}</span><small>시·분 버튼을 누르거나 긴바늘을 끌어서 맞춰요</small>`,clock:s0,target:tot(h,m),snap:STAGES[st-1].snap||1,answer:fmt(h,m),explain:[hourLine(h,m),minLine(m)],hl:m%5?-1:(m/5)%12}}
 function qBefore(){const h=ri(1,12),m=pick(LISTS.before),b=60-m,ans=`${H(h+1)}시 ${b}분 전`;
   return {kind:'choice',text:"이 시각을 '몇 시 몇 분 전'으로<br>말하면?",clock:tot(h,m),answer:ans,
     options:options(ans,[`${H(h)}시 ${b}분 전`,`${H(h+1)}시 ${m}분 전`,b>5?`${H(h+1)}시 ${b-5}분 전`:'',`${H(h+1)}시 ${b+5}분 전`],()=>`${H(h+ri(0,1))}시 ${pick([5,10,15,20])}분 전`),
@@ -113,10 +113,11 @@ function moveHand(p,jump){const t=mc.t;let nt=t;
   if(drag==='m'){const step=cur.snap,nm=Math.round(p.a/6/step)*step%60;if(jump)nt=Math.floor(t/60)*60+nm;else{let d=nm-t%60;if(d>30)d-=60;if(d<-30)d+=60;nt=t+d}}
   else{const m=t%60;let hr=Math.round(p.a/30-m/60);hr=((hr%12)+12)%12;nt=hr*60+m}
   if(((nt%720)+720)%720!==t){mc.set(nt);snd('tick')}}
-mc.svg.addEventListener('pointerdown',e=>{if(!cur||cur.kind!=='set'||locked)return;const p=pt(e);if(p.r<12||p.r>112)return;e.preventDefault();
-  drag=(p.r<62&&angDist(p.a,mc.t*.5)<40)?'h':'m';try{mc.svg.setPointerCapture(e.pointerId)}catch(_){}moveHand(p,true)});
+// 끌기는 긴바늘(분)만 움직여요. 짧은바늘은 실제 시계처럼 따라 움직이고, 시는 아래 버튼으로 맞춰요.
+mc.svg.addEventListener('pointerdown',e=>{if(!cur||cur.kind!=='set'||locked)return;const p=pt(e);if(p.r<8||p.r>128)return;e.preventDefault();
+  drag='m';mc.svg.classList.add('dragging');try{mc.svg.setPointerCapture(e.pointerId)}catch(_){}moveHand(p,true)});
 mc.svg.addEventListener('pointermove',e=>{if(drag)moveHand(pt(e),false)});
-const endDrag=()=>{drag=null};mc.svg.addEventListener('pointerup',endDrag);mc.svg.addEventListener('pointercancel',endDrag);
+const endDrag=()=>{drag=null;mc.svg.classList.remove('dragging')};mc.svg.addEventListener('pointerup',endDrag);mc.svg.addEventListener('pointercancel',endDrag);
 
 // 바늘 움직이는 애니메이션
 let anim=null;
@@ -136,12 +137,23 @@ function render(){const q=cur;$('qText').innerHTML='<div>'+q.text+'</div>';
   if(q.pair){c1.set(q.pair[0]);c2.set(q.pair[1]);c1.helpers(helpOn);c2.helpers(helpOn)}
   if(q.big)$('bigText').innerHTML=q.big;
   const A=$('ans');A.innerHTML='';A.className='ans';
-  if(q.kind==='set'){A.classList.add('setmode');A.innerHTML='<div class="legend"><span><i style="background:var(--hour)"></i>짧은바늘 = 시</span><span><i style="background:var(--min)"></i>긴바늘 = 분</span></div><button class="btn" id="checkBtn">다 맞췄어요!</button>';$('checkBtn').onclick=checkSet;return}
+  if(q.kind==='set'){A.classList.add('setmode');const st=q.snap;
+    A.innerHTML=`<div class="steppers"><div class="stp hour"><span class="nm"><i></i>시<small>짧은바늘</small></span><button data-d="-60" aria-label="1시간 앞으로">◀</button><button data-d="60" aria-label="1시간 뒤로">▶</button></div>`
+      +`<div class="stp min"><span class="nm"><i></i>분<small>긴바늘 ${st}분씩</small></span><button data-d="${-st}" aria-label="${st}분 앞으로">◀</button><button data-d="${st}" aria-label="${st}분 뒤로">▶</button></div></div><button class="btn" id="checkBtn">다 맞췄어요!</button>`;
+    A.querySelectorAll('.stp button').forEach(holdButton);$('checkBtn').onclick=checkSet;return}
   for(const o of q.options){const b=document.createElement('button');b.className='opt';b.textContent=o;b.onclick=()=>choose(b,o);A.appendChild(b)}}
 function choose(btn,val){if(locked)return;locked=true;const ok=val===cur.answer;
   for(const b of $('ans').children)if(b.textContent===cur.answer)b.classList.add('right');if(!ok)btn.classList.add('wrong');
   if(cur.kind==='after')animTo(mc,cur.end,1200,null);
   finishQ(ok)}
+// 버튼: 한 번 누르면 한 칸, 꾹 누르고 있으면 계속 움직여요
+function holdButton(b){const d=+b.dataset.d;let t1=0,t2=0;
+  const step=()=>{if(locked||!cur||cur.kind!=='set')return stop();mc.set(mc.t+d);snd('tick')};
+  const stop=()=>{clearTimeout(t1);clearInterval(t2)};
+  b.addEventListener('pointerdown',e=>{e.preventDefault();stop();step();t1=setTimeout(()=>{t2=setInterval(step,110)},420)});
+  for(const ev of ['pointerup','pointerleave','pointercancel'])b.addEventListener(ev,stop);
+  b.addEventListener('keydown',e=>{if(e.code==='Enter'||e.code==='Space'){e.preventDefault();step()}});
+  b.addEventListener('contextmenu',e=>e.preventDefault())}
 function checkSet(){if(locked)return;locked=true;drag=null;const ok=mc.t===cur.target;
   if(!ok){let d=((cur.target-mc.t)%720+720)%720;if(d>360)d-=720;animTo(mc,mc.t+d,900,null)}
   finishQ(ok)}
