@@ -2,6 +2,13 @@
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>미니 게임 오락실</title>
+<meta name="theme-color" content="#141a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="오락실">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<script src="common/arcade.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -30,12 +37,23 @@ header p{margin:0;color:var(--mute);max-width:60ch}
 .tags span{font-size:13px;background:rgba(255,255,255,.08);border-radius:8px;padding:2px 9px;color:#d7dcec}
 .play{align-self:flex-start;margin-top:8px;background:var(--c);color:#1b1530;border-radius:12px;padding:8px 18px;font-size:18px}
 footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
+.act{font:inherit;font-size:17px;border:0;border-radius:12px;min-height:46px;padding:0 18px;background:#ffcf3f;color:#3b2a00;box-shadow:0 4px 0 #c79400;cursor:pointer}
+.act.ghost{background:rgba(255,255,255,.1);color:var(--ink);box-shadow:none}
+.act:active{transform:translateY(2px)}.act:focus-visible{outline:3px solid #ffcf3f;outline-offset:3px}.act[hidden]{display:none}
+#iosTip{width:100%;font-size:15px;color:var(--mute);background:rgba(255,255,255,.06);border-radius:12px;padding:10px 14px}
+#iosTip[hidden]{display:none}
+.rec{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;font-size:14px;background:rgba(255,207,63,.14);color:#ffdf7a;border-radius:8px;padding:3px 10px}
+.rec::before{content:"";width:8px;height:8px;border-radius:2px;background:#ffcf3f}
+#summary{color:var(--mute);font-size:15px}
 @media(prefers-reduced-motion:reduce){.game{transition:none}}
 </style></head><body>
 <header>
   <small>INSERT COIN</small>
   <h1>미니 게임 오락실</h1>
-  <p>브라우저에서 바로 하는 작은 게임들이에요. 설치 없이 PC와 휴대폰 모두에서 플레이할 수 있어요.</p>
+  <p>브라우저에서 바로 하는 작은 게임들이에요. PC와 휴대폰 모두에서 플레이할 수 있고, 홈 화면에 앱처럼 설치할 수도 있어요.</p>
+  <div class="actions"><button class="act" id="installBtn" hidden>앱으로 설치</button><button class="act ghost" id="iosBtn" hidden>홈 화면에 추가하는 법</button><button class="act ghost" id="muteBtn">소리 켜짐</button><span id="summary"></span>
+    <div id="iosTip" hidden>Safari 아래쪽 공유 버튼을 누르고 <b>홈 화면에 추가</b>를 고르세요. 앱처럼 전체 화면으로 열리고, 한 번 열어 본 게임은 인터넷 없이도 열려요.</div></div>
 </header>
 <main class="grid">
   <a class="game" href="./block-hunter/" style="--c:#ffcf3f">
@@ -193,6 +211,75 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>달걀 싣고 달려라</h2><p>트럭 지붕에 달걀을 얹고 언덕길을 최대한 멀리. 출렁이는 달걀이 떨어지지 않게 페달을 살살!</p>
       <div class="tags"><span>물리 드라이브</span><span>좌우 페달</span><span>최고 거리</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./fruit-merge/" style="--c:#ff7a5a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#cfe9a8"/><rect x="70" y="20" width="180" height="176" rx="12" fill="#b8834a"/><rect x="80" y="20" width="160" height="166" fill="#f6ead0"/>
+      <path d="M80 48 H240" stroke="#e0303a" stroke-width="2" stroke-dasharray="8 6"/>
+      <circle cx="160" cy="150" r="34" fill="#3fae4a"/><path d="M140 125 Q144 150 140 176 M160 116 Q164 150 160 184 M180 125 Q184 150 180 176" stroke="#1f6a2a" stroke-width="3" fill="none"/>
+      <circle cx="108" cy="162" r="22" fill="#e8323a"/><circle cx="212" cy="160" r="24" fill="#ffa024"/><circle cx="118" cy="122" r="16" fill="#8a4ad0"/><circle cx="206" cy="118" r="18" fill="#ffb0a0"/><circle cx="160" cy="96" r="12" fill="#ff4d5e"/>
+      <g fill="#3a2416"><circle cx="152" cy="146" r="3"/><circle cx="168" cy="146" r="3"/><circle cx="102" cy="160" r="2.4"/><circle cx="114" cy="160" r="2.4"/><circle cx="205" cy="158" r="2.4"/><circle cx="219" cy="158" r="2.4"/></g>
+      <path d="M152 154 Q160 160 168 154" stroke="#3a2416" stroke-width="2" fill="none"/>
+      <circle cx="160" cy="36" r="13" fill="#e0303a"/><path d="M160 23 Q162 14 168 12" stroke="#6a4a2a" stroke-width="2" fill="none"/>
+    </svg>
+    <div class="info"><h2>과일 합치기</h2><p>같은 과일끼리 부딪히면 더 큰 과일로! 체리에서 수박까지 키우는 말랑한 물리 퍼즐.</p>
+      <div class="tags"><span>물리 퍼즐</span><span>한 손</span><span>11단계 과일</span></div><span class="play">플레이</span></div>
+  </a>
+  <a class="game" href="./omok/" style="--c:#e8bf78">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#efe6d2"/><rect x="60" y="10" width="200" height="180" rx="8" fill="#e0b56a"/>
+      <g stroke="#5a3a1a" stroke-width="1.2"><path d="M75 25 H245 M75 46 H245 M75 67 H245 M75 88 H245 M75 109 H245 M75 130 H245 M75 151 H245 M75 172 H245"/><path d="M75 25 V172 M96 25 V172 M117 25 V172 M138 25 V172 M159 25 V172 M180 25 V172 M201 25 V172 M222 25 V172 M245 25 V172"/></g>
+      <g><circle cx="117" cy="130" r="9" fill="#151515"/><circle cx="138" cy="109" r="9" fill="#151515"/><circle cx="159" cy="88" r="9" fill="#151515"/><circle cx="180" cy="67" r="9" fill="#151515"/><circle cx="201" cy="46" r="9" fill="#151515"/>
+      <circle cx="138" cy="130" r="9" fill="#f4f1ea"/><circle cx="159" cy="109" r="9" fill="#f4f1ea"/><circle cx="117" cy="109" r="9" fill="#f4f1ea"/><circle cx="180" cy="88" r="9" fill="#f4f1ea"/><circle cx="159" cy="130" r="9" fill="#f4f1ea"/></g>
+      <path d="M117 130 L201 46" stroke="rgba(224,64,58,.85)" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <div class="info"><h2>오목</h2><p>다섯 개를 먼저 잇는 한판 승부. AI와 두거나, 한 폰으로 둘이서 마주 앉아 둘 수 있어요.</p>
+      <div class="tags"><span>보드게임</span><span>AI 2단계</span><span>둘이서</span></div><span class="play">플레이</span></div>
+  </a>
+  <a class="game" href="./air-hockey/" style="--c:#5b8dff">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#141a2e"/><rect x="70" y="6" width="180" height="188" rx="16" fill="#1d2a58"/><rect x="78" y="14" width="164" height="172" rx="10" fill="#eef4fb"/>
+      <path d="M78 100 H242" stroke="#e0303a" stroke-width="3"/><circle cx="160" cy="100" r="26" fill="none" stroke="rgba(224,48,58,.5)" stroke-width="2"/>
+      <rect x="125" y="6" width="70" height="8" fill="#0b1020"/><rect x="125" y="186" width="70" height="8" fill="#0b1020"/>
+      <circle cx="140" cy="52" r="18" fill="#2f6bd0"/><circle cx="140" cy="52" r="7" fill="#7fb0ff"/>
+      <circle cx="182" cy="150" r="18" fill="#e0303a"/><circle cx="182" cy="150" r="7" fill="#ff8a8f"/>
+      <circle cx="168" cy="112" r="9" fill="#1b1f2e"/><circle cx="168" cy="112" r="5" fill="none" stroke="#ffcf3f" stroke-width="1.5"/>
+      <path d="M176 130 L170 118" stroke="rgba(30,40,80,.25)" stroke-width="10" stroke-linecap="round"/>
+    </svg>
+    <div class="info"><h2>에어하키</h2><p>말렛으로 퍽을 쳐서 7골 먼저! AI 3단계와 대결하거나, 한 화면 양쪽에서 둘이 동시에 터치해요.</p>
+      <div class="tags"><span>대전</span><span>멀티터치 2인</span><span>AI 3단계</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 11개 · 모든 게임은 파일 하나짜리 HTML이에요. 글꼴(과 블록 헌터의 3D 라이브러리)을 불러오느라 인터넷 연결이 필요해요.</footer>
+<footer>게임 14개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<script>
+{
+const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+const REC={
+  'block-hunter':()=>{const v=B('blockHunterBest');return v?`최다 처치 ${n(v)}마리`:null},
+  'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},
+  'moon-survivor':()=>{const v=B('moonBest');return v?(v>=600?'새벽까지 생존!':`최장 생존 ${mmss(v)}`):null},
+  'block-stack':()=>{const v=B('stackBest');return v?`최고 ${n(v)}점`:null},
+  'fox-run':()=>{const v=B('foxBest');return v?`최고 ${n(v)} m`:null},
+  'castle-guard':()=>{const v=B('castleBest');return v?(v>=20?'20웨이브 모두 방어!':`웨이브 ${v}까지 방어`):null},
+  'mini-racer':()=>{const v=B('racerBest');return v?`최고 완주 ${mmss(v)}.${String(Math.round(v%1*100)).padStart(2,'0')}`:null},
+  'brick-pop':()=>{const v=B('brickBest');return v?`최고 ${n(v)}점`:null},
+  'egg-swap':()=>{const v=B('eggSwapBest');return v?`${v}단계까지 클리어`:null},
+  'egg-catch':()=>{const v=B('eggCatchBest');return v?`최고 ${n(v)}점`:null},
+  'egg-drive':()=>{const v=B('eggDriveBest');return v?`최고 ${n(v)} m`:null},
+  'fruit-merge':()=>{const v=B('fruitBest');return v?`최고 ${n(v)}점`:null},
+  'omok':()=>{const e=B('omokWinsEasy')||0,h=B('omokWinsHard')||0;return e||h?`AI 상대 ${e+h}승`+(h?` (보통 ${h}승)`:''):null},
+  'air-hockey':()=>{const v=B('hockeyWins');return v?`AI 상대 ${n(v)}승`:null}};
+function paint(){let c=0;const cards=document.querySelectorAll('a.game');
+  cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
+    if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});
+  document.getElementById('summary').textContent=c?`${cards.length}개 중 ${c}개 게임에 내 기록이 있어요`:''}
+paint();addEventListener('pageshow',paint);addEventListener('storage',paint);document.addEventListener('visibilitychange',()=>{if(!document.hidden)paint()});
+const mb=document.getElementById('muteBtn');const ml=()=>mb.textContent=window.Arcade&&Arcade.muted?'소리 꺼짐':'소리 켜짐';ml();mb.onclick=()=>{window.Arcade&&Arcade.toggleMute();ml()};
+let deferred=null;const ib=document.getElementById('installBtn'),iosB=document.getElementById('iosBtn'),tip=document.getElementById('iosTip');
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;if(!standalone)ib.hidden=false});
+ib.onclick=async()=>{if(!deferred)return;deferred.prompt();try{await deferred.userChoice}catch(e){}deferred=null;ib.hidden=true};
+addEventListener('appinstalled',()=>{ib.hidden=true});
+if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!standalone){iosB.hidden=false;iosB.onclick=()=>{tip.hidden=!tip.hidden}}
+}
+</script>
 </body></html>
