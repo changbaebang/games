@@ -1,6 +1,6 @@
 /* 미니 게임 오락실 서비스워커: 한 번 열어 본 게임은 오프라인에서도 열린다 */
-const VERSION='arcade-v2';
-const PRECACHE=["./", "index.html", "manifest.webmanifest", "common/arcade.js", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-180.png", "icons/favicon-32.png", "ace-strike/", "air-hockey/", "block-hunter/", "block-stack/", "brick-pop/", "castle-guard/", "egg-catch/", "egg-drive/", "egg-swap/", "fox-run/", "fruit-merge/", "mini-racer/", "moon-survivor/", "omok/", "gugudan-balloon/"];
+const VERSION='arcade-v3';
+const PRECACHE=["./", "index.html", "manifest.webmanifest", "common/arcade.js", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-180.png", "icons/favicon-32.png", "ace-strike/", "air-hockey/", "block-hunter/", "block-stack/", "brick-pop/", "castle-guard/", "egg-catch/", "egg-drive/", "egg-swap/", "fox-run/", "fruit-merge/", "mini-racer/", "moon-survivor/", "omok/", "gugudan-balloon/", "tick-clock/"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VERSION).then(c=>Promise.all(PRECACHE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{

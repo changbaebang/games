@@ -19,6 +19,7 @@
 | 오목 | 보드게임 (AI·2인) | [`/omok/`](./omok/) |
 | 에어하키 | 대전 (AI·2인) | [`/air-hockey/`](./air-hockey/) |
 | 구구단 풍선 | 구구단 학습 (2학년) | [`/gugudan-balloon/`](./gugudan-balloon/) |
+| 똑딱 시계 | 시계 보기·시간 계산 (2~3학년) | [`/tick-clock/`](./tick-clock/) |
 
 ## 플레이
 
