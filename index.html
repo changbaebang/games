@@ -280,8 +280,21 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>똑딱 시계</h2><p>시계를 읽고, 바늘을 돌려 맞추고, 걸린 시간까지! 정각부터 3학년 초 단위 계산까지 5단계.</p>
       <div class="tags"><span>시계 보기</span><span>2~3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./coin-shop/" style="--c:#ff8a7a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#fdf3e3"/><rect width="320" height="34" fill="#fff7ea"/><rect x="0" y="0" width="20" height="34" fill="#e2574c"/><rect x="40" y="0" width="20" height="34" fill="#e2574c"/><rect x="80" y="0" width="20" height="34" fill="#e2574c"/><rect x="120" y="0" width="20" height="34" fill="#e2574c"/><rect x="160" y="0" width="20" height="34" fill="#e2574c"/><rect x="200" y="0" width="20" height="34" fill="#e2574c"/><rect x="240" y="0" width="20" height="34" fill="#e2574c"/><rect x="280" y="0" width="20" height="34" fill="#e2574c"/><rect y="34" width="320" height="5" fill="#b8443a"/>
+      <rect y="122" width="320" height="78" fill="#c98a4a"/><rect y="122" width="320" height="10" fill="#e9b46a"/>
+      <g transform="translate(62,92)"><circle r="30" fill="#e2574c"/><circle cx="-10" cy="-10" r="7" fill="rgba(255,255,255,.45)"/><path d="M0 -28 q4 -14 14 -16" stroke="#7a4a24" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M4 -32 q14 -12 24 0 q-12 8 -24 0z" fill="#5fb84a"/></g>
+      <g transform="translate(108,58) rotate(8)"><rect width="74" height="38" rx="8" fill="#fff" stroke="#e6c99a" stroke-width="2" stroke-dasharray="5 4"/><text x="37" y="27" font-family="Jua" font-size="22" fill="#e2574c" text-anchor="middle">340원</text></g>
+      <path d="M200 52 h96 a12 12 0 0 1 12 12 v22 a12 12 0 0 1 -12 12 h-84 l-12 10 l2 -10 a12 12 0 0 1 -14 -12 v-22 a12 12 0 0 1 12 -12z" fill="#fff"/>
+      <text x="250" y="82" font-family="Jua" font-size="19" fill="#3a2c20" text-anchor="middle">사과 주세요!</text>
+      <circle cx="150" cy="153" r="17" fill="rgba(0,0,0,.18)"/><circle cx="150" cy="150" r="17" fill="#c9ced6"/><text x="150" y="154.3" font-family="Jua" font-size="12" fill="#4a3a20" text-anchor="middle">100</text><circle cx="188" cy="151" r="17" fill="rgba(0,0,0,.18)"/><circle cx="188" cy="148" r="17" fill="#c9ced6"/><text x="188" y="152.3" font-family="Jua" font-size="12" fill="#4a3a20" text-anchor="middle">100</text><circle cx="226" cy="153" r="17" fill="rgba(0,0,0,.18)"/><circle cx="226" cy="150" r="17" fill="#c9ced6"/><text x="226" y="154.3" font-family="Jua" font-size="12" fill="#4a3a20" text-anchor="middle">100</text><circle cx="258" cy="159" r="12" fill="rgba(0,0,0,.18)"/><circle cx="258" cy="156" r="12" fill="#d99a5b"/><text x="258" y="159.6" font-family="Jua" font-size="10" fill="#4a3a20" text-anchor="middle">10</text><circle cx="284" cy="155" r="12" fill="rgba(0,0,0,.18)"/><circle cx="284" cy="152" r="12" fill="#d99a5b"/><text x="284" y="155.6" font-family="Jua" font-size="10" fill="#4a3a20" text-anchor="middle">10</text><circle cx="170" cy="181" r="12" fill="rgba(0,0,0,.18)"/><circle cx="170" cy="178" r="12" fill="#d99a5b"/><text x="170" y="181.6" font-family="Jua" font-size="10" fill="#4a3a20" text-anchor="middle">10</text><circle cx="204" cy="183" r="12" fill="rgba(0,0,0,.18)"/><circle cx="204" cy="180" r="12" fill="#d99a5b"/><text x="204" y="183.6" font-family="Jua" font-size="10" fill="#4a3a20" text-anchor="middle">10</text>
+    </svg>
+    <div class="info"><h2>동전 가게</h2><p>동물 손님에게 물건값을 딱 맞게 내요. 천 원 지폐, 거스름돈, 두 가지 사기까지 5단계.</p>
+      <div class="tags"><span>돈 계산</span><span>2~3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 16개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 17개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -301,7 +314,8 @@ const REC={
   'omok':()=>{const e=B('omokWinsEasy')||0,h=B('omokWinsHard')||0;return e||h?`AI 상대 ${e+h}승`+(h?` (보통 ${h}승)`:''):null},
   'air-hockey':()=>{const v=B('hockeyWins');return v?`AI 상대 ${n(v)}승`:null},
   'gugudan-balloon':()=>{const v=B('gugudanBest'),d=B('gugudanStamps');return v?`최고 ${n(v)}점`+(d?` · 도장 ${d}개`:''):null},
-  'tick-clock':()=>{const v=B('clockStarTotal');return v?`별 ${v}개 / 15개`:null}};
+  'tick-clock':()=>{const v=B('clockStarTotal');return v?`별 ${v}개 / 15개`:null},
+  'coin-shop':()=>{const v=B('coinStarTotal');return v?`별 ${v}개 / 15개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

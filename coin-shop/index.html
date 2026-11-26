@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>동전 가게</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div id="app">
+  <div class="top"><button class="pill" id="menuBtn">← 단계</button><div class="stg" id="stgName"></div><span style="width:70px"></span></div>
+  <div class="dots" id="dots"></div>
+  <div class="scene"><div class="cust" id="cust">🐰</div><div class="bubble" id="bubble"></div><div class="items" id="items"></div></div>
+  <div class="tray"><div class="tl"><span id="trayLabel">낸 돈</span><b id="trayTotal"></b></div><div class="tc" id="tray"></div></div>
+  <div class="wallet" id="wallet"></div>
+  <div class="acts"><button class="sub" id="clearBtn">모두 빼기</button><button class="btn" id="payBtn">다 냈어요!</button></div>
+</div>
+<div class="fb" id="fb" hidden><h3 id="fbTitle"></h3><p id="fbText"></p><button class="btn" id="nextBtn">다음 손님</button></div>
+
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>동전 가게</h1>
+  <p>손님이 사는 물건값을 딱 맞게 내요.<br>나중엔 가게 주인이 되어 거스름돈도 줘요!</p>
+  <div class="stages" id="stages"></div>
+  <p class="small"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+
+<div class="overlay" id="endOv" hidden><div class="card">
+  <div class="stars" id="eStars"></div>
+  <h1 id="eTitle"></h1>
+  <p id="eTxt" style="white-space:pre-line"></p>
+  <button class="btn" id="nextStageBtn">다음 단계</button>
+  <div class="row"><button class="sub" id="againBtn">다시 하기</button><button class="sub" id="pickBtn">단계 고르기</button></div>
+</div></div>
+
+<script src="game.js"></script>
+</body></html>

@@ -20,6 +20,7 @@
 | 에어하키 | 대전 (AI·2인) | [`/air-hockey/`](./air-hockey/) |
 | 구구단 풍선 | 구구단 학습 (2학년) | [`/gugudan-balloon/`](./gugudan-balloon/) |
 | 똑딱 시계 | 시계 보기·시간 계산 (2~3학년) | [`/tick-clock/`](./tick-clock/) |
+| 동전 가게 | 돈 계산·거스름돈 (2~3학년) | [`/coin-shop/`](./coin-shop/) |
 
 ## 플레이
 
@@ -33,9 +34,26 @@ GitHub Pages: https://changbaebang.github.io/games/
 
 ## 새 게임 추가하기
 
-1. `게임이름/index.html` 폴더를 만듭니다.
+1. `게임이름/` 폴더를 만들고, 파일을 역할별로 나눕니다.
+
+   | 파일 | 내용 |
+   |---|---|
+   | `index.html` | 화면 뼈대(마크업)만. `style.css`, `game.js`를 불러옴 |
+   | `style.css` | 모양 |
+   | `game.js` | 게임 동작. 시작할 때 `data.json`을 `fetch`로 읽음 |
+   | `data.json` | 단계, 문제 범위, 물건·손님 목록, 칭찬 문구처럼 자주 바꾸는 내용 |
+
+   내용(단계 난이도, 문구 등)만 바꿀 때는 `data.json`만 고치면 됩니다.
 2. 루트 `index.html`의 `<main class="grid">` 안에 카드(`<a class="game">`)를 하나 추가합니다.
 3. 게임 `<head>`에 `<script src="../common/arcade.js"></script>`를 넣고, 효과음은 `Arcade.play('coin')`, 기록은 `Arcade.record('키', 값)`으로 저장합니다.
-4. 루트 `index.html` 아래쪽 `REC` 표에 기록 표시 방법을, `sw.js`의 `PRECACHE`에 새 폴더를 추가하고 `VERSION`을 올립니다.
+4. 루트 `index.html` 아래쪽 `REC` 표에 기록 표시 방법을, `sw.js`의 `PRECACHE`에 새 폴더와 그 안의 파일들을 추가하고 `VERSION`을 올립니다.
 
-각 게임은 외부 빌드 없이 HTML 파일 하나로 동작합니다. (블록 헌터는 three.js를 CDN에서 불러옵니다.)
+### 컴퓨터에서 열어 보기
+
+`data.json`을 `fetch`로 읽기 때문에 파일을 더블클릭해서(`file://`) 열면 데이터를 못 불러옵니다. 저장소 폴더에서 아래처럼 웹 서버를 띄우고 http://localhost:8000 으로 여세요.
+
+```
+python3 -m http.server 8000
+```
+
+동전 가게부터 이 구조를 따릅니다. 그 전에 만든 게임은 HTML 파일 하나로 되어 있어요. (블록 헌터는 three.js를 CDN에서 불러옵니다.)

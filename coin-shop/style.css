@@ -1,0 +1,86 @@
+/* VOICE: 동네 구멍가게, 손님이 줄 서는 정겨운 소란
+   IDEA: 동물 손님에게 물건값을 딱 맞게 내고, 주인이 되어 거스름돈도 줘요
+   PICTURE: 줄무늬 차양 아래 계산대. 위에는 손님과 물건, 가운데 돈 접시, 아래 지갑
+   COLOUR and TYPE: 차양 빨강·크림 줄무늬, 나무 계산대, 은색·구리색 동전 / Jua
+   LAYOUT: 손님·물건 → 돈 접시 → 지갑 동전 → 버튼 (가로 화면은 손님이 왼쪽) */
+:root{color-scheme:light;--ink:#3a2c20;--mute:#7a6a58;--red:#e2574c;--green:#2fae5a;--wood:#c98a4a}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#fdf3e3;font-family:'Jua',system-ui,sans-serif;color:var(--ink);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;word-break:keep-all}
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:34px;background:repeating-linear-gradient(90deg,#e2574c 0 34px,#fff7ea 34px 68px);border-bottom:4px solid #b8443a;border-radius:0 0 18px 18px;z-index:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid #2f7de1;outline-offset:3px}
+#app{position:fixed;inset:0;margin:0 auto;max-width:760px;display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto auto;grid-template-areas:"top" "dots" "scene" "tray" "wallet" "acts";gap:8px;padding:max(44px,calc(env(safe-area-inset-top) + 40px)) max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));z-index:1}
+.top{grid-area:top;display:flex;align-items:center;gap:8px}
+.top .stg{flex:1;text-align:center;font-size:18px;color:var(--mute)}
+.pill{border:0;border-radius:12px;background:#fff;box-shadow:0 3px 0 #ead6b8;padding:6px 12px;min-height:40px;font-size:16px}
+.dots{grid-area:dots;display:flex;justify-content:center;gap:7px}
+.dots i{width:13px;height:13px;border-radius:50%;background:#ecdcc0}
+.dots i.o{background:var(--green)}.dots i.f{background:#ffc21a}.dots i.x{background:var(--red)}.dots i.now{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--wood)}
+.scene{grid-area:scene;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:6px 12px;align-items:center;background:#fff;border-radius:20px;box-shadow:0 5px 0 #ead6b8;padding:12px 14px}
+.cust{grid-row:1/3;font-size:64px;line-height:1;animation:hop .5s ease-out}
+@keyframes hop{0%{transform:translateY(16px);opacity:0}60%{transform:translateY(-6px)}100%{transform:none;opacity:1}}
+.bubble{background:#fdf3e3;border-radius:14px;padding:8px 12px;font-size:clamp(19px,5vw,24px);line-height:1.3;position:relative}
+.bubble::before{content:"";position:absolute;left:-9px;top:14px;border:6px solid transparent;border-right:9px solid #fdf3e3;border-left:0}
+.items{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.item{display:flex;align-items:center;gap:6px;background:#fff7ea;border:2px dashed #e6c99a;border-radius:14px;padding:4px 10px}
+.item .emo{font-size:34px;line-height:1}
+.price{font-size:clamp(22px,6vw,28px);color:var(--red)}
+.got{display:flex;align-items:center;gap:6px;font-size:17px;color:var(--mute)}
+.tray{grid-area:tray;background:#e9b46a;border-radius:20px;box-shadow:inset 0 0 0 6px #c98a4a,0 5px 0 #a8692e;padding:10px 14px 12px;display:flex;flex-direction:column;min-height:110px}
+.tl{display:flex;justify-content:space-between;align-items:baseline;color:#5a3a1a;font-size:19px;padding:0 2px 6px}
+.tl b{font-weight:400;font-size:24px;color:#3a2c20}
+.tc{flex:1;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;overflow:auto;background:rgba(255,255,255,.35);border-radius:14px;padding:8px;min-height:60px}
+.tc:empty::after{content:"아래 지갑에서 돈을 눌러 올려요";color:#8a6a40;font-size:16px;margin:auto}
+.wallet{grid-area:wallet;display:flex;justify-content:center;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.wbtn{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:15px;color:var(--mute)}
+.wbtn:active .coin{transform:translateY(3px) scale(.96)}
+.coin{display:grid;place-items:center;border-radius:50%;color:#4a3a20;box-shadow:inset 0 -3px 0 rgba(0,0,0,.14),0 3px 0 rgba(0,0,0,.2);font-size:16px;line-height:1;flex:none;border:0}
+.c10{width:46px;height:46px;background:radial-gradient(circle at 35% 30%,#f6cf98,#c8823e)}
+.c50{width:50px;height:50px;background:radial-gradient(circle at 35% 30%,#fbfcfd,#b4bdc8)}
+.c100{width:54px;height:54px;background:radial-gradient(circle at 35% 30%,#fbfcfd,#a6b0bd);outline:2px dashed rgba(80,90,110,.35);outline-offset:-6px}
+.c500{width:62px;height:62px;background:radial-gradient(circle at 35% 30%,#fffdf2,#b9b39a);font-size:18px}
+.c1000{width:84px;height:46px;border-radius:9px;background:linear-gradient(135deg,#d3f0f8,#7fc4dc);color:#1d4a5a;font-size:17px}
+.tc .coin{transform:scale(.82);margin:-4px}
+.tc .coin.new{animation:drop .18s ease-out}
+.tc .coin.c1000{margin:-4px -7px}
+@keyframes drop{from{transform:translateY(-14px) scale(.82);opacity:.3}}
+.acts{grid-area:acts;display:flex;gap:10px;justify-content:center}
+.btn{border:0;border-radius:14px;padding:12px 30px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;min-height:56px;font-size:22px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c79400}
+.btn:disabled{opacity:.45;transform:none}
+.sub{border:0;border-radius:12px;padding:9px 16px;background:#f3e6cf;min-height:48px;font-size:17px}
+.fb{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:760px;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -8px 30px rgba(80,50,10,.2);padding:14px 18px max(16px,env(safe-area-inset-bottom));text-align:center;z-index:5;border-top:7px solid var(--green);animation:up .18s ease-out}
+.fb.bad{border-top-color:var(--red)}.fb.mid{border-top-color:#ffc21a}
+.fb h3{margin:0;font-size:28px;font-weight:400;color:var(--green)}
+.fb.bad h3{color:var(--red)}.fb.mid h3{color:#c98a00}
+.fb p{margin:6px auto 12px;font-size:18px;line-height:1.5;max-width:34em}
+.fb p span{display:block}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+[hidden]{display:none!important}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(90,50,20,.35);z-index:10;padding:12px}
+.card{background:#fffdf7;border-radius:22px;padding:20px;max-width:440px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 var(--red);touch-action:pan-y}
+.card h1{font-size:42px;margin:0 0 4px;font-weight:400;color:var(--red);line-height:1.1}
+.card p{margin:4px 0 12px;font-size:17px;color:var(--mute)}
+.stages{display:grid;gap:9px;margin:10px 0 4px}
+.stage{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:10px;text-align:left;border:0;border-radius:16px;background:#fff;box-shadow:0 4px 0 #ecd8b5;padding:10px 12px;min-height:64px}
+.stage:active{transform:translateY(2px)}
+.stage .no{width:40px;height:40px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-size:20px}
+.stage .nm{font-size:20px;line-height:1.15}
+.stage .nm small{display:block;font-size:14px;color:var(--mute)}
+.stage .st{font-size:20px;color:#ffc21a;letter-spacing:1px;text-shadow:0 2px 0 #d99a00}
+.stage .st .off{color:#e8dcc6;text-shadow:none}
+.stage.next{box-shadow:0 4px 0 #ecd8b5,0 0 0 3px #2f7de1}
+.tag3{display:inline-block;font-size:12px;background:#dfeeff;color:#2f6fc0;border-radius:6px;padding:0 6px;margin-left:4px;vertical-align:2px}
+.stars{font-size:48px;line-height:1;color:#ffc21a;letter-spacing:4px;text-shadow:0 3px 0 #d99a00;margin:4px 0}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.small{font-size:15px!important;margin:14px 0 0!important}
+.small a{color:inherit}
+@media (max-width:400px){.wallet{gap:6px}.c1000{width:72px}}
+@media (max-height:700px){.wbtn span{display:none}.cust{font-size:50px}.scene{padding:8px 12px}}
+@media (min-aspect-ratio:5/4) and (max-height:760px){
+  #app{max-width:1100px;grid-template-columns:1fr 1.15fr;grid-template-rows:auto auto 1fr auto auto;grid-template-areas:"top top" "scene dots" "scene tray" "scene wallet" "scene acts"}
+  .scene{grid-template-columns:1fr;grid-template-rows:auto auto auto;justify-items:center;text-align:center;align-content:center}
+  .cust{grid-row:auto;font-size:84px}.bubble::before{display:none}.items{justify-content:center}
+  .fb{left:auto;right:0;margin:0;width:54%;max-width:none;border-radius:22px 0 0 0}
+}
+.loaderr{background:#fff1e8;color:#c0502a;border-radius:14px;padding:12px;font-size:16px;line-height:1.5}
