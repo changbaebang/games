@@ -138,12 +138,13 @@
   function boot(fn, url) {
     url = url || 'data.json';
     var box = null;
-    function fail(err) {
+    function fail(err, code) {
       if (!box) {
         box = document.createElement('div');
         box.style.cssText = 'position:fixed;inset:0;z-index:99;display:grid;place-items:center;background:rgba(10,14,30,.85);color:#fff;font:17px/1.5 Jua,system-ui,sans-serif;text-align:center;padding:24px';
         box.innerHTML = '<div><p style="font-size:22px;margin:0 0 8px">게임 데이터를 불러오지 못했어요</p><p style="margin:0 0 16px;opacity:.8">인터넷 연결을 확인하고 다시 시도해 주세요.</p><button type="button" style="font:inherit;font-size:19px;border:0;border-radius:12px;padding:10px 24px;background:#ffcf3f;color:#3b2a00;cursor:pointer">다시 시도</button></div>';
-        box.querySelector('button').onclick = function () { box.remove(); box = null; load(); };
+        if (code) box.querySelector('p+p').textContent = '새 버전으로 바뀌는 중일 수 있어요. 다시 시도를 눌러 주세요.';
+        box.querySelector('button').onclick = function () { if (code) { location.reload(); return; } box.remove(); box = null; load(); };
         document.body.appendChild(box);
       }
       if (window.console) console.error('data.json', err);
@@ -151,7 +152,7 @@
     function load() {
       fetch(url, { cache: 'no-cache' })
         .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-        .then(function (D) { try { fn(D); } catch (e) { fail(e); } }, fail);
+        .then(function (D) { try { fn(D); } catch (e) { fail(e, true); } }, function (e) { fail(e); });
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load); else load();
   }
