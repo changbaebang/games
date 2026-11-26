@@ -430,8 +430,21 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>파닉스 팝</h2><p>알파벳 소리를 듣고 첫소리·짧은 모음·끝소리를 찾아요. cat, dog, sun 같은 단어를 읽고 글자 카드로 만들어요. 6단계.</p>
       <div class="tags"><span>영어 파닉스</span><span>🔊 발음 듣기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./science-lab/" style="--c:#6cc08a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#eef6e6"/>
+      <rect x="18" y="22" width="132" height="156" rx="14" fill="#fff" stroke="#cfe2c0" stroke-width="3"/>
+      <circle cx="84" cy="62" r="20" fill="#fff3a0" stroke="#2b2f45" stroke-width="3"/><rect x="74" y="80" width="20" height="12" fill="#b8bcc8" stroke="#2b2f45" stroke-width="2"/>
+      <path d="M74 90H40V150H60M94 90H128V150H110" fill="none" stroke="#d9452b" stroke-width="4"/><rect x="60" y="138" width="50" height="24" rx="5" fill="#ffcf3f" stroke="#2b2f45" stroke-width="3"/>
+      <rect x="166" y="22" width="136" height="74" rx="14" fill="#141a33"/><circle cx="160" cy="59" r="26" fill="#ffcf3f"/>
+      <circle cx="200" cy="59" r="5" fill="#a9a29a"/><circle cx="218" cy="59" r="7" fill="#e8c37a"/><circle cx="238" cy="59" r="7" fill="#4f8fe0"/><circle cx="262" cy="59" r="12" fill="#d8a77a"/><circle cx="288" cy="59" r="8" fill="#8fd6dc"/>
+      <text x="170" y="160" font-size="48">🦋</text><text x="236" y="160" font-size="48">🧲</text>
+    </svg>
+    <div class="info"><h2>과학 탐험대</h2><p>동물 분류, 나비·개구리·강낭콩의 한살이, 고체·액체·기체와 상태 변화, 자석, 전기 회로, 태양계 행성 순서까지. 6단계.</p>
+      <div class="tags"><span>과학</span><span>3~5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 27개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 28개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -462,7 +475,8 @@ const REC={
   'unit-quest':()=>{const v=B('unitStarTotal');return v?`별 ${v}개 / 18개`:null},
   'area-farm':()=>{const v=B('areaStarTotal');return v?`별 ${v}개 / 18개`:null},
   'graph-town':()=>{const v=B('graphStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'phonics-pop':()=>{const v=B('phonicsStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'phonics-pop':()=>{const v=B('phonicsStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'science-lab':()=>{const v=B('scienceStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});
