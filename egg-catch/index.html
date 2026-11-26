@@ -4,6 +4,7 @@
 <title>달걀 받기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
 <style>
 /* VOICE: 시골 닭장의 소동, 다급하고 웃김
    IDEA: 나무 헛간 안, 횃대 위를 걷는 닭들
@@ -40,6 +41,7 @@ canvas{display:block;box-shadow:0 0 0 4px #4a1a12,0 20px 60px rgba(0,0,0,.4)}
 <div class="overlay" id="endOv" hidden><div class="card"><h1>달걀이 다 깨졌어요</h1><div class="big" id="eScore">0</div><p id="eTxt"></p><button class="btn" id="againBtn">다시 하기</button></div></div>
 <script>
 {
+const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2;
 const GW=480,GH=760,GROUND=700,PERCH=150;let S=1,DPR=1;
 function resize(){DPR=Math.min(devicePixelRatio||1,2);S=Math.min(innerWidth/GW,innerHeight/GH);cv.style.width=GW*S+'px';cv.style.height=GH*S+'px';cv.width=Math.round(GW*S*DPR);cv.height=Math.round(GH*S*DPR)}
@@ -54,23 +56,23 @@ function layEgg(h){const r=Math.random(),k=r<.07?'gold':r<.11&&lives<5?'heart':r
   eggs.push({x:h.x,y:PERCH+18,vy:20,k,rot:0,vr:(Math.random()-.5)*3})}
 function update(dt){
   T+=dt;const lvl=Math.min(1,T/150);
-  if(hens.length<2+Math.floor(T/40)&&hens.length<5){hens.push(mkHen());pop(GW/2,PERCH-60,'닭이 늘었다!','#ffe066')}
+  if(hens.length<2+Math.floor(T/40)&&hens.length<5){hens.push(mkHen());pop(GW/2,PERCH-60,'닭이 늘었다!','#ffe066');snd('alert')}
   for(const h of hens){h.ph+=dt*8;if(h.wob>0){h.wob-=dt;if(h.wob<=0){layEgg(h);h.lay=Math.max(.45,(2.4-lvl*1.6)*(.6+Math.random()*.8))*hens.length/2}continue}
     h.x+=h.dir*h.spd*(1+lvl)*dt;if(h.x<40||h.x>GW-40){h.dir*=-1;h.x=Math.max(40,Math.min(GW-40,h.x))}if(Math.random()<dt*.4)h.dir*=-1;
-    h.lay-=dt;if(h.lay<=0)h.wob=Math.max(.22,.5-lvl*.25)}
+    h.lay-=dt;if(h.lay<=0){h.wob=Math.max(.22,.5-lvl*.25);snd('cluck')}}
   if(keys.ArrowLeft||keys.KeyA)basket.x-=560*dt;if(keys.ArrowRight||keys.KeyD)basket.x+=560*dt;basket.x=Math.max(basket.w/2,Math.min(GW-basket.w/2,basket.x));
   const g=380+lvl*420;
   for(const e of eggs){e.vy+=g*dt;e.y+=e.vy*dt;e.rot+=e.vr*dt;
     if(!e.done&&e.y>GROUND-58&&e.y<GROUND-30&&Math.abs(e.x-basket.x)<basket.w/2+4){e.done=true;
-      if(e.k==='rot'){lives--;streak=0;shake=.3;pop(e.x,e.y-30,'으악! 썩은 알','#c8e070');for(let i=0;i<10;i++)fx.push({x:e.x,y:GROUND-50,vx:(Math.random()-.5)*240,vy:-Math.random()*240,t:.6,c:'#9aa84a',r:4})}
-      else{streak++;const pts=(e.k==='gold'?50:10)*(1+Math.floor(streak/10));score+=pts;caught++;basket.fill=Math.min(6,basket.fill+1);basket.bump=.15;
+      if(e.k==='rot'){lives--;streak=0;shake=.3;snd('splat');snd('hurt');pop(e.x,e.y-30,'으악! 썩은 알','#c8e070');for(let i=0;i<10;i++)fx.push({x:e.x,y:GROUND-50,vx:(Math.random()-.5)*240,vy:-Math.random()*240,t:.6,c:'#9aa84a',r:4})}
+      else{streak++;snd(e.k==='gold'||e.k==='heart'?'power':'coin');const pts=(e.k==='gold'?50:10)*(1+Math.floor(streak/10));score+=pts;caught++;basket.fill=Math.min(6,basket.fill+1);basket.bump=.15;
         if(e.k==='heart'){lives=Math.min(5,lives+1);pop(e.x,e.y-30,'하트 +1','#ff8fb0')}else pop(e.x,e.y-30,'+'+pts,e.k==='gold'?'#ffd23f':'#fff');
         if(streak%10===0)pop(GW/2,GH/2-40,`${streak}개 연속! 점수 x${1+streak/10}`,'#ffe066')}}
-    if(!e.done&&e.y>=GROUND-6){e.done=true;if(e.k!=='rot'){lives--;streak=0;shake=.25;splats.push({x:e.x,t:3,k:e.k});pop(e.x,GROUND-40,'깨졌다!','#ffb3a0')}else splats.push({x:e.x,t:2,k:'rot'})}}
+    if(!e.done&&e.y>=GROUND-6){e.done=true;if(e.k!=='rot'){lives--;streak=0;shake=.25;snd('crack');splats.push({x:e.x,t:3,k:e.k});pop(e.x,GROUND-40,'깨졌다!','#ffb3a0')}else splats.push({x:e.x,t:2,k:'rot'})}}
   eggs=eggs.filter(e=>!e.done);
   for(const s of splats)s.t-=dt;splats=splats.filter(s=>s.t>0);
   if(basket.fill>=6){basket.fill=0;score+=30;pop(basket.x,GROUND-90,'바구니 가득! +30','#7dffb0')}
-  if(lives<=0){lives=0;st='end';if(score>best){best=score;try{localStorage.setItem('eggCatchBest',best)}catch(e){}}
+  if(lives<=0){lives=0;st='end';snd('lose');if(score>best){best=score;try{localStorage.setItem('eggCatchBest',best)}catch(e){}}
     $('eScore').textContent=score.toLocaleString();$('eTxt').textContent=`받은 달걀 ${caught}개 · ${Math.floor(T)}초 버팀 · 최고 ${best.toLocaleString()}`;$('endOv').hidden=false;$('againBtn').focus()}
 }
 const keys={};addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('Arrow'))e.preventDefault()});addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false});

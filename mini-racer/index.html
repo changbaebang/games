@@ -4,6 +4,7 @@
 <title>미니 레이서</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
 <style>
 /* VOICE: 장난감 자동차 경주, 빠르고 유쾌
    IDEA: 위에서 내려다본 장난감 서킷 매트
@@ -49,6 +50,7 @@ tr.me td{color:#e04030}
 <div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">완주!</h1><table id="res"></table><p id="eTxt"></p><button class="btn" id="againBtn">다시 경주</button></div></div>
 <script>
 {
+const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,MOBILE=matchMedia('(pointer:coarse)').matches;
 let W,H,DPR,Z;
 function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';Z=Math.max(.55,Math.min(1.2,Math.min(W,H)/620))}
@@ -79,7 +81,7 @@ function physics(c,dt,thr,steer){
   const [idx,dist]=nearest(c.x,c.y,c.idx);
   // lap logic
   if(idx>N*.4&&idx<N*.6)c.half=true;
-  if(c.half&&c.idx>N*.9&&idx<N*.1){c.lap++;c.half=false;const lt=raceT-c.lapStart;c.lapStart=raceT;if(lt<c.best)c.best=lt;if(c.lap>=LAPS&&!c.done){c.done=true;c.t=raceT;finishOrder.push(c)}}
+  if(c.half&&c.idx>N*.9&&idx<N*.1){c.lap++;c.half=false;if(c===me&&c.lap<LAPS)snd('level');const lt=raceT-c.lapStart;c.lapStart=raceT;if(lt<c.best)c.best=lt;if(c.lap>=LAPS&&!c.done){c.done=true;c.t=raceT;finishOrder.push(c)}}
   c.idx=idx;c.prog=c.lap*N+idx-(!c.half&&idx>N/2?N:0);
   const off=dist>HALF+4,fx=Math.cos(c.a),fy=Math.sin(c.a);let sp=c.vx*fx+c.vy*fy;let lat=-c.vx*fy+c.vy*fx;
   const maxS=(off?190:440)*c.skill;
@@ -100,7 +102,7 @@ function aiDrive(c){const look=Math.round(4+Math.abs(c.sp||0)/55),j=(c.idx+look)
   const steer=Math.max(-1,Math.min(1,d*3.2));let cmax=0;for(let k=4;k<26;k+=3)cmax=Math.max(cmax,curv[(c.idx+k)%N]);
   const target=(440-cmax*520)*c.skill;return [(c.sp||0)>target+30?-.6:1,steer]}
 function update(dt){
-  if(count>0){count-=dt;if(count<=0)count=0;else return}
+  if(count>0){const before=Math.ceil(count);count-=dt;if(count<=0){count=0;snd('go')}else{if(Math.ceil(count)!==before)snd('count');return}}
   raceT+=dt;
   for(const c of cars){let thr,steer;
     if(c.ai||c.done){[thr,steer]=aiDrive(c);if(c.done&&!c.ai)thr*=.6}
@@ -108,12 +110,12 @@ function update(dt){
       steer=(R?1:0)-(L?1:0);thr=br?-1:(keys.ArrowUp||keys.KeyW||MOBILE)?1:0}
     c.steer+=(steer-c.steer)*Math.min(1,dt*10);physics(c,dt,thr,c.steer)}
   for(let i=0;i<cars.length;i++)for(let j=i+1;j<cars.length;j++){const a=cars[i],b=cars[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
-    if(d<30&&d>.01){const p=(30-d)/2,nx=dx/d,ny=dy/d;a.x-=nx*p;a.y-=ny*p;b.x+=nx*p;b.y+=ny*p;const rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rv<0){a.vx+=nx*rv*.5;a.vy+=ny*rv*.5;b.vx-=nx*rv*.5;b.vy-=ny*rv*.5;if(a===me||b===me)shake=Math.min(.3,-rv/300)}}}
+    if(d<30&&d>.01){const p=(30-d)/2,nx=dx/d,ny=dy/d;a.x-=nx*p;a.y-=ny*p;b.x+=nx*p;b.y+=ny*p;const rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rv<0){a.vx+=nx*rv*.5;a.vy+=ny*rv*.5;b.vx-=nx*rv*.5;b.vy-=ny*rv*.5;if(a===me||b===me){shake=Math.min(.3,-rv/300);snd('thud')}}}}
   if(me.done&&st==='play'){st='fin';setTimeout(showEnd,1600)}
 }
 function rank(){return [...cars].sort((a,b)=>a.done&&b.done?a.t-b.t:a.done?-1:b.done?1:b.prog-a.prog)}
 const fmt=t=>t>=1e8?'-':`${t/60|0}:${(t%60).toFixed(2).padStart(5,'0')}`;
-function showEnd(){const r=rank(),pos=r.indexOf(me)+1;$('eTitle').textContent=pos===1?'우승!':`${pos}위 완주`;$('eTitle').style.color=pos===1?'#e0a100':'#e04030';
+function showEnd(){const r=rank(),pos=r.indexOf(me)+1;snd(pos===1?'win':pos===2?'level':'lose');if(window.Arcade&&me.done)Arcade.record('racerBest',Math.round(me.t*100)/100,true);$('eTitle').textContent=pos===1?'우승!':`${pos}위 완주`;$('eTitle').style.color=pos===1?'#e0a100':'#e04030';
   const tb=$('res');tb.innerHTML='';r.forEach((c,i)=>{const tr=document.createElement('tr');if(c===me)tr.className='me';
     for(const v of [`${i+1}위`,c.name,c.done?fmt(c.t):`${c.lap}/${LAPS}바퀴`]){const td=document.createElement('td');td.textContent=v;tr.append(td)}tb.append(tr)});
   $('eTxt').textContent=`내 최고 랩 ${fmt(me.best)}`;$('endOv').hidden=false;$('againBtn').focus()}

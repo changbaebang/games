@@ -4,6 +4,7 @@
 <title>블록 스택</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
 <style>
 /* VOICE: 깔끔하고 손맛 있는 퍼즐
    IDEA: 사탕처럼 반짝이는 블록이 쌓이는 유리 상자
@@ -53,6 +54,7 @@ canvas{display:block;position:fixed;inset:0}
 
 <script>
 {
+const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d');
 const COLS=10,ROWS=20,MOBILE=matchMedia('(pointer:coarse)').matches;
 const COL={I:'#3fd6e8',O:'#ffd23f',T:'#b06bff',S:'#5fd35a',Z:'#ff5a5f',J:'#4a7dff',L:'#ff9a3d'};
@@ -79,28 +81,28 @@ function spawn(t){cur=mk(t||queue.shift());while(queue.length<3)queue.push(nextT
   if(collide(cur.cells,cur.x,cur.y))gameOver()}
 function newGame(){board=newBoard();bag=[];queue=[];for(let i=0;i<3;i++)queue.push(nextType());hold=null;canHold=true;score=0;lines=0;level=1;combo=-1;clearing=null;fx=[];pops=[];spawn()}
 const gravity=()=>Math.max(.04,.85*Math.pow(.82,level-1));
-function move(dx,dy){if(!cur||clearing)return false;if(!collide(cur.cells,cur.x+dx,cur.y+dy)){cur.x+=dx;cur.y+=dy;if(dx&&lockN<15){lockT=0;lockN++}return true}return false}
+function move(dx,dy){if(!cur||clearing)return false;if(!collide(cur.cells,cur.x+dx,cur.y+dy)){cur.x+=dx;cur.y+=dy;if(dx)snd('tick');if(dx&&lockN<15){lockT=0;lockN++}return true}return false}
 function rotate(dir){if(!cur||clearing||cur.t==='O')return;const n=cur.t==='I'?4:3;
   const r=cur.cells.map(([x,y])=>dir>0?[n-1-y,x]:[y,n-1-x]);
-  for(const [kx,ky] of KICK)if(!collide(r,cur.x+kx,cur.y+ky)){cur.cells=r;cur.x+=kx;cur.y+=ky;if(lockN<15){lockT=0;lockN++}return}}
+  for(const [kx,ky] of KICK)if(!collide(r,cur.x+kx,cur.y+ky)){cur.cells=r;cur.x+=kx;cur.y+=ky;if(lockN<15){lockT=0;lockN++}snd('swap');return}}
 function hardDrop(){if(!cur||clearing)return;let n=0;const x0=cur.x;while(move(0,1))n++;score+=n*2;
   for(const [cx,cy] of cur.cells)for(let k=0;k<5;k++)fx.push({x:L.bx+(cur.x+cx+.5)*L.c,y:L.by+(cur.y+cy-k*.7)*L.c,vx:0,vy:0,t:.18,c:COL[cur.t],r:L.c*.8,trail:true});
-  shakeY=Math.min(6,2+n*.3);lock()}
+  shakeY=Math.min(6,2+n*.3);snd('thud');lock()}
 function softDrop(){if(move(0,1)){score+=1;fallT=0;return true}return false}
-function doHold(){if(!cur||clearing||!canHold)return;const t=cur.t;if(hold){spawn(hold)}else spawn();hold=t;canHold=false}
+function doHold(){if(!cur||clearing||!canHold)return;const t=cur.t;if(hold){spawn(hold)}else spawn();hold=t;canHold=false;snd('select')}
 function lock(){
   for(const [cx,cy] of cur.cells){const Y=cur.y+cy;if(Y<0){gameOver();return}board[Y][cur.x+cx]=cur.t}
-  canHold=true;const full=[];for(let y=0;y<ROWS;y++)if(board[y].every(Boolean))full.push(y);
+  canHold=true;snd('place');const full=[];for(let y=0;y<ROWS;y++)if(board[y].every(Boolean))full.push(y);
   if(full.length){combo++;const pts=[0,100,300,500,800][full.length]*level+(combo>0?50*combo*level:0);score+=pts;
-    clearing={rows:full,t:.24};
+    clearing={rows:full,t:.24};snd('line',full.length);if(combo>0)snd('combo',combo);
     const msg=['','','2줄!','3줄!','4줄 클리어!'][full.length];if(msg)pop(msg,full.length===4?'#ffd23f':'#fff');if(combo>0)pop(`콤보 ${combo}`,'#7dffb0');
     for(const y of full)for(let x=0;x<COLS;x++)for(let k=0;k<2;k++)fx.push({x:L.bx+(x+.5)*L.c,y:L.by+(y+.5)*L.c,vx:(Math.random()-.5)*260,vy:(Math.random()-.8)*260,t:.6,c:COL[board[y][x]],r:L.c*.28});
     cur=null}
   else{combo=-1;spawn()}}
 function finishClear(){const rows=clearing.rows;for(const y of rows){board.splice(y,1);board.unshift(Array(COLS).fill(null))}
-  const before=level;lines+=rows.length;level=1+Math.floor(lines/10);if(level>before)pop('레벨 '+level,'#3fd6e8');clearing=null;spawn()}
+  const before=level;lines+=rows.length;level=1+Math.floor(lines/10);if(level>before){pop('레벨 '+level,'#3fd6e8');snd('level')}clearing=null;spawn()}
 function pop(t,c){pops.push({t,c,life:1.2,y:0})}
-function gameOver(){st='over';cur=null;if(score>best){best=score;try{localStorage.setItem('stackBest',best)}catch(e){}}
+function gameOver(){st='over';cur=null;snd('lose');if(score>best){best=score;try{localStorage.setItem('stackBest',best)}catch(e){}}
   $('fScore').textContent=score.toLocaleString();$('fTxt').textContent=`${lines}줄 · 레벨 ${level} · 최고 ${best.toLocaleString()}`;$('overOv').hidden=false;$('againBtn').focus()}
 
 // ---------- update

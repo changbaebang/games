@@ -4,6 +4,7 @@
 <title>성벽 수비대</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
 <style>
 /* VOICE: 아기자기한 판타지 전략, 차분하지만 긴장감
    IDEA: 보드게임 판처럼 생긴 초원 지도
@@ -67,6 +68,7 @@ canvas{display:block;position:fixed;inset:0}
 <div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">성이 무너졌다</h1><p id="eTxt"></p><button class="btn" id="againBtn">다시 하기</button></div></div>
 <script>
 {
+const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2;
 const TW={
   arrow:{n:'궁수탑',c:'#c98a3d',cost:50,rng:2.5,rate:.55,dmg:9},
@@ -99,36 +101,36 @@ function waveList(n){const L=[],add=(t,c)=>{for(let i=0;i<c;i++)L.push(t)};
   for(let i=L.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[L[i],L[j]]=[L[j],L[i]]}
   if(n%5===0)add('troll',n/5|0);return L}
 function startWave(){if(st!=='play'||wave>=20||(waveOn&&queue.length))return;if(waveOn&&nextBonus){gold+=nextBonus;pop(W/2,H-110,'+'+nextBonus+' 금화','#ffd23f')}
-  wave++;queue=waveList(wave);spawnT=0;waveOn=true;hud()}
+  wave++;queue=waveList(wave);spawnT=0;waveOn=true;snd('alert');hud()}
 function spawnEnemy(t){const b=EN[t],m=Math.pow(1+.3*(wave-1),1.25);enemies.push({t,hp:b.hp*m,max:b.hp*m,spd:b.spd,d:0,slow:0,r:b.r,gold:b.gold,ph:Math.random()*6})}
 let pops=[];function pop(x,y,t,c){pops.push({x,y,t,c,life:1})}
-function hurt(e,d){if(e.hp<=0)return;e.hp-=d;e.hit=.08;if(e.hp<=0){gold+=e.gold;const [x,y]=posAt(e.d);for(let i=0;i<6;i++)fx.push({k:'p',x,y,vx:(Math.random()-.5)*3,vy:(Math.random()-.5)*3,t:.4,c:EN[e.t].c});pop(OX+x*T,OY+y*T-10,'+'+e.gold,'#ffd23f');hud()}}
+function hurt(e,d){if(e.hp<=0)return;e.hp-=d;e.hit=.08;if(e.hp<=0){gold+=e.gold;snd('coin');const [x,y]=posAt(e.d);for(let i=0;i<6;i++)fx.push({k:'p',x,y,vx:(Math.random()-.5)*3,vy:(Math.random()-.5)*3,t:.4,c:EN[e.t].c});pop(OX+x*T,OY+y*T-10,'+'+e.gold,'#ffd23f');hud()}}
 function update(dt){
   if(waveOn&&queue.length){spawnT-=dt;if(spawnT<=0){spawnEnemy(queue.shift());spawnT=Math.max(.32,.85-wave*.02)*(queue[0]==='troll'?3:1);hud()}}
   for(const e of enemies){e.slow=Math.max(0,e.slow-dt);e.hit=Math.max(0,(e.hit||0)-dt);e.ph+=dt*8;e.d+=e.spd*(e.slow>0?.55:1)*dt;
-    if(e.d>=plen&&e.hp>0){e.hp=0;e.esc=true;lives-=e.t==='troll'?3:1;shake=.3;fx.push({k:'flash',t:.3});hud();if(lives<=0){lives=0;hud();end(false);return}}}
+    if(e.d>=plen&&e.hp>0){e.hp=0;e.esc=true;lives-=e.t==='troll'?3:1;shake=.3;snd('hurt');fx.push({k:'flash',t:.3});hud();if(lives<=0){lives=0;hud();end(false);return}}}
   enemies=enemies.filter(e=>e.hp>0);
   for(const tw of towers){const B=TW[tw.t],lv=tw.lv,rng=B.rng+.3*lv,rate=B.rate*Math.pow(.85,lv),dmg=B.dmg*UP[lv];tw.cd-=dt;tw.anim=Math.max(0,tw.anim-dt);
     if(tw.cd>0)continue;
     const inR=enemies.filter(e=>{const [x,y]=posAt(e.d);return Math.hypot(x-tw.x-.5,y-tw.y-.5)<=rng});if(!inR.length)continue;
     tw.cd=rate;tw.anim=.15;const tgt=inR.reduce((a,b)=>b.d>a.d?b:a);const [tx,ty]=posAt(tgt.d);tw.ang=Math.atan2(ty-tw.y-.5,tx-tw.x-.5);
-    if(tw.t==='arrow')shots.push({k:'arrow',x:tw.x+.5,y:tw.y+.3,tgt,dmg,v:10});
+    if(tw.t==='arrow')snd('shoot'),shots.push({k:'arrow',x:tw.x+.5,y:tw.y+.3,tgt,dmg,v:10});
     else if(tw.t==='cannon')shots.push({k:'ball',x:tw.x+.5,y:tw.y+.3,sx:tw.x+.5,sy:tw.y+.3,tx,ty,t:0,dur:Math.hypot(tx-tw.x,ty-tw.y)/6+.15,dmg,sp:B.splash+.15*lv});
-    else if(tw.t==='frost'){for(const e of inR){hurt(e,dmg);e.slow=1.6+.3*lv}fx.push({k:'ring',x:tw.x+.5,y:tw.y+.5,r:rng,t:.4})}
+    else if(tw.t==='frost'){snd('freeze');for(const e of inR){hurt(e,dmg);e.slow=1.6+.3*lv}fx.push({k:'ring',x:tw.x+.5,y:tw.y+.5,r:rng,t:.4})}
     else{let cur=tgt,hit=new Set(),pts=[[tw.x+.5,tw.y+.2]],d=dmg;
       for(let i=0;i<B.chain+lv&&cur;i++){hit.add(cur);const p=posAt(cur.d);pts.push(p);hurt(cur,d);d*=.8;
         let nx=null,nd=1.7;for(const e of enemies){if(hit.has(e)||e.hp<=0)continue;const q=posAt(e.d),dd=Math.hypot(q[0]-p[0],q[1]-p[1]);if(dd<nd){nd=dd;nx=e}}cur=nx}
-      fx.push({k:'zap',pts,t:.2})}}
+      fx.push({k:'zap',pts,t:.2});snd('zap')}}
   for(const s of shots){if(s.k==='arrow'){const [tx,ty]=s.tgt.hp>0?posAt(s.tgt.d):[s.lx??s.x,s.ly??s.y];s.lx=tx;s.ly=ty;const dx=tx-s.x,dy=ty-s.y,d=Math.hypot(dx,dy);s.a=Math.atan2(dy,dx);
       if(d<.15){s.done=true;if(s.tgt.hp>0)hurt(s.tgt,s.dmg)}else{const m=Math.min(d,s.v*dt);s.x+=dx/d*m;s.y+=dy/d*m}}
     else{s.t+=dt;const k=Math.min(1,s.t/s.dur);s.x=s.sx+(s.tx-s.sx)*k;s.y=s.sy+(s.ty-s.sy)*k-Math.sin(k*Math.PI)*.8;
-      if(k>=1){s.done=true;for(const e of enemies){const [x,y]=posAt(e.d);if(Math.hypot(x-s.tx,y-s.ty)<s.sp)hurt(e,s.dmg)}fx.push({k:'boom',x:s.tx,y:s.ty,r:s.sp,t:.35})}}}
+      if(k>=1){s.done=true;snd('boom');for(const e of enemies){const [x,y]=posAt(e.d);if(Math.hypot(x-s.tx,y-s.ty)<s.sp)hurt(e,s.dmg)}fx.push({k:'boom',x:s.tx,y:s.ty,r:s.sp,t:.35})}}}
   shots=shots.filter(s=>!s.done);
-  if(waveOn&&!queue.length&&!enemies.length){waveOn=false;gold+=10+wave*2;pop(W/2,H-110,`웨이브 ${wave} 방어! +${10+wave*2}`,'#fff');hud();if(wave>=20)end(true)}
+  if(waveOn&&!queue.length&&!enemies.length){waveOn=false;gold+=10+wave*2;snd('level');if(window.Arcade)Arcade.record('castleBest',wave);pop(W/2,H-110,`웨이브 ${wave} 방어! +${10+wave*2}`,'#fff');hud();if(wave>=20)end(true)}
   nextBonus=waveOn&&!queue.length?Math.max(0,Math.round(8+wave*1.5-enemies.length*.3)):0;
   if(waveOn&&!queue.length)hud();
 }
-function end(win){st='end';closeMenu();$('eTitle').textContent=win?'성을 지켜냈다!':'성이 무너졌다';$('eTitle').style.color=win?'#2f6bb0':'#c0392b';
+function end(win){st='end';closeMenu();snd(win?'win':'lose');$('eTitle').textContent=win?'성을 지켜냈다!':'성이 무너졌다';$('eTitle').style.color=win?'#2f6bb0':'#c0392b';
   $('eTxt').textContent=win?`20웨이브를 모두 막았어요. 남은 성 체력 ${lives}, 탑 ${towers.length}개.`:`웨이브 ${wave}에서 무너졌어요. 탑 배치를 바꿔 다시 도전해 보세요.`;$('endOv').hidden=false;$('againBtn').focus()}
 
 // ---------- menu
@@ -137,10 +139,10 @@ function openMenu(gx,gy,tw){sel={gx,gy,tw};menu.innerHTML='';
   const h=document.createElement('h3');const row=document.createElement('div');row.className='row';
   const mkBtn=(label,sub,c,dis,fn,cls)=>{const b=document.createElement('button');if(cls)b.className=cls;const t=document.createElement('span');
     if(c){const d=document.createElement('span');d.className='dot';d.style.setProperty('--c',c);t.append(d)}t.append(label);const i=document.createElement('i');i.textContent=sub;b.append(t,i);b.disabled=dis;b.onclick=e=>{e.stopPropagation();fn();closeMenu();hud()};row.append(b)};
-  if(!tw){h.textContent='탑 세우기';for(const k in TW){const B=TW[k];mkBtn(B.n,`금화 ${B.cost}`,B.c,gold<B.cost,()=>{gold-=B.cost;towers.push({t:k,x:gx,y:gy,lv:0,cd:0,anim:0,ang:-Math.PI/2,spent:B.cost})})}}
+  if(!tw){h.textContent='탑 세우기';for(const k in TW){const B=TW[k];mkBtn(B.n,`금화 ${B.cost}`,B.c,gold<B.cost,()=>{gold-=B.cost;snd('build');towers.push({t:k,x:gx,y:gy,lv:0,cd:0,anim:0,ang:-Math.PI/2,spent:B.cost})})}}
   else{const B=TW[tw.t];h.textContent=`${B.n} Lv ${tw.lv+1}`;
-    if(tw.lv<2){const c=UPC(tw.t)[tw.lv];mkBtn('강화',`금화 ${c}`,B.c,gold<c,()=>{gold-=c;tw.lv++;tw.spent+=c})}else mkBtn('최대 레벨','더 강화할 수 없어요',B.c,true,()=>{});
-    const ref=Math.round(tw.spent*.7);mkBtn('판매',`금화 +${ref}`,null,false,()=>{gold+=ref;towers.splice(towers.indexOf(tw),1)},'sell')}
+    if(tw.lv<2){const c=UPC(tw.t)[tw.lv];mkBtn('강화',`금화 ${c}`,B.c,gold<c,()=>{gold-=c;tw.lv++;tw.spent+=c;snd('power')})}else mkBtn('최대 레벨','더 강화할 수 없어요',B.c,true,()=>{});
+    const ref=Math.round(tw.spent*.7);mkBtn('판매',`금화 +${ref}`,null,false,()=>{gold+=ref;snd('coin');towers.splice(towers.indexOf(tw),1)},'sell')}
   menu.append(h,row);menu.hidden=false;
   const px=OX+(gx+.5)*T,py=OY+(gy+.5)*T,mw=236,mh=menu.offsetHeight||170;
   let left=Math.max(8,Math.min(W-mw-8,px-mw/2)),top=py+T*.7;if(top+mh>H-8)top=py-T*.7-mh;menu.style.left=left+'px';menu.style.top=Math.max(8,top)+'px'}

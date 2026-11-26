@@ -4,6 +4,7 @@
 <title>블록 헌터</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
 <style>
 /* VOICE: 경쾌하고 장난스러운 블록 놀이터
    IDEA: 장난감 블록으로 쌓은 미니 아레나
@@ -97,6 +98,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#87c8f0;font-family:'J
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 {
+const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const W=()=>innerWidth,H=()=>innerHeight,$=id=>document.getElementById(id);
 const tags=$('tags');
 const MOBILE=matchMedia('(pointer:coarse)').matches;
@@ -178,7 +180,7 @@ function spawn(type){
 function spawnWave(){
   const n=3+wave*2;
   for(let i=0;i<n;i++){const r=Math.random();spawn(wave>=3&&r<.12+wave*.03?'brute':wave>=2&&r<.45?'runner':'zombie')}
-  const b=$('banner');b.textContent='웨이브 '+wave;b.classList.remove('on');void b.offsetWidth;b.classList.add('on');
+  const b=$('banner');b.textContent='웨이브 '+wave;b.classList.remove('on');void b.offsetWidth;b.classList.add('on');if(wave>1)snd('level');
 }
 function pop(pos,text,cls,h=1){
   const v=new THREE.Vector3(pos.x,pos.y+3.1*h,pos.z).project(camera);if(v.z>1)return;
@@ -193,17 +195,17 @@ function burst(pos,color,n=10){
 function hurtMon(m,dmg,crit){
   m.hp-=dmg;m.flash=.18;const q=m.ch.g.position,p=P.g.position,dx=q.x-p.x,dz=q.z-p.z,d=Math.hypot(dx,dz)||1;
   const kb=(crit?13:8)/m.T.sc;m.kx=dx/d*kb;m.kz=dz/d*kb;
-  pop(q,crit?dmg+'!':dmg,crit?'crit':'',m.T.sc);
+  pop(q,crit?dmg+'!':dmg,crit?'crit':'',m.T.sc);snd(crit?'crit':'hit');
   if(m.state!=='chase'){m.state='chase';m.chaseT=8}
-  if(m.hp<=0){m.dead=true;m.die=.5;m.bar.remove();kills++;burst(q,m.T.c.head,m.T===TYPES.brute?16:10);shake=Math.max(shake,.15)}
+  if(m.hp<=0){m.dead=true;m.die=.5;m.bar.remove();kills++;snd('pop');burst(q,m.T.c.head,m.T===TYPES.brute?16:10);shake=Math.max(shake,.15)}
 }
 function hurtPlayer(dmg){
-  if(dead)return;pl.hp-=dmg;pl.lastHurt=time;shake=.3;pop(P.g.position,'-'+dmg,'hurt');
+  if(dead)return;pl.hp-=dmg;pl.lastHurt=time;shake=.3;snd('hurt');pop(P.g.position,'-'+dmg,'hurt');
   const v=$('vig');v.style.opacity=1;setTimeout(()=>v.style.opacity=pl.hp<30?.45:0,180);
-  if(pl.hp<=0){pl.hp=0;dead=true;$('deadTxt').textContent=`웨이브 ${wave}까지 버티고 몬스터 ${kills}마리를 처치했어요.`;$('deadOv').hidden=false;$('againBtn').focus()}
+  if(pl.hp<=0){pl.hp=0;dead=true;snd('lose');if(window.Arcade)Arcade.record('blockHunterBest',kills);$('deadTxt').textContent=`웨이브 ${wave}까지 버티고 몬스터 ${kills}마리를 처치했어요.`;$('deadOv').hidden=false;$('againBtn').focus()}
 }
 function attack(){
-  if(!started||dead||pl.atk>0)return;pl.atk=.32;pl.hit=false;
+  if(!started||dead||pl.atk>0)return;pl.atk=.32;pl.hit=false;snd('slash');
   let best=null,bd=5;const p=P.g.position;
   for(const m of mons){if(m.dead)continue;const q=m.ch.g.position,d=Math.hypot(q.x-p.x,q.z-p.z);if(d<bd){bd=d;best=q}}
   if(best)pl.face=Math.atan2(best.x-p.x,best.z-p.z);
@@ -220,7 +222,7 @@ const keys={},joy={x:0,y:0};
 addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='Space'){e.preventDefault();jump()}if(e.code==='KeyJ')attack()});
 addEventListener('keyup',e=>keys[e.code]=false);
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
-function jump(){if(started&&!dead&&P.g.position.y<=0.001)pl.vy=9.5}
+function jump(){if(started&&!dead&&P.g.position.y<=0.001){pl.vy=9.5;snd('jump')}}
 const cv=renderer.domElement;let drag=null;
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 const jb=$('joy'),kn=$('knob');let jid=null,jo={x:0,y:0};
@@ -285,7 +287,7 @@ function update(dt){
     const dx=p.x-q.x,dz=p.z-q.z,d=Math.hypot(dx,dz);
     m.dt-=dt;m.chaseT-=dt;m.cd-=dt;
     if(m.dt<=0){m.dt=.7+Math.random()*.6;
-      if(m.state==='wander'&&!dead&&d<T.aggro&&Math.random()<.5){m.state='chase';m.chaseT=5+Math.random()*6;pop(q,'!','alert',T.sc)}
+      if(m.state==='wander'&&!dead&&d<T.aggro&&Math.random()<.5){m.state='chase';m.chaseT=5+Math.random()*6;pop(q,'!','alert',T.sc);if(d<10)snd('alert')}
       else if(m.state==='chase'&&(dead||d>T.aggro+9||(m.chaseT<=0&&d>5&&Math.random()<.5))){m.state='wander';m.wt=0;pop(q,'?','alert',T.sc)}}
     let tx,tz,sp,moving=true;
     if(m.state==='chase'){tx=p.x;tz=p.z;sp=T.spd;

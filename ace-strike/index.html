@@ -4,6 +4,7 @@
 <title>에이스 스트라이크</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
 <style>
 /* VOICE: 오락실 세로 슈팅, 쨍하고 빠름
    IDEA: 1990년대 아케이드 기판 화면
@@ -71,6 +72,7 @@ canvas{display:block;box-shadow:0 0 0 3px #1c2c48,0 0 60px rgba(0,0,0,.6)}
 
 <script>
 {
+const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d');
 const GW=480,GH=720;let S=1,DPR=1;
 function resize(){DPR=Math.min(devicePixelRatio||1,2);S=Math.min(innerWidth/GW,innerHeight/GH);
@@ -83,7 +85,7 @@ let hi=0;try{hi=+localStorage.getItem('aceHi')||0}catch(e){}
 let ac=null,muted=false,noise=null,lastBoom=0;
 function initAudio(){try{if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();noise=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate);
   const d=noise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length)**2}ac.resume()}catch(e){}}
-function sfx(t,vol=.3){if(!ac||muted)return;const n=ac.currentTime;
+function sfx(t,vol=.3){if(window.Arcade){snd(t==='boom'?'boom':t==='up'?'power':'hit',vol>.45);return}if(!ac||muted)return;const n=ac.currentTime;
   if(t==='boom'){if(n-lastBoom<.06)return;lastBoom=n;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=noise;g.gain.value=vol;s.connect(g).connect(ac.destination);s.start();return}
   const o=ac.createOscillator(),g=ac.createGain();o.type='square';const up=t==='up';
   o.frequency.setValueAtTime(up?520:880,n);o.frequency.exponentialRampToValueAtTime(up?1300:110,n+.25);
@@ -149,7 +151,7 @@ const keys={};
 const diff=()=>1+(stage-1)*.35;
 function showBanner(a,b=''){banner={t:2.4,a,b}}
 function newGame(){P={x:GW/2,y:GH-110,lives:3,bombs:3,pow:1,inv:2.5,ft:0,alive:true,resp:0};score=0;stage=1;pb=[];eb=[];en=[];items=[];fx=[];rings=[];startStage()}
-function startStage(){stT=0;spawnT=1.2;boss=null;clearT=0;showBanner('STAGE '+stage,stage===1?'출격!':'적의 반격이 거세진다')}
+function startStage(){stT=0;spawnT=1.2;boss=null;clearT=0;showBanner('STAGE '+stage,stage===1?'출격!':'적의 반격이 거세진다');snd(stage===1?'go':'level')}
 
 function addEnemy(type,o){const T=ET[type];const e=Object.assign({type,T,hp:Math.ceil(T.hp*(1+(stage-1)*.3)),r:T.r,t:0,hit:0,delay:0,fire:rand(1,2.5)/diff(),group:null,vx:0,vy:0},o);en.push(e);return e}
 function aimed(x,y,sp,n=1,step=.2,base){const a=base??Math.atan2(P.y-y,P.x-x);for(let i=0;i<n;i++){const b=a+(i-(n-1)/2)*step;eb.push({x,y,vx:Math.cos(b)*sp,vy:Math.sin(b)*sp,r:5})}}
@@ -163,7 +165,7 @@ function spawnWave(){
   else if(r<.93||stage===1){addEnemy('bomber',{x:rand(120,GW-120),y:-60,upd(e,dt){if(e.t<2.6)e.y+=65*dt;else if(e.t>9)e.y+=80*dt;e.x+=Math.sin(e.t*.9)*30*dt}})}
   else{const g={n:4,k:0};for(let i=0;i<4;i++)addEnemy('small',{x:rand(40,GW-40),y:GH+30+i*50,group:g,upd(e,dt){e.y-=260*dt;if(e.t>.1)e.x+=(P.x-e.x)*.4*dt}})}
 }
-function spawnBoss(){const d=diff();boss={x:GW/2,y:-140,hp:700*d,max:700*d,t:0,hit:0,ft:1.5,f2:0,spin:0,dead:false,dT:0};showBanner('WARNING','거대 폭격기 접근 중!');sfx('up')}
+function spawnBoss(){const d=diff();boss={x:GW/2,y:-140,hp:700*d,max:700*d,t:0,hit:0,ft:1.5,f2:0,spin:0,dead:false,dT:0};showBanner('WARNING','거대 폭격기 접근 중!');snd('alert')}
 const bossHit=[[0,-10,30],[-60,4,26],[60,4,26],[-115,4,22],[115,4,22],[0,-62,24]];
 
 function explode(x,y,big=1){sfx('boom',.18+.12*big);
@@ -173,12 +175,12 @@ function killEnemy(e){explode(e.x,e.y,e.type==='bomber'?2.2:1);score+=e.T.score;
   if(e.group&&++e.group.k===e.group.n)items.push({x:e.x,y:e.y,k:'P',t:0});
   if(e.type==='bomber')items.push({x:e.x,y:e.y,k:Math.random()<.45?'B':'P',t:0});
   else if(e.type==='zig'&&Math.random()<.18)items.push({x:e.x,y:e.y,k:'P',t:0})}
-function bomb(){if(st!=='play'||!P.alive||P.bombs<=0)return;P.bombs--;flash=.45;shake=.4;P.inv=Math.max(P.inv,1.6);
+function bomb(){if(st!=='play'||!P.alive||P.bombs<=0)return;P.bombs--;snd('boom',true);flash=.45;shake=.4;P.inv=Math.max(P.inv,1.6);
   for(const b of eb)fx.push({x:b.x,y:b.y,vx:0,vy:-40,life:.3,max:.3,r:4,k:'spark'});eb=[];
   rings.push({x:P.x,y:P.y,r:10,life:.7});sfx('boom',.5);
   for(const e of en)if(e.delay<=0&&e.y>-20&&e.y<GH+20){e.hp-=40;e.hit=.08;if(e.hp<=0&&!e.dead)killEnemy(e)}
   if(boss&&!boss.dead&&boss.y>0){boss.hp-=90;boss.hit=.1}}
-function hurtPlayer(){if(!P.alive||P.inv>0)return;explode(P.x,P.y,2.5);shake=.6;P.alive=false;P.resp=1.6;P.lives--;P.pow=Math.max(1,P.pow-1);
+function hurtPlayer(){if(!P.alive||P.inv>0)return;snd('hurt');explode(P.x,P.y,2.5);shake=.6;P.alive=false;P.resp=1.6;P.lives--;P.pow=Math.max(1,P.pow-1);
   if(P.lives<0){overT=1.6}}
 function fire(){const x=P.x,y=P.y-18,v=-760,sh=(dx,ang=0,dmg=1)=>pb.push({x:x+dx,y,vx:Math.sin(ang)*-v,vy:Math.cos(ang)*v,dmg});
   sh(-6);sh(6);if(P.pow>=2){sh(-14,-.18);sh(14,.18)}if(P.pow>=3)sh(0,0,1.5);if(P.pow>=4){sh(-18,-.38);sh(18,.38)}}
@@ -216,7 +218,7 @@ function update(dt){
 
   if(boss){const b=boss;b.t+=dt;b.hit=Math.max(0,b.hit-dt);
     if(b.dead){b.dT-=dt;b.y+=25*dt;if(Math.random()<dt*14)explode(b.x+rand(-140,140),b.y+rand(-60,40),rand(1,2.2));
-      if(b.dT<=0){explode(b.x,b.y,4);flash=.6;boss=null;score+=20000*stage;clearT=3;showBanner('STAGE CLEAR','보너스 +'+(20000*stage).toLocaleString())}}
+      if(b.dT<=0){explode(b.x,b.y,4);flash=.6;boss=null;score+=20000*stage;clearT=3;snd('win');showBanner('STAGE CLEAR','보너스 +'+(20000*stage).toLocaleString())}}
     else{
       if(b.y<140)b.y+=70*dt;else b.x=GW/2+Math.sin(b.t*.55)*100;
       const ph=b.hp/b.max,sp=150+stage*10;b.ft-=dt;b.spin+=dt*(ph<.34?2.6:1.6);
@@ -237,7 +239,7 @@ function update(dt){
   for(const r of rings){r.life-=dt;r.r+=900*dt}rings=rings.filter(r=>r.life>0);
   if(score>hi){hi=score}
 }
-function gameOver(){st='over';try{localStorage.setItem('aceHi',hi)}catch(e){}
+function gameOver(){st='over';snd('lose');try{localStorage.setItem('aceHi',hi)}catch(e){}
   $('finalScore').textContent=score.toLocaleString();$('overTxt').textContent=`스테이지 ${stage}까지 진출 · 최고 기록 ${hi.toLocaleString()}`;$('overOv').hidden=false;$('retryBtn').focus()}
 
 // ---------- draw
@@ -286,7 +288,7 @@ requestAnimationFrame(frame);
 // ---------- input
 function setPause(on){if(on&&st==='play'){st='pause';$('pauseOv').hidden=false;$('resumeBtn').focus()}else if(!on&&st==='pause'){st='play';$('pauseOv').hidden=true}}
 addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
-  if(e.code==='KeyX'||e.code==='Space')bomb();if(e.code==='KeyP'||e.code==='Escape')setPause(st==='play');if(e.code==='KeyM')muted=!muted});
+  if(e.code==='KeyX'||e.code==='Space')bomb();if(e.code==='KeyP'||e.code==='Escape')setPause(st==='play')});
 addEventListener('keyup',e=>keys[e.code]=false);
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;setPause(true)});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)setPause(true)});

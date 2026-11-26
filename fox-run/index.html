@@ -4,6 +4,7 @@
 <title>여우 달리기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
 <style>
 /* VOICE: 노을 지는 언덕을 달리는 상쾌함
    IDEA: 그림책 속 저녁 들판, 겹겹의 언덕 실루엣
@@ -48,6 +49,7 @@ canvas{display:block;position:fixed;inset:0}
 <div class="overlay" id="pauseOv" hidden><div class="card"><h1>일시정지</h1><p>숨 고르는 중.</p><button class="btn" id="resumeBtn">계속하기</button></div></div>
 <script>
 {
+const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,rand=(a,b)=>a+Math.random()*(b-a);
 let W,H,DPR,SC,VW,VH,GY,FX;
 function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
@@ -72,12 +74,12 @@ function spawnChunk(){
   else{const w=rand(80,110+lvl*70);pits.push([x,x+w]);coinArc(x-20,GY-70,Math.round(w/34)+2,80)}
   nextX=x+gap+(obs.length&&obs[obs.length-1].x===x?obs[obs.length-1].w:0);
 }
-function jump(){if(st!=='play'||fox.dead)return;if(fox.ground||fox.jumps<2&&!fox.ground){const first=fox.ground;fox.vy=first?-820:-700;fox.jumps=first?1:2;fox.ground=false;fox.slide=0;fox.hold=true;
+function jump(){if(st!=='play'||fox.dead)return;if(fox.ground||fox.jumps<2&&!fox.ground){const first=fox.ground;snd(first?'jump':'jump2');fox.vy=first?-820:-700;fox.jumps=first?1:2;fox.ground=false;fox.slide=0;fox.hold=true;
   if(!first){fox.spin=1;for(let i=0;i<8;i++)fx.push({x:FX,y:GY+fox.y-10,vx:rand(-80,80),vy:rand(20,90),t:.4,c:'#fff',r:rand(3,6)})}}}
 function release(){fox.hold=false;if(fox.vy<-320)fox.vy*=.55}
-function slide(){if(st!=='play'||fox.dead)return;if(fox.ground)fox.slide=.65;else fox.vy=Math.max(fox.vy,900)}
-function die(){if(fox.dead)return;fox.dead=true;fox.vy=-500;shake=.4;setTimeout(end,900)}
-function end(){if(st!=='play')return;st='over';const m=Math.floor(dist/40);if(m>best){best=m;try{localStorage.setItem('foxBest',best)}catch(e){}}
+function slide(){if(st!=='play'||fox.dead)return;if(fox.ground){fox.slide=.65;snd('whoosh')}else fox.vy=Math.max(fox.vy,900)}
+function die(){if(fox.dead)return;fox.dead=true;snd('hurt');fox.vy=-500;shake=.4;setTimeout(end,900)}
+function end(){if(st!=='play')return;st='over';snd('lose');const m=Math.floor(dist/40);if(m>best){best=m;try{localStorage.setItem('foxBest',best)}catch(e){}}
   $('rDist').textContent=m;$('rCoin').textContent=coins;$('rBest').textContent=best;$('oTxt').textContent=m>=best&&m>0?'새 최고 기록이에요!':'조금만 더 가면 최고 기록!';$('overOv').hidden=false;$('againBtn').focus()}
 function update(dt){
   time+=dt;
@@ -97,7 +99,7 @@ function update(dt){
     const top=o.k==='bird'?o.y-o.h/2:GY-o.h,bot=o.k==='bird'?o.y+o.h/2:GY;
     if(!fox.dead&&fr>sx+4&&fl<sx+o.w-4&&fb>top+4&&ft<bot-2)die()}
   obs=obs.filter(o=>o.x+o.w>dist-FX-50);pits=pits.filter(p=>p[1]>dist-FX-50);
-  for(const c of coinL){if(c.got)continue;const sx=c.x-dist+FX;if(Math.abs(sx-FX)<22&&c.y>ft-14&&c.y<fb+14){c.got=true;coins++;for(let i=0;i<5;i++)fx.push({x:sx,y:c.y,vx:rand(-70,70),vy:rand(-90,30),t:.35,c:'#ffd23f',r:3})}}
+  for(const c of coinL){if(c.got)continue;const sx=c.x-dist+FX;if(Math.abs(sx-FX)<22&&c.y>ft-14&&c.y<fb+14){c.got=true;coins++;snd('coin');for(let i=0;i<5;i++)fx.push({x:sx,y:c.y,vx:rand(-70,70),vy:rand(-90,30),t:.35,c:'#ffd23f',r:3})}}
   coinL=coinL.filter(c=>!c.got&&c.x>dist-FX-30);
 }
 // ---------- input
