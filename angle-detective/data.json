@@ -1,0 +1,52 @@
+{
+  "questionsPerStage": 10,
+  "starThresholds": [6, 8, 10],
+  "praise": ["딩동댕!", "명탐정이네요!", "정확해요!", "찾았다!", "멋져요!"],
+  "endTitles": ["한 번 더 해 볼까요?", "잘했어요!", "참 잘했어요!", "명탐정이에요!"],
+
+  "stages": [
+    {
+      "name": "각도기로 재기", "short": "각도기 읽기", "sub": "안쪽 눈금? 바깥쪽 눈금?", "grade": "4학년",
+      "kinds": [ { "kind": "read", "step": 5, "min": 10, "max": 170, "baseLeftChance": 0.5 } ]
+    },
+    {
+      "name": "각 그리기", "short": "각 그리기", "sub": "각도기를 보고 변을 돌려 각 만들기", "grade": "4학년",
+      "kinds": [ { "kind": "make", "step": 5, "min": 15, "max": 165, "baseLeftChance": 0.5 } ]
+    },
+    {
+      "name": "예각·둔각과 어림", "short": "예각 · 둔각", "sub": "각의 종류, 어림하기, 크기 비교", "grade": "4학년",
+      "kinds": [
+        { "kind": "type", "weight": 2 },
+        { "kind": "estimate", "weight": 2 },
+        { "kind": "compare", "weight": 1 }
+      ]
+    },
+    {
+      "name": "각도의 합과 차", "short": "합과 차", "sub": "직각 90°, 직선 180°, 한 바퀴 360°", "grade": "4학년",
+      "kinds": [
+        { "kind": "sum" }, { "kind": "diff" }, { "kind": "straight" }, { "kind": "right" }, { "kind": "full", "weight": 0.7 }
+      ]
+    },
+    {
+      "name": "삼각형·사각형 각 구하기", "short": "각 구하기", "sub": "세 각의 합 180°, 네 각의 합 360°", "grade": "4학년",
+      "kinds": [
+        { "kind": "triangle", "weight": 2 }, { "kind": "quad", "weight": 1.5 },
+        { "kind": "isosceles", "weight": 1 }, { "kind": "triStraight", "weight": 1 }
+      ]
+    },
+    {
+      "name": "다각형의 각", "short": "다각형", "sub": "삼각형으로 나누어 각의 합 구하기, 정다각형", "challenge": true,
+      "kinds": [
+        { "kind": "polySum", "sides": [5, 6], "weight": 1 },
+        { "kind": "regular", "sides": [5, 6, 8], "weight": 1 },
+        { "kind": "polyMissing", "weight": 1.2 }
+      ]
+    }
+  ],
+
+  "words": {
+    "acute": "예각", "right": "직각", "obtuse": "둔각",
+    "left": "왼쪽 각", "rightSide": "오른쪽 각", "same": "크기가 같아요",
+    "polygonNames": { "5": "오각형", "6": "육각형", "8": "팔각형" }
+  }
+}

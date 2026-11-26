@@ -308,8 +308,24 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>규칙 기차</h2><p>기차 칸에 숨은 규칙을 찾아 ? 칸을 채워요. 반복 무늬, 뛰어 세기, 달력·곱셈표, 늘어나는 규칙까지 5단계.</p>
       <div class="tags"><span>규칙 찾기</span><span>2~3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./angle-detective/" style="--c:#f7a35c">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#f7f3e8"/><g stroke="#e6dfcc" stroke-width="1"><path d="M0 22H320M0 44H320M0 66H320M0 88H320M0 110H320M0 132H320M0 154H320M0 176H320M22 0V200M44 0V200M66 0V200M88 0V200M110 0V200M132 0V200M154 0V200M176 0V200M198 0V200M220 0V200M242 0V200M264 0V200M286 0V200M308 0V200"/></g>
+      <path d="M40 170 A90 90 0 0 1 220 170 Z" fill="rgba(120,190,255,.25)" stroke="#3d7bd9" stroke-width="2"/>
+      <g stroke="#3d7bd9" stroke-width="1.5"><path d="M130 80V92M66.4 106.4l8.5 8.5M193.6 106.4l-8.5 8.5M40 170h12M220 170h-12M85 92l6 10.4M175 92l-6 10.4M52 125l10.4 6M208 125l-10.4 6"/></g>
+      <path d="M130 170 H250" stroke="#22324f" stroke-width="5" stroke-linecap="round"/><path d="M130 170 L201 99" stroke="#22324f" stroke-width="5" stroke-linecap="round"/>
+      <path d="M130 170 L162 170 A32 32 0 0 0 152.6 147.4 Z" fill="rgba(239,106,58,.25)" stroke="#ef6a3a" stroke-width="3"/>
+      <text x="178" y="158" font-family="Jua" font-size="22" fill="#ef6a3a">?</text>
+      <circle cx="130" cy="170" r="5" fill="#22324f"/>
+      <g transform="translate(262,64) rotate(-30)"><circle r="26" fill="rgba(255,255,255,.6)" stroke="#22324f" stroke-width="6"/><rect x="-5" y="26" width="10" height="34" rx="4" fill="#22324f"/></g>
+      <path d="M232 132 L290 132 L290 176 L232 176Z" fill="none"/>
+      <text x="250" y="190" font-family="Jua" font-size="16" fill="#61708c" text-anchor="middle">180° 360°</text>
+    </svg>
+    <div class="info"><h2>각도 탐정</h2><p>각도기 읽기, 각 그리기부터 삼각형·사각형·다각형의 숨은 각 구하기까지 6단계.</p>
+      <div class="tags"><span>각도</span><span>4~5학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 18개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 19개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -331,7 +347,8 @@ const REC={
   'gugudan-balloon':()=>{const v=B('gugudanBest'),d=B('gugudanStamps');return v?`최고 ${n(v)}점`+(d?` · 도장 ${d}개`:''):null},
   'tick-clock':()=>{const v=B('clockStarTotal');return v?`별 ${v}개 / 15개`:null},
   'coin-shop':()=>{const v=B('coinStarTotal');return v?`별 ${v}개 / 15개`:null},
-  'pattern-train':()=>{const v=B('patternStarTotal');return v?`별 ${v}개 / 15개`:null}};
+  'pattern-train':()=>{const v=B('patternStarTotal');return v?`별 ${v}개 / 15개`:null},
+  'angle-detective':()=>{const v=B('angleStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

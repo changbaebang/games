@@ -22,6 +22,7 @@
 | 똑딱 시계 | 시계 보기·시간 계산 (2~3학년) | [`/tick-clock/`](./tick-clock/) |
 | 동전 가게 | 돈 계산·거스름돈 (2~3학년) | [`/coin-shop/`](./coin-shop/) |
 | 규칙 기차 | 규칙 찾기 (2~3학년) | [`/pattern-train/`](./pattern-train/) |
+| 각도 탐정 | 각도·각 구하기 (4~5학년) | [`/angle-detective/`](./angle-detective/) |
 
 ## 플레이
 
@@ -57,4 +58,4 @@ GitHub Pages: https://changbaebang.github.io/games/
 python3 -m http.server 8000
 ```
 
-학습 게임(구구단 풍선, 똑딱 시계, 동전 가게, 규칙 기차)이 이 구조를 따릅니다. 그 전에 만든 게임은 HTML 파일 하나로 되어 있어요. (블록 헌터는 three.js를 CDN에서 불러옵니다.)
+학습 게임(구구단 풍선, 똑딱 시계, 동전 가게, 규칙 기차, 각도 탐정)이 이 구조를 따릅니다. 그 전에 만든 게임은 HTML 파일 하나로 되어 있어요. (블록 헌터는 three.js를 CDN에서 불러옵니다.)
