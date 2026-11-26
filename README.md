@@ -13,6 +13,7 @@
 | 미니 레이서 | 탑뷰 레이싱 | [`/mini-racer/`](./mini-racer/) |
 | 벽돌 팡팡 | 벽돌깨기 | [`/brick-pop/`](./brick-pop/) |
 | 달걀 바꾸기 | 3매치 퍼즐 | [`/egg-swap/`](./egg-swap/) |
+| 달걀 받기 | 캐주얼 받기 | [`/egg-catch/`](./egg-catch/) |
 
 ## 플레이
 

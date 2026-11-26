@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>달걀 받기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 시골 닭장의 소동, 다급하고 웃김
+   IDEA: 나무 헛간 안, 횃대 위를 걷는 닭들
+   PICTURE: 횃대 위 닭 무리와 아래에서 받는 바구니
+   COLOUR and TYPE: 헛간 빨강 나무, 짚 노랑, 하얀 닭, 황금알 / Jua + Press Start 2P
+   LAYOUT: 세로 무대 중앙 고정, 상단 점수·하트, 하단 바구니 */
+:root{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#7a2e22 repeating-linear-gradient(90deg,#7a2e22 0 40px,#6e281d 40px 80px);font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+#wrap{position:fixed;inset:0;display:grid;place-items:center}
+canvas{display:block;box-shadow:0 0 0 4px #4a1a12,0 20px 60px rgba(0,0,0,.4)}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(60,20,10,.5);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fffaf0;color:#5a2a1a;border-radius:20px;padding:24px 26px;max-width:400px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 #b5442f}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 8px;color:#b5442f;font-weight:400}
+.card p{margin:4px 0 16px;font-size:17px;color:#7a4a3a}
+.eggs{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;text-align:left;margin:0 auto 18px;font-size:15px;color:#7a4a3a}
+.eggs span{display:inline-block;width:12px;height:15px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;margin-right:6px;vertical-align:-2px;background:var(--c);border:1px solid rgba(0,0,0,.15)}
+.big{font-family:'Press Start 2P',monospace;font-size:22px;color:#b5442f;margin:4px 0 6px}
+.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 34px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:50px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c79400}
+.btn:focus-visible{outline:3px solid #b5442f;outline-offset:3px}
+@media(max-height:500px){.card{padding:16px 20px}.card h1{font-size:32px}.card p{margin-bottom:10px}}
+</style></head><body>
+<div id="wrap"><canvas id="c"></canvas></div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>달걀 받기</h1>
+  <p>횃대 위 닭들이 알을 마구 떨어뜨려요! 바구니로 받아서 하나도 깨뜨리지 마세요.</p>
+  <div class="eggs"><div><span style="--c:#fff8ec"></span>달걀 10점</div><div><span style="--c:#ffc93c"></span>황금알 50점</div><div><span style="--c:#ff8fb0"></span>분홍알 하트 +1</div><div><span style="--c:#7a8a3a"></span>썩은 알, 받지 마세요!</div></div>
+  <p style="font-size:15px;margin-top:-6px">화면 아무 데나 좌우로 끌어 바구니를 움직여요. PC는 마우스나 ← →. 흔들리는 닭을 잘 보세요.</p>
+  <button class="btn" id="startBtn">시작하기</button>
+  <p style="margin:14px 0 0;font-size:15px"><a href="../" style="color:inherit">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="endOv" hidden><div class="card"><h1>달걀이 다 깨졌어요</h1><div class="big" id="eScore">0</div><p id="eTxt"></p><button class="btn" id="againBtn">다시 하기</button></div></div>
+<script>
+{
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2;
+const GW=480,GH=760,GROUND=700,PERCH=150;let S=1,DPR=1;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);S=Math.min(innerWidth/GW,innerHeight/GH);cv.style.width=GW*S+'px';cv.style.height=GH*S+'px';cv.width=Math.round(GW*S*DPR);cv.height=Math.round(GH*S*DPR)}
+addEventListener('resize',resize);resize();
+let st='title',score,lives,T,hens,eggs,splats,fx,pops,basket,caught,streak,best=0,shake=0;
+try{best=+localStorage.getItem('eggCatchBest')||0}catch(e){}
+function mkHen(){return {x:60+Math.random()*(GW-120),dir:Math.random()<.5?-1:1,spd:40+Math.random()*40,lay:1+Math.random()*2,wob:0,ph:Math.random()*6}}
+function newGame(){score=0;lives=5;T=0;hens=[mkHen(),mkHen()];eggs=[];splats=[];fx=[];pops=[];basket={x:GW/2,w:84,fill:0};caught=0;streak=0}
+newGame();
+function pop(x,y,t,c='#fff'){pops.push({x,y,t,c,life:1})}
+function layEgg(h){const r=Math.random(),k=r<.07?'gold':r<.11&&lives<5?'heart':r<.11+Math.min(.18,T/600)?'rot':'egg';
+  eggs.push({x:h.x,y:PERCH+18,vy:20,k,rot:0,vr:(Math.random()-.5)*3})}
+function update(dt){
+  T+=dt;const lvl=Math.min(1,T/150);
+  if(hens.length<2+Math.floor(T/40)&&hens.length<5){hens.push(mkHen());pop(GW/2,PERCH-60,'닭이 늘었다!','#ffe066')}
+  for(const h of hens){h.ph+=dt*8;if(h.wob>0){h.wob-=dt;if(h.wob<=0){layEgg(h);h.lay=Math.max(.45,(2.4-lvl*1.6)*(.6+Math.random()*.8))*hens.length/2}continue}
+    h.x+=h.dir*h.spd*(1+lvl)*dt;if(h.x<40||h.x>GW-40){h.dir*=-1;h.x=Math.max(40,Math.min(GW-40,h.x))}if(Math.random()<dt*.4)h.dir*=-1;
+    h.lay-=dt;if(h.lay<=0)h.wob=Math.max(.22,.5-lvl*.25)}
+  if(keys.ArrowLeft||keys.KeyA)basket.x-=560*dt;if(keys.ArrowRight||keys.KeyD)basket.x+=560*dt;basket.x=Math.max(basket.w/2,Math.min(GW-basket.w/2,basket.x));
+  const g=380+lvl*420;
+  for(const e of eggs){e.vy+=g*dt;e.y+=e.vy*dt;e.rot+=e.vr*dt;
+    if(!e.done&&e.y>GROUND-58&&e.y<GROUND-30&&Math.abs(e.x-basket.x)<basket.w/2+4){e.done=true;
+      if(e.k==='rot'){lives--;streak=0;shake=.3;pop(e.x,e.y-30,'으악! 썩은 알','#c8e070');for(let i=0;i<10;i++)fx.push({x:e.x,y:GROUND-50,vx:(Math.random()-.5)*240,vy:-Math.random()*240,t:.6,c:'#9aa84a',r:4})}
+      else{streak++;const pts=(e.k==='gold'?50:10)*(1+Math.floor(streak/10));score+=pts;caught++;basket.fill=Math.min(6,basket.fill+1);basket.bump=.15;
+        if(e.k==='heart'){lives=Math.min(5,lives+1);pop(e.x,e.y-30,'하트 +1','#ff8fb0')}else pop(e.x,e.y-30,'+'+pts,e.k==='gold'?'#ffd23f':'#fff');
+        if(streak%10===0)pop(GW/2,GH/2-40,`${streak}개 연속! 점수 x${1+streak/10}`,'#ffe066')}}
+    if(!e.done&&e.y>=GROUND-6){e.done=true;if(e.k!=='rot'){lives--;streak=0;shake=.25;splats.push({x:e.x,t:3,k:e.k});pop(e.x,GROUND-40,'깨졌다!','#ffb3a0')}else splats.push({x:e.x,t:2,k:'rot'})}}
+  eggs=eggs.filter(e=>!e.done);
+  for(const s of splats)s.t-=dt;splats=splats.filter(s=>s.t>0);
+  if(basket.fill>=6){basket.fill=0;score+=30;pop(basket.x,GROUND-90,'바구니 가득! +30','#7dffb0')}
+  if(lives<=0){lives=0;st='end';if(score>best){best=score;try{localStorage.setItem('eggCatchBest',best)}catch(e){}}
+    $('eScore').textContent=score.toLocaleString();$('eTxt').textContent=`받은 달걀 ${caught}개 · ${Math.floor(T)}초 버팀 · 최고 ${best.toLocaleString()}`;$('endOv').hidden=false;$('againBtn').focus()}
+}
+const keys={};addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('Arrow'))e.preventDefault()});addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
+let tp=null;
+addEventListener('pointerdown',e=>{if(st!=='play'||e.target.closest('.overlay'))return;tp={id:e.pointerId,x:e.clientX}});
+addEventListener('pointermove',e=>{if(st!=='play')return;if(e.pointerType==='mouse'){basket.x=(e.clientX-cv.getBoundingClientRect().left)/S;return}
+  if(!tp||tp.id!==e.pointerId)return;basket.x+=(e.clientX-tp.x)/S*1.3;tp.x=e.clientX});
+addEventListener('pointerup',()=>tp=null);addEventListener('pointercancel',()=>tp=null);
+const go=()=>{newGame();st='play';$('titleOv').hidden=true;$('endOv').hidden=true};$('startBtn').onclick=go;$('againBtn').onclick=go;
+// ---------- draw
+function eggShape(x,y,s,k,rot=0){ctx.save();ctx.translate(x,y);ctx.rotate(rot);
+  ctx.fillStyle=k==='gold'?'#ffc93c':k==='heart'?'#ff8fb0':k==='rot'?'#7a8a3a':'#fff8ec';ctx.beginPath();ctx.moveTo(0,-s);ctx.bezierCurveTo(s*.85,-s,s*.9,s*.7,0,s*.7);ctx.bezierCurveTo(-s*.9,s*.7,-s*.85,-s,0,-s);ctx.fill();
+  ctx.strokeStyle='rgba(90,42,26,.25)';ctx.lineWidth=1.5;ctx.stroke();
+  if(k==='rot'){ctx.fillStyle='#4a5420';for(const [a,b] of [[-.3,-.3],[.3,.1],[-.1,.35]]){ctx.beginPath();ctx.arc(a*s,b*s,s*.16,0,TAU);ctx.fill()}}
+  if(k==='heart'){ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-s*.15,0,s*.16,0,TAU);ctx.arc(s*.15,0,s*.16,0,TAU);ctx.moveTo(-s*.3,s*.06);ctx.lineTo(0,s*.36);ctx.lineTo(s*.3,s*.06);ctx.fill()}
+  ctx.fillStyle='rgba(255,255,255,.6)';ctx.beginPath();ctx.ellipse(-s*.3,-s*.4,s*.12,s*.2,-.4,0,TAU);ctx.fill();ctx.restore()}
+function hen(h){const bob=Math.sin(h.ph)*2,wob=h.wob>0?Math.sin(h.wob*60)*4:0;ctx.save();ctx.translate(h.x+wob,PERCH-22+bob);ctx.scale(h.dir,1);
+  ctx.fillStyle='#e8a33a';ctx.fillRect(-6,18,3,8);ctx.fillRect(4,18,3,8);
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,4,24,18,0,0,TAU);ctx.fill();ctx.beginPath();ctx.moveTo(-18,-2);ctx.lineTo(-32,-12);ctx.lineTo(-26,6);ctx.fill();
+  ctx.fillStyle='#f2efe6';ctx.beginPath();ctx.ellipse(-4,8,12,8,-.3,0,TAU);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(16,-12,11,0,TAU);ctx.fill();
+  ctx.fillStyle='#e04030';ctx.beginPath();ctx.arc(13,-23,4,0,TAU);ctx.arc(18,-24,4,0,TAU);ctx.fill();ctx.beginPath();ctx.ellipse(22,-4,3,5,0,0,TAU);ctx.fill();
+  ctx.fillStyle='#ffb13d';ctx.beginPath();ctx.moveTo(26,-13);ctx.lineTo(34,-10);ctx.lineTo(26,-7);ctx.fill();ctx.fillStyle='#2a1a10';ctx.beginPath();ctx.arc(19,-14,2,0,TAU);ctx.fill();
+  if(h.wob>0){ctx.fillStyle='#ffe066';ctx.font='20px Jua,sans-serif';ctx.textAlign='center';ctx.scale(h.dir,1);ctx.fillText('!',0,-34)}
+  ctx.restore()}
+function draw(dt){ctx.setTransform(S*DPR,0,0,S*DPR,0,0);shake=Math.max(0,shake-dt);if(shake)ctx.translate((Math.random()-.5)*shake*16,(Math.random()-.5)*shake*16);
+  ctx.fillStyle='#b5442f';ctx.fillRect(-20,-20,GW+40,GH+40);for(let x=0;x<GW;x+=48){ctx.fillStyle=(x/48)&1?'#a63d2a':'#b5442f';ctx.fillRect(x,0,48,GROUND);ctx.fillStyle='rgba(0,0,0,.12)';ctx.fillRect(x,0,2,GROUND)}
+  ctx.fillStyle='#87c8f0';ctx.fillRect(GW/2-70,250,140,110);ctx.strokeStyle='#f6efe0';ctx.lineWidth=8;ctx.strokeRect(GW/2-70,250,140,110);ctx.beginPath();ctx.moveTo(GW/2,250);ctx.lineTo(GW/2,360);ctx.moveTo(GW/2-70,305);ctx.lineTo(GW/2+70,305);ctx.stroke();
+  ctx.fillStyle='#ffe08a';ctx.beginPath();ctx.arc(GW/2+38,278,12,0,TAU);ctx.fill();
+  ctx.fillStyle='#7a4a24';ctx.fillRect(0,PERCH,GW,14);ctx.fillStyle='#5a3418';ctx.fillRect(0,PERCH+12,GW,4);for(const x of [30,GW-30]){ctx.fillStyle='#6a3e1c';ctx.fillRect(x-6,PERCH,12,60)}
+  ctx.fillStyle='#e8c766';ctx.fillRect(0,GROUND,GW,GH-GROUND);ctx.fillStyle='#d4b050';for(let x=0;x<GW;x+=14)ctx.fillRect(x+(x*7)%9,GROUND+((x*13)%30),10,3);
+  for(const s of splats){const a=Math.min(1,s.t);ctx.globalAlpha=a;ctx.fillStyle=s.k==='rot'?'#7a8a3a':'#fff8ec';ctx.beginPath();ctx.ellipse(s.x,GROUND+4,26,7,0,0,TAU);ctx.fill();
+    if(s.k!=='rot'){ctx.fillStyle='#ffc93c';ctx.beginPath();ctx.ellipse(s.x+3,GROUND+3,9,5,0,0,TAU);ctx.fill()}ctx.globalAlpha=1}
+  for(const h of hens)hen(h);
+  for(const e of eggs)eggShape(e.x,e.y,15,e.k,e.rot);
+  const b=basket,bp=(b.bump=Math.max(0,(b.bump||0)-dt))>0?3:0,by=GROUND-36+bp;
+  ctx.fillStyle='rgba(0,0,0,.2)';ctx.beginPath();ctx.ellipse(b.x,GROUND+4,b.w/2,6,0,0,TAU);ctx.fill();
+  for(let i=0;i<b.fill;i++)eggShape(b.x-b.w/2+16+(i%3)*(b.w-32)/2,by-6-(i>2?8:0),10,'egg');
+  ctx.fillStyle='#c8843a';ctx.beginPath();ctx.moveTo(b.x-b.w/2,by);ctx.lineTo(b.x+b.w/2,by);ctx.lineTo(b.x+b.w/2-10,by+36);ctx.lineTo(b.x-b.w/2+10,by+36);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#9a5f24';ctx.lineWidth=2;for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(b.x-b.w/2+i*2.5,by+i*9);ctx.lineTo(b.x+b.w/2-i*2.5,by+i*9);ctx.stroke()}
+  ctx.fillStyle='#e0a050';ctx.fillRect(b.x-b.w/2-4,by-4,b.w+8,8);
+  for(const f of fx){f.t-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=700*dt;ctx.globalAlpha=Math.max(0,f.t*1.7);ctx.fillStyle=f.c;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,TAU);ctx.fill()}ctx.globalAlpha=1;fx=fx.filter(f=>f.t>0);
+  ctx.fillStyle='rgba(60,20,10,.45)';ctx.fillRect(0,0,GW,60);ctx.textBaseline='middle';ctx.font='16px "Press Start 2P",monospace';ctx.textAlign='left';ctx.fillStyle='#fff';ctx.fillText(String(score).padStart(5,'0'),14,31);
+  for(let i=0;i<5;i++){const x=GW-24-i*26;ctx.fillStyle=i<lives?'#ff6b8a':'rgba(255,255,255,.25)';ctx.beginPath();ctx.arc(x-5,26,6,0,TAU);ctx.arc(x+5,26,6,0,TAU);ctx.moveTo(x-11,28);ctx.lineTo(x,40);ctx.lineTo(x+11,28);ctx.fill()}
+  if(streak>=3){ctx.textAlign='center';ctx.font='18px Jua,sans-serif';ctx.fillStyle='#ffe066';ctx.fillText(`연속 ${streak}`,GW/2,31)}
+  ctx.font='22px Jua,sans-serif';ctx.lineWidth=5;ctx.strokeStyle='#5a2a1a';ctx.textAlign='center';
+  for(const p of pops){p.life-=dt;p.y-=30*dt;ctx.globalAlpha=Math.min(1,p.life*2);ctx.strokeText(p.t,p.x,p.y);ctx.fillStyle=p.c;ctx.fillText(p.t,p.x,p.y)}ctx.globalAlpha=1;pops=pops.filter(p=>p.life>0);ctx.textBaseline='alphabetic'}
+let last=performance.now();
+function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play')update(dt);draw(dt);requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+}
+</script>
+</body></html>
