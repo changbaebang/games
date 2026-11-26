@@ -12,6 +12,7 @@
 | 성벽 수비대 | 타워 디펜스 | [`/castle-guard/`](./castle-guard/) |
 | 미니 레이서 | 탑뷰 레이싱 | [`/mini-racer/`](./mini-racer/) |
 | 벽돌 팡팡 | 벽돌깨기 | [`/brick-pop/`](./brick-pop/) |
+| 달걀 바꾸기 | 3매치 퍼즐 | [`/egg-swap/`](./egg-swap/) |
 
 ## 플레이
 

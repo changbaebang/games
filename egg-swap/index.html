@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>달걀 바꾸기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 말랑하고 귀여운 퍼즐, 깨질 때 손맛
+   IDEA: 달걀 판(계란 트레이)에 담긴 알록달록 달걀
+   PICTURE: 종이 계란판 모양의 보드와 무늬 달걀
+   COLOUR and TYPE: 크림색 둥지, 짚 노랑, 달걀 6색 / Jua
+   LAYOUT: 상단 목표·남은 이동, 중앙 보드, 하단 점수 진행바 */
+:root{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#f7e8c8;font-family:'Jua',system-ui,sans-serif;color:#5a3d1e;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+canvas{display:block;position:fixed;inset:0}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(90,61,30,.4);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fffdf7;color:#5a3d1e;border-radius:20px;padding:24px 26px;max-width:400px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 #d9a441}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 8px;color:#e07a2e;font-weight:400}
+.card p{margin:4px 0 16px;font-size:17px;color:#7a5a3a}
+.rules{text-align:left;margin:0 auto 18px;font-size:16px;color:#7a5a3a;display:grid;gap:6px;width:fit-content}
+.rules b{font-weight:400;color:#e07a2e}
+.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 34px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:50px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c79400}
+.btn:focus-visible{outline:3px solid #e07a2e;outline-offset:3px}
+@media(max-height:500px){.card{padding:16px 20px}.card h1{font-size:32px}.card p{margin-bottom:10px}}
+</style></head><body>
+<canvas id="c"></canvas>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>달걀 바꾸기</h1>
+  <p>이웃한 달걀 두 개를 바꿔 같은 색을 3개 이상 한 줄로 맞추면 톡! 하고 병아리가 나와요.</p>
+  <div class="rules">
+    <div><b>4개</b> 맞추면 줄무늬 달걀: 한 줄을 통째로 깨요</div>
+    <div><b>5개</b> 맞추면 황금 달걀: 바꾼 색을 전부 깨요</div>
+    <div>정해진 이동 안에 <b>목표 점수</b>를 넘기면 다음 판!</div>
+  </div>
+  <p style="font-size:15px;margin-top:-6px">달걀을 밀어서 바꾸거나, 두 달걀을 차례로 탭하세요.</p>
+  <button class="btn" id="startBtn">시작하기</button>
+  <p style="margin:14px 0 0;font-size:15px"><a href="../" style="color:inherit">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">아쉬워요!</h1><p id="eTxt"></p><button class="btn" id="eBtn">다시 하기</button></div></div>
+<script>
+{
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,N=8;
+const EC=['#ff6b6b','#ffb13d','#ffe066','#5fd35a','#4a9dff','#b06bff'],ED=['#d94848','#d98a1a','#d9b93a','#3fa83a','#2f74d0','#8a4ad0'];
+let W,H,DPR,CS,BX,BY;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
+  const top=Math.min(120,H*.16),bot=Math.min(90,H*.12);CS=Math.floor(Math.min((W-24)/N,(H-top-bot)/N));BX=Math.round((W-CS*N)/2);BY=Math.round(top+(H-top-bot-CS*N)/2)}
+addEventListener('resize',resize);resize();
+let st='title',grid,level=1,score,target,moves,busy=false,combo=0,sel=null,fx=[],pops=[],idleT=0,hint=null,uid=0,totalScore=0;
+const rnd=n=>Math.random()*n|0;
+function mk(c,sp=0){return {c,sp,id:uid++,rx:0,ry:0,vy:0,clr:0,pulse:0}}
+function fill(){grid=[];for(let r=0;r<N;r++){grid.push([]);for(let c=0;c<N;c++){let k;do k=rnd(6);while(c>=2&&grid[r][c-1].c===k&&grid[r][c-2].c===k||r>=2&&grid[r-1][c].c===k&&grid[r-2][c].c===k);
+  const e=mk(k);e.rx=c;e.ry=r-N-1-rnd(3);grid[r].push(e)}}if(!findMove())fill()}
+function startLevel(){score=0;target=1200+level*700;moves=Math.max(16,24-Math.floor(level/2));combo=0;sel=null;hint=null;fill()}
+function runs(){const out=[];
+  for(let r=0;r<N;r++){let s=0;for(let c=1;c<=N;c++){if(c<N&&grid[r][c]&&grid[r][s]&&grid[r][c].c===grid[r][s].c&&grid[r][c].sp!=='gold'&&grid[r][s].sp!=='gold')continue;if(c-s>=3)out.push({cells:Array.from({length:c-s},(_,i)=>[r,s+i]),dir:'h'});s=c}}
+  for(let c=0;c<N;c++){let s=0;for(let r=1;r<=N;r++){if(r<N&&grid[r][c]&&grid[s][c]&&grid[r][c].c===grid[s][c].c&&grid[r][c].sp!=='gold'&&grid[s][c].sp!=='gold')continue;if(r-s>=3)out.push({cells:Array.from({length:r-s},(_,i)=>[s+i,c]),dir:'v'});s=r}}
+  return out}
+function swapCells(a,b){const t=grid[a[0]][a[1]];grid[a[0]][a[1]]=grid[b[0]][b[1]];grid[b[0]][b[1]]=t}
+function findMove(){for(let r=0;r<N;r++)for(let c=0;c<N;c++)for(const [dr,dc] of [[0,1],[1,0]]){const r2=r+dr,c2=c+dc;if(r2>=N||c2>=N)continue;
+  if(grid[r][c].sp==='gold'||grid[r2][c2].sp==='gold')return [[r,c],[r2,c2]];swapCells([r,c],[r2,c2]);const ok=runs().length>0;swapCells([r,c],[r2,c2]);if(ok)return [[r,c],[r2,c2]]}return null}
+const waiters=[];const until=fn=>new Promise(res=>waiters.push({fn,res}));
+const wait=s=>{const t0=clock;return until(()=>clock-t0>=s)};
+const settled=()=>{for(let r=0;r<N;r++)for(let c=0;c<N;c++){const e=grid[r][c];if(e&&(e.rx!==c||e.ry!==r))return false}return true};
+const settle=()=>until(settled);
+async function trySwap(a,b){if(busy||st!=='play')return;busy=true;sel=null;hint=null;idleT=0;
+  const A=grid[a[0]][a[1]],B=grid[b[0]][b[1]];swapCells(a,b);await settle();
+  if(A.sp==='gold'||B.sp==='gold'){moves--;combo=1;pop(W/2,BY-10,'황금 달걀!','#e0a100');const set=new Set();
+    if(A.sp==='gold'&&B.sp==='gold'){for(let r=0;r<N;r++)for(let c=0;c<N;c++)set.add(r+','+c)}
+    else{const col=(A.sp==='gold'?B:A).c;for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(grid[r][c].c===col&&grid[r][c].sp!=='gold')set.add(r+','+c);}
+    set.add(a.join(','));set.add(b.join(','));
+    shakeT=.3;await clearSet(set,[]);await cascade();finishMove();return}
+  if(!runs().length){swapCells(a,b);await settle();busy=false;return}
+  moves--;combo=0;await cascade([a,b]);finishMove()}
+function finishMove(){busy=false;if(score>=target){st='win';setTimeout(()=>showEnd(true),500)}else if(moves<=0){st='lose';setTimeout(()=>showEnd(false),500)}else if(!findMove())shuffle()}
+async function shuffle(){busy=true;pop(W/2,BY+CS*N/2,'섞는 중!','#e07a2e');await wait(.4);do{const flat=grid.flat();for(let i=flat.length-1;i>0;i--){const j=rnd(i+1);[flat[i],flat[j]]=[flat[j],flat[i]]}for(let r=0;r<N;r++)for(let c=0;c<N;c++)grid[r][c]=flat[r*N+c]}while(runs().length||!findMove());await settle();busy=false}
+async function cascade(swapPos){
+  for(;;){const rs=runs();if(!rs.length)break;combo++;const set=new Set(),make=[];
+    for(const run of rs){run.cells.forEach(p=>set.add(p.join(',')));
+      if(run.cells.length>=4){let pos=run.cells[Math.floor(run.cells.length/2)];if(swapPos)for(const sp of swapPos)if(run.cells.some(p=>p[0]===sp[0]&&p[1]===sp[1]))pos=sp;
+        make.push({pos,c:grid[run.cells[0][0]][run.cells[0][1]].c,sp:run.cells.length>=5?'gold':(run.dir==='h'?'v':'h')})}}
+    if(combo>1)pop(W/2,BY-10,`연쇄 ${combo}!`,'#e07a2e');
+    await clearSet(set,make);swapPos=null}
+}
+async function clearSet(set,make){
+  const q=[...set].map(k=>k.split(',').map(Number)),done=new Set();
+  while(q.length){const [r,c]=q.pop(),k=r+','+c;if(done.has(k))continue;done.add(k);const e=grid[r][c];if(!e)continue;
+    if(e.sp==='h'){for(let x=0;x<N;x++)q.push([r,x]);beams.push({r,c,dir:'h',t:.35})}if(e.sp==='v'){for(let y=0;y<N;y++)q.push([y,c]);beams.push({r,c,dir:'v',t:.35})}}
+  for(const m of make)done.delete(m.pos.join(','));
+  const gain=done.size*20*combo+(make.length?make.length*60:0);score+=gain;totalScore+=gain;
+  let sx=0,sy=0;for(const k of done){const [r,c]=k.split(',').map(Number);const e=grid[r][c];if(!e)continue;e.clr=.001;sx+=c;sy+=r;
+    const X=BX+(c+.5)*CS,Y=BY+(r+.5)*CS;for(let i=0;i<5;i++)fx.push({x:X,y:Y,vx:(Math.random()-.5)*260,vy:-Math.random()*220,t:.6,c:EC[e.c],r:CS*.08+Math.random()*CS*.06,shell:true});chicks.push({x:X,y:Y,t:.7})}
+  if(done.size)pop(BX+(sx/done.size+.5)*CS,BY+(sy/done.size+.5)*CS,'+'+gain,'#fff');
+  for(const m of make){const e=grid[m.pos[0]][m.pos[1]];if(e){e.sp=m.sp;e.c=m.c;e.pulse=.4}}
+  await wait(.22);
+  for(const k of done){const [r,c]=k.split(',').map(Number);grid[r][c]=null}
+  for(let c=0;c<N;c++){let w=N-1;for(let r=N-1;r>=0;r--)if(grid[r][c]){const e=grid[r][c];grid[r][c]=null;grid[w][c]=e;w--}
+    let k=0;for(let r=w;r>=0;r--){const e=mk(rnd(6));e.rx=c;e.ry=-1-k;k++;grid[r][c]=e}}
+  await settle()}
+function pop(x,y,t,c){pops.push({x,y,t,c,life:1})}
+function showEnd(win){$('eTitle').textContent=win?`${level}단계 성공!`:'이동을 다 썼어요';$('eTitle').style.color=win?'#e07a2e':'#c0504d';
+  $('eTxt').textContent=win?`점수 ${score.toLocaleString()} / 목표 ${target.toLocaleString()} · 누적 ${totalScore.toLocaleString()}`:`${level}단계 · 점수 ${score.toLocaleString()} / 목표 ${target.toLocaleString()}`;
+  $('eBtn').textContent=win?'다음 단계':'이 단계 다시';$('endOv').hidden=false;$('eBtn').focus()}
+$('eBtn').onclick=()=>{if(st==='win')level++;$('endOv').hidden=true;st='play';startLevel()};
+$('startBtn').onclick=()=>{$('titleOv').hidden=true;st='play';level=1;totalScore=0;startLevel()};
+
+// ---------- input
+let tp=null;const cellAt=(x,y)=>{const c=Math.floor((x-BX)/CS),r=Math.floor((y-BY)/CS);return r>=0&&r<N&&c>=0&&c<N?[r,c]:null};
+cv.addEventListener('pointerdown',e=>{if(st!=='play'||busy)return;const p=cellAt(e.clientX,e.clientY);if(!p){sel=null;return}tp={id:e.pointerId,x:e.clientX,y:e.clientY,p,done:false};cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{if(!tp||tp.id!==e.pointerId||tp.done)return;const dx=e.clientX-tp.x,dy=e.clientY-tp.y;if(Math.max(Math.abs(dx),Math.abs(dy))<CS*.35)return;
+  tp.done=true;const [r,c]=tp.p,q=Math.abs(dx)>Math.abs(dy)?[r,c+Math.sign(dx)]:[r+Math.sign(dy),c];if(q[0]>=0&&q[0]<N&&q[1]>=0&&q[1]<N)trySwap(tp.p,q)});
+cv.addEventListener('pointerup',e=>{if(!tp||tp.id!==e.pointerId)return;if(!tp.done){const p=tp.p;
+  if(sel&&Math.abs(sel[0]-p[0])+Math.abs(sel[1]-p[1])===1)trySwap(sel,p);else sel=sel&&sel[0]===p[0]&&sel[1]===p[1]?null:p}tp=null});
+cv.addEventListener('pointercancel',()=>tp=null);
+
+// ---------- draw
+let clock=0,shakeT=0;const beams=[],chicks=[];
+function egg(X,Y,s,e,a=1){const k=e.clr>0?Math.max(0,1-e.clr/.22):1,pu=e.pulse>0?1+Math.sin(e.pulse*20)*.08:1;const w=s*.34*k*pu,h=s*.42*k*pu;if(k<=0)return;
+  ctx.globalAlpha=a;ctx.fillStyle='rgba(90,61,30,.18)';ctx.beginPath();ctx.ellipse(X+s*.04,Y+h*.86,w*.9,h*.22,0,0,TAU);ctx.fill();
+  if(e.sp==='gold'){const g=ctx.createLinearGradient(X-w,Y-h,X+w,Y+h);g.addColorStop(0,'#fff3b0');g.addColorStop(.5,'#ffc93c');g.addColorStop(1,'#d99a1a');ctx.fillStyle=g}else ctx.fillStyle=EC[e.c];
+  ctx.beginPath();ctx.moveTo(X,Y-h);ctx.bezierCurveTo(X+w*1.05,Y-h,X+w*1.1,Y+h*.75,X,Y+h*.75);ctx.bezierCurveTo(X-w*1.1,Y+h*.75,X-w*1.05,Y-h,X,Y-h);ctx.fill();
+  ctx.save();ctx.clip();ctx.fillStyle=e.sp==='gold'?'rgba(255,255,255,.5)':ED[e.c];
+  if(e.sp==='gold'){for(let i=-3;i<4;i++)ctx.fillRect(X+i*w*.5-1,Y-h,2,h*2)}
+  else if(e.c===0){for(const [dx,dy] of [[-.4,-.2],[.35,.1],[-.1,.45],[.2,-.55]]){ctx.beginPath();ctx.arc(X+dx*w,Y+dy*h,w*.18,0,TAU);ctx.fill()}}
+  else if(e.c===1){ctx.fillRect(X-w,Y-h*.05,w*2,h*.18)}
+  else if(e.c===2){ctx.beginPath();for(let i=0;i<=6;i++)ctx.lineTo(X-w+i*w/3,Y+h*.1+(i&1?-h*.16:0));ctx.lineTo(X+w,Y+h*.3);ctx.lineTo(X-w,Y+h*.3);ctx.fill()}
+  else if(e.c===3){for(const dy of [-.35,.25]){ctx.fillRect(X-w,Y+dy*h,w*2,h*.1)}}
+  else if(e.c===4){ctx.beginPath();ctx.moveTo(X,Y-h*.1);for(let i=0;i<10;i++){const a=i/10*TAU-Math.PI/2,r=i&1?w*.2:w*.45;ctx.lineTo(X+Math.cos(a)*r,Y+h*.1+Math.sin(a)*r)}ctx.fill()}
+  else{ctx.beginPath();ctx.arc(X,Y+h*.1,w*.42,0,TAU);ctx.fill();ctx.fillStyle=EC[e.c];ctx.beginPath();ctx.arc(X,Y+h*.1,w*.22,0,TAU);ctx.fill()}
+  if(e.sp==='h'||e.sp==='v'){ctx.fillStyle='rgba(255,255,255,.85)';for(let i=-2;i<=2;i++){if(e.sp==='h')ctx.fillRect(X-w,Y+i*h*.32-h*.05,w*2,h*.1);else ctx.fillRect(X+i*w*.42-w*.07,Y-h,w*.14,h*2)}}
+  ctx.restore();ctx.fillStyle='rgba(255,255,255,.55)';ctx.beginPath();ctx.ellipse(X-w*.38,Y-h*.45,w*.18,h*.22,-.4,0,TAU);ctx.fill();ctx.globalAlpha=1}
+function chick(X,Y,s,t){const k=1-t/.7,y=Y-k*s*.5;ctx.globalAlpha=Math.min(1,t*3);ctx.fillStyle='#ffe066';ctx.beginPath();ctx.arc(X,y,s*.16,0,TAU);ctx.fill();ctx.fillStyle='#ff9a3d';ctx.beginPath();ctx.moveTo(X+s*.13,y);ctx.lineTo(X+s*.22,y+s*.03);ctx.lineTo(X+s*.13,y+s*.06);ctx.fill();ctx.fillStyle='#5a3d1e';ctx.beginPath();ctx.arc(X+s*.06,y-s*.04,s*.025,0,TAU);ctx.fill();ctx.globalAlpha=1}
+function draw(dt){clock+=dt;ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#f7e8c8';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(217,164,65,.35)';ctx.lineWidth=2;for(let i=0;i<40;i++){const x=(i*97)%W,y=(i*61)%H;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+14,y+5);ctx.stroke()}
+  shakeT=Math.max(0,shakeT-dt);const sx=shakeT?(Math.random()-.5)*shakeT*20:0;ctx.translate(sx,0);
+  ctx.fillStyle='#e9cf9a';ctx.beginPath();ctx.roundRect(BX-10,BY-10,CS*N+20,CS*N+20,18);ctx.fill();
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){const X=BX+c*CS,Y=BY+r*CS;ctx.fillStyle=(r+c)&1?'#f3dcae':'#f7e4bd';ctx.beginPath();ctx.roundRect(X+2,Y+2,CS-4,CS-4,CS*.3);ctx.fill();
+    ctx.fillStyle='rgba(160,110,40,.12)';ctx.beginPath();ctx.ellipse(X+CS/2,Y+CS*.58,CS*.3,CS*.2,0,0,TAU);ctx.fill()}
+  if(st==='title'||!grid)return;
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){const e=grid[r][c];if(!e)continue;
+    e.rx+=(c-e.rx)*Math.min(1,dt*18);if(Math.abs(c-e.rx)<.01)e.rx=c;
+    if(e.ry<r){e.vy+=40*dt;e.ry=Math.min(r,e.ry+e.vy*dt);if(e.ry>=r){e.ry=r;e.vy=0}}else if(e.ry>r){e.ry+=(r-e.ry)*Math.min(1,dt*18);if(Math.abs(e.ry-r)<.01)e.ry=r}
+    if(e.clr>0)e.clr+=dt;e.pulse=Math.max(0,e.pulse-dt)}
+  ctx.save();ctx.beginPath();ctx.rect(BX-10,BY-10,CS*N+20,CS*N+20);ctx.clip();
+  const hs=hint&&Math.sin(clock*6)>0;
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){const e=grid[r][c];if(!e)continue;const X=BX+(e.rx+.5)*CS,Y=BY+(e.ry+.5)*CS;
+    const isSel=sel&&sel[0]===r&&sel[1]===c,isHint=hs&&hint.some(p=>p[0]===r&&p[1]===c);
+    if(isSel||isHint){ctx.fillStyle=isSel?'rgba(255,255,255,.75)':'rgba(255,255,255,.45)';ctx.beginPath();ctx.roundRect(X-CS/2+3,Y-CS/2+3,CS-6,CS-6,CS*.3);ctx.fill()}
+    egg(X,Y+(isSel?Math.sin(clock*10)*CS*.03:0),CS,e)}
+  ctx.restore();
+  for(const b of beams){b.t-=dt;ctx.globalAlpha=Math.max(0,b.t*2.5);ctx.fillStyle='#fff';if(b.dir==='h')ctx.fillRect(BX,BY+b.r*CS+CS*.35,CS*N,CS*.3);else ctx.fillRect(BX+b.c*CS+CS*.35,BY,CS*.3,CS*N)}ctx.globalAlpha=1;
+  for(let i=beams.length-1;i>=0;i--)if(beams[i].t<=0)beams.splice(i,1);
+  for(const f of fx){f.t-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=700*dt;ctx.globalAlpha=Math.max(0,f.t*1.8);ctx.fillStyle=f.c;ctx.beginPath();ctx.moveTo(f.x,f.y-f.r);ctx.lineTo(f.x+f.r,f.y+f.r*.6);ctx.lineTo(f.x-f.r*.8,f.y+f.r);ctx.fill()}ctx.globalAlpha=1;fx=fx.filter(f=>f.t>0);
+  for(const ch of chicks){ch.t-=dt;if(ch.t>0)chick(ch.x,ch.y,CS,ch.t)}for(let i=chicks.length-1;i>=0;i--)if(chicks[i].t<=0)chicks.splice(i,1);
+  // HUD
+  ctx.setTransform(DPR,0,0,DPR,0,0);const top=BY-16;ctx.textAlign='center';ctx.textBaseline='alphabetic';
+  const bw=Math.min(W-40,CS*N),bx=(W-bw)/2,by=Math.max(14,top-82);
+  ctx.fillStyle='#fffdf7';ctx.beginPath();ctx.roundRect(bx,by,bw,64,16);ctx.fill();
+  ctx.fillStyle='#7a5a3a';ctx.font='14px Jua,sans-serif';ctx.textAlign='left';ctx.fillText(`${level}단계`,bx+14,by+22);
+  ctx.font='26px Jua,sans-serif';ctx.fillStyle='#5a3d1e';ctx.fillText(score.toLocaleString(),bx+14,by+52);
+  ctx.textAlign='right';ctx.font='14px Jua,sans-serif';ctx.fillStyle='#7a5a3a';ctx.fillText('남은 이동',bx+bw-14,by+22);ctx.font='30px Jua,sans-serif';ctx.fillStyle=moves<=5?'#c0504d':'#e07a2e';ctx.fillText(moves,bx+bw-14,by+54);
+  const pw=bw*.4,px=bx+bw/2-pw/2;ctx.fillStyle='#f1e0bd';ctx.beginPath();ctx.roundRect(px,by+40,pw,12,6);ctx.fill();ctx.fillStyle='#5fd35a';ctx.beginPath();ctx.roundRect(px,by+40,pw*Math.min(1,score/target),12,6);ctx.fill();
+  ctx.textAlign='center';ctx.fillStyle='#7a5a3a';ctx.font='14px Jua,sans-serif';ctx.fillText(`목표 ${target.toLocaleString()}`,bx+bw/2,by+30);
+  ctx.font='26px Jua,sans-serif';ctx.lineWidth=5;ctx.strokeStyle='#5a3d1e';
+  for(const p of pops){p.life-=dt;p.y-=30*dt;ctx.globalAlpha=Math.min(1,p.life*2);ctx.strokeText(p.t,p.x,p.y);ctx.fillStyle=p.c;ctx.fillText(p.t,p.x,p.y)}ctx.globalAlpha=1;pops=pops.filter(p=>p.life>0);
+}
+if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
+let last=performance.now();
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(st==='play'&&!busy){idleT+=dt;if(idleT>6&&!hint)hint=findMove()}
+  draw(dt);for(let i=waiters.length-1;i>=0;i--)if(waiters[i].fn()){const w=waiters.splice(i,1)[0];w.res()}requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+}
+</script>
+</body></html>
