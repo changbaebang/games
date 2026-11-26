@@ -5,334 +5,53 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <script src="../common/arcade.js"></script>
-<style>
-/* VOICE: 경쾌하고 장난스러운 블록 놀이터
-   IDEA: 장난감 블록으로 쌓은 미니 아레나
-   PICTURE: 3D 블록 필드가 화면 전체
-   COLOUR and TYPE: 하늘색, 잔디 초록, 경고 빨강, 버튼 노랑 / Jua
-   LAYOUT: 풀스크린 게임, 모서리 HUD, 모바일 조이스틱 */
-:root{color-scheme:light dark}
-*{box-sizing:border-box;min-width:0}
-html,body{margin:0;height:100%;overflow:hidden;background:#87c8f0;font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
-#game{position:fixed;inset:0}#game canvas{display:block}
-.hud{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:8px;pointer-events:none;z-index:5}
-.panel{background:rgba(18,32,52,.74);border-radius:14px;padding:10px 14px;box-shadow:0 4px 0 rgba(0,0,0,.25)}
-.hptop{display:flex;justify-content:space-between;font-size:15px;margin-bottom:5px}
-.hpwrap{width:min(240px,46vw);height:18px;background:#3b1f24;border-radius:9px;overflow:hidden;border:2px solid #fff}
-#hp{height:100%;width:100%;background:linear-gradient(#6ff07a,#2fb34a);transition:width .15s}
-.stats{display:flex;gap:14px;font-size:17px;flex-wrap:wrap}.stats b{color:#ffd23f;font-weight:400}
-#tags{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
-.mbar{position:absolute;width:46px;height:8px;margin-left:-23px;background:#2a1215;border:1.5px solid #fff;border-radius:4px;overflow:hidden}
-.mbar i{display:block;height:100%;background:#ff4d4d;width:100%}
-.dmg{position:absolute;font-size:24px;color:#fff;-webkit-text-stroke:1.2px #4a1500;paint-order:stroke;transform:translate(-50%,-50%);animation:up .9s ease-out forwards;white-space:nowrap}
-.dmg.crit{color:#ffd23f;font-size:34px}.dmg.alert{color:#ffd23f;font-size:32px}.dmg.hurt{color:#ff5a5a}.dmg.heal{color:#7dff8a;font-size:18px}
-@keyframes up{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}15%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-190%) scale(1)}}
-#vig{position:fixed;inset:0;pointer-events:none;box-shadow:inset 0 0 140px 50px rgba(255,0,0,.6);opacity:0;transition:opacity .3s;z-index:3}
-#banner{position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);font-size:clamp(40px,8vw,72px);color:#ffd23f;-webkit-text-stroke:2px #5a2a00;paint-order:stroke;opacity:0;pointer-events:none;z-index:6;white-space:nowrap}
-#banner.on{animation:ban 1.8s ease-out}
-@keyframes ban{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}75%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0}}
-.help{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);font-size:14px;background:rgba(18,32,52,.6);padding:6px 14px;border-radius:10px;pointer-events:none;z-index:5;white-space:nowrap}
-.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(15,40,70,.5);z-index:10;padding:16px}
-.overlay[hidden]{display:none}
-.card{background:#fff;color:#1d2a3a;border-radius:22px;padding:26px 28px;max-width:430px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 #1d5f9a}
-.card h1{font-size:46px;line-height:1.05;margin:0 0 6px;color:#2f7de1;font-weight:400}
-.card p{margin:4px 0 16px;font-size:17px;color:#475569}
-.keys{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;text-align:left;margin:0 auto 20px;width:fit-content;font-size:16px}
-.keys kbd{font:inherit;background:#eef4fb;border:1.5px solid #c9d8ea;border-bottom-width:3px;border-radius:7px;padding:1px 8px;color:#1d5f9a;white-space:nowrap}
-.mons{display:flex;justify-content:center;gap:12px;margin:-4px 0 18px;font-size:15px;color:#475569;flex-wrap:wrap}
-.mons span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
-.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 34px;background:#ffb52e;color:#3b2200;box-shadow:0 5px 0 #c77d00;cursor:pointer;min-height:50px}
-.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c77d00}
-.btn:focus-visible{outline:3px solid #2f7de1;outline-offset:3px}
-#touch{display:none}
-@media (pointer:coarse){#touch{display:block}.help{display:none}}
-#joy{position:fixed;left:calc(84px + env(safe-area-inset-left));top:calc(100% - 84px - env(safe-area-inset-bottom));width:124px;height:124px;margin:-62px 0 0 -62px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.55);z-index:6;pointer-events:none;opacity:.55;transition:opacity .15s}
-#joy.on{opacity:1;transition:none}
-.zone{position:fixed;left:0;bottom:0;width:45%;height:65%;pointer-events:none;z-index:2;background:linear-gradient(to top right,rgba(255,255,255,.08),transparent 60%)}
-#knob{position:absolute;left:36px;top:36px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.8);pointer-events:none}
-.tbtn{position:fixed;border:0;border-radius:50%;font:inherit;z-index:6;touch-action:none;box-shadow:0 4px 0 rgba(0,0,0,.25)}
-#tAtk{right:calc(20px + env(safe-area-inset-right));bottom:calc(40px + env(safe-area-inset-bottom));width:92px;height:92px;background:#ff6b4a;color:#fff;font-size:20px}
-#tJmp{right:calc(122px + env(safe-area-inset-right));bottom:calc(22px + env(safe-area-inset-bottom));width:64px;height:64px;background:#ffd23f;color:#3b2200;font-size:16px}
-.tbtn:active{transform:scale(.92)}
-.mob{display:none}
-@media (pointer:coarse){.mob{display:grid}.desk{display:none}}
-@media (max-height:500px){.card{padding:16px 20px}.card h1{font-size:32px}.card p{margin-bottom:10px}.keys{margin-bottom:12px}}
-@media(prefers-reduced-motion:reduce){.dmg,#banner.on{animation-duration:.01s}}
-</style></head><body>
+<link rel="stylesheet" href="style.css">
+</head><body>
 <div id="game"></div>
 <div id="vig"></div>
 <div id="tags"></div>
 <div id="banner"></div>
 <div class="hud">
   <div class="panel"><div class="hptop"><span>체력</span><span id="hpTxt">100 / 100</span></div><div class="hpwrap"><div id="hp"></div></div></div>
-  <div class="panel stats"><span>웨이브 <b id="wave">1</b></span><span>처치 <b id="kills">0</b></span><span>남은 몬스터 <b id="left">0</b></span></div>
+  <div class="panel stats"><span>웨이브 <b id="wave">1</b></span><span>처치 <b id="kills">0</b></span><span>금화 <b id="coins">0</b></span></div>
+  <div class="panel gear"><span id="wName">칼 Lv1</span><span id="buffs"></span></div>
 </div>
-<div class="help">WASD 이동 · Space 점프 · 클릭 / J 공격 · 드래그 / Q·E 시점 · 휠 줌</div>
-<div id="touch"><div class="zone"></div><div id="joy"><div id="knob"></div></div><button class="tbtn" id="tJmp" aria-label="점프">점프</button><button class="tbtn" id="tAtk" aria-label="공격">공격</button></div>
+<div id="bossBar" hidden><span id="bossName">킹 브루트</span><div><i id="bossFill"></i></div></div>
+<div id="comboTxt"></div>
+<button id="pauseBtn" aria-label="일시정지">II</button>
+<div class="help">WASD 이동 · Space 점프 · Shift 대시 · 클릭/J 공격 · Q 물약 · F 폭탄 · 드래그/←→ 시점 · P 일시정지</div>
+<div id="touch"><div class="zone"></div><div id="joy"><div id="knob"></div></div>
+  <button class="tbtn" id="tAtk">공격</button><button class="tbtn" id="tJmp">점프</button><button class="tbtn" id="tDash">대시</button>
+  <button class="tbtn small" id="tPot">물약 <b id="nPot">0</b></button><button class="tbtn small" id="tBomb">폭탄 <b id="nBomb">0</b></button></div>
 
-<div class="overlay" id="startOv"><div class="card">
+<div class="overlay" id="titleOv"><div class="card">
   <h1>블록 헌터</h1>
-  <p>블록 마을에 몬스터가 나타났어요. 웨이브를 버텨 보세요.</p>
-  <div class="mons"><span style="--c:#6fc36a">좀비</span><span style="--c:#ff9b3d">러너 (빠름)</span><span style="--c:#9b59d0">브루트 (튼튼)</span></div>
-  <div class="keys desk">
-    <kbd>W A S D</kbd><span>이동 (Shift 달리기)</span>
-    <kbd>Space</kbd><span>점프</span>
-    <kbd>클릭 · J</kbd><span>칼 휘두르기</span>
-    <kbd>드래그 · Q E</kbd><span>카메라 회전</span>
-  </div>
-  <div class="keys mob">
-    <kbd>왼쪽 아래 터치</kbd><span>그 자리에 조이스틱이 생겨요</span>
-    <kbd>오른쪽 드래그</kbd><span>카메라 회전 (탭하면 공격)</span>
-    <kbd>공격 버튼</kbd><span>누르고 있으면 연속 공격</span>
-  </div>
-  <p class="mob" style="display:block;font-size:14px;margin-top:-8px">가로 화면으로 하면 더 넓게 보여요.</p>
-  <button class="btn" id="startBtn">시작하기</button>
-  <p style="margin:14px 0 0;font-size:15px"><a href="../" style="color:inherit">← 게임 목록으로</a></p>
+  <p>웨이브마다 모양이 바뀌는 블록 언덕에서 괴물을 물리쳐요. 높은 곳의 보물상자에는 새 무기가 들어 있어요.</p>
+  <div class="mons"><span style="--c:#6fc36a">좀비</span><span style="--c:#ff9b3d">러너</span><span style="--c:#9b59d0">브루트</span><span style="--c:#e05a4a">킹 브루트 (보스)</span></div>
+  <button class="btn cont" id="contBtn" hidden>이어 하기</button>
+  <div class="modes" id="modes"></div>
+  <p class="mob small">왼쪽 아래를 눌러 이동, 오른쪽을 끌어 시점 회전. 가로 화면이 더 넓어요.</p>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
 </div></div>
+
+<div class="overlay" id="restOv" hidden><div class="card">
+  <h2 id="restTitle">웨이브 1 클리어!</h2>
+  <p id="restTxt">체력을 조금 회복했어요. 금화로 준비하고 다음 웨이브로!</p>
+  <div class="offers" id="offers"></div>
+  <button class="btn" id="nextBtn">다음 웨이브</button>
+  <p class="small">여기까지 자동 저장됐어요.</p>
+</div></div>
+
+<div class="overlay" id="pauseOv" hidden><div class="card">
+  <h2>일시정지</h2>
+  <div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="saveExitBtn">저장하고 목록으로</button><button class="btn soft" id="titleBtn">처음 화면</button></div>
+  <p class="small">나가도 이번 웨이브 처음부터 이어서 할 수 있어요.</p>
+</div></div>
+
 <div class="overlay" id="deadOv" hidden><div class="card">
-  <h1 style="color:#e94b3c">쓰러졌어요</h1>
-  <p id="deadTxt"></p>
-  <button class="btn" id="againBtn">다시 하기</button>
+  <h1 style="color:#e94b3c">쓰러졌어요</h1><p id="deadTxt"></p>
+  <div class="btns"><button class="btn" id="againBtn">같은 난이도로 다시</button><button class="btn soft" id="deadTitleBtn">처음 화면</button></div>
 </div></div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-Arcade.boot(D=>{
-const snd=(...a)=>window.Arcade&&Arcade.play(...a);
-const W=()=>innerWidth,H=()=>innerHeight,$=id=>document.getElementById(id);
-const tags=$('tags');
-const MOBILE=matchMedia('(pointer:coarse)').matches;
-const renderer=new THREE.WebGLRenderer({antialias:!MOBILE||devicePixelRatio<2});
-renderer.setPixelRatio(Math.min(devicePixelRatio,MOBILE?1.5:2));renderer.setSize(W(),H());
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-$('game').appendChild(renderer.domElement);
-const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x87c8f0);scene.fog=new THREE.Fog(0x87c8f0,50,120);
-const camera=new THREE.PerspectiveCamera(60,W()/H(),.1,300);
-scene.add(new THREE.HemisphereLight(0xffffff,0x5a8a3a,.75));
-const sun=new THREE.DirectionalLight(0xffffff,.85);sun.position.set(30,50,20);sun.castShadow=true;
-sun.shadow.mapSize.set(MOBILE?1024:2048,MOBILE?1024:2048);Object.assign(sun.shadow.camera,{left:-62,right:62,top:62,bottom:-62,far:160});
-scene.add(sun);
-function fit(){camera.aspect=W()/H();camera.fov=camera.aspect<1?78:60;camera.updateProjectionMatrix();renderer.setSize(W(),H())}
-addEventListener('resize',fit);fit();
-
-const ARENA=55,obstacles=[];
-const mat=c=>new THREE.MeshLambertMaterial({color:c});
-function box(w,h,d,c){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(c));m.castShadow=true;m.receiveShadow=true;return m}
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(ARENA*2+24,ARENA*2+24),mat(0x58b84a));
-ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
-const grid=new THREE.GridHelper(ARENA*2+24,(ARENA*2+24)/2,0x4ca63f,0x4ca63f);grid.position.y=.02;scene.add(grid);
-for(let i=-ARENA-2;i<=ARENA+2;i+=4)for(const [x,z] of [[i,-ARENA-2],[i,ARENA+2],[-ARENA-2,i],[ARENA+2,i]]){
-  const b=box(4,1.6,4,((i/4)&1)?0x9a7650:0x8a6643);b.position.set(x,.8,z);scene.add(b)}
-function addObs(m,x,z,r){m.position.x=x;m.position.z=z;scene.add(m);obstacles.push({x,z,r})}
-let seed=11;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
-const blockCols=[0xe94b3c,0x2f7de1,0xffc93c,0xa463d8,0xf08a24];
-for(let i=0;i<32;i++){
-  const x=(rnd()*2-1)*(ARENA-6),z=(rnd()*2-1)*(ARENA-6);
-  if(Math.hypot(x,z)<9||obstacles.some(o=>Math.hypot(o.x-x,o.z-z)<o.r+3))continue;
-  if(rnd()<.55){const g=new THREE.Group(),t=box(1,3,1,0x7a4e2a),l=box(3.4,3,3.4,0x2e8b3e),l2=box(2,1.4,2,0x37a64a);
-    t.position.y=1.5;l.position.y=4.2;l2.position.y=6.3;g.add(t,l,l2);addObs(g,x,z,1.1)}
-  else{const s=1.6+rnd()*2.6,h=1+rnd()*3,b=box(s,h,s,blockCols[i%5]);b.position.y=h/2;addObs(b,x,z,s*.72)}
-}
-function pushOut(q,r){
-  for(const o of obstacles){const dx=q.x-o.x,dz=q.z-o.z,d=Math.hypot(dx,dz),m=o.r+r;
-    if(d<m&&d>1e-4){q.x=o.x+dx/d*m;q.z=o.z+dz/d*m}}
-  q.x=Math.max(-ARENA+r,Math.min(ARENA-r,q.x));q.z=Math.max(-ARENA+r,Math.min(ARENA-r,q.z));
-}
-const blocked=(x,z,r)=>obstacles.some(o=>Math.hypot(o.x-x,o.z-z)<o.r+r);
-
-function limb(w,h,d,c,x,y){const p=new THREE.Group();p.position.set(x,y,0);const m=box(w,h,d,c);m.position.y=-h/2;p.add(m);return p}
-function makeChar(o){
-  const g=new THREE.Group(),body=new THREE.Group();g.add(body);
-  const legL=limb(.48,1,.5,o.leg,-.26,1),legR=limb(.48,1,.5,o.leg,.26,1);
-  const torso=box(1.04,1.05,.55,o.torso);torso.position.y=1.52;
-  const armL=limb(.46,1,.48,o.arm,-.76,2.02),armR=limb(.46,1,.48,o.arm,.76,2.02);
-  const head=box(.82,.82,.82,o.head);head.position.y=2.47;
-  body.add(legL,legR,torso,armL,armR,head);
-  for(const sx of [-.18,.18]){const e=box(.13,o.eyeH||.15,.04,o.eye||0x111111);e.castShadow=false;e.position.set(sx,2.56,.42);body.add(e)}
-  const m=box(o.smile?.34:.42,.07,.04,0x111111);m.castShadow=false;m.position.set(0,2.33,.42);body.add(m);
-  const mats=[];body.traverse(n=>{if(n.isMesh)mats.push(n.material)});
-  return {g,body,legL,legR,armL,armR,head,mats};
-}
-
-// ---- player
-const P=makeChar({head:0xffd23f,torso:0x2f7de1,arm:0xffd23f,leg:0x3a9a48,smile:true});
-const sword=new THREE.Group(),blade=box(.16,1.7,.08,0xe4edf5),hilt=box(.55,.12,.18,0x8a5a2a),grip=box(.12,.35,.12,0x5a3a1a);
-blade.position.y=.85;grip.position.y=-.2;sword.add(blade,hilt,grip);sword.position.set(0,-.95,.15);sword.rotation.x=Math.PI/2;
-P.armR.add(sword);scene.add(P.g);
-const PS=D.player;const pl={hp:PS.hp,max:PS.hp,vy:0,face:0,atk:0,hit:false,lastHurt:-9,phase:0};
-let yaw=0,pitch=.48,dist=13,shake=0,time=0,started=false,dead=false,wave=1,kills=0;
-
-// ---- monsters
-const TYPES=D.monsters;
-let mons=[];const debris=[];
-function spawn(type){
-  const T=TYPES[type],p=P.g.position;let x,z,n=0;
-  do{x=(Math.random()*2-1)*(ARENA-4);z=(Math.random()*2-1)*(ARENA-4)}while((Math.hypot(x-p.x,z-p.z)<20||blocked(x,z,1.2))&&++n<60);
-  const ch=makeChar(T.c);ch.g.scale.setScalar(T.sc);ch.g.position.set(x,0,z);scene.add(ch.g);
-  const bar=document.createElement('div');bar.className='mbar';bar.innerHTML='<i></i>';tags.appendChild(bar);
-  const hpm=T.hp*(1+(wave-1)*D.waves.hpPerWave);mons.push({T,ch,hp:hpm,max:hpm,state:'wander',tx:x,tz:z,wt:0,dt:Math.random(),chaseT:0,kx:0,kz:0,cd:0,flash:0,swing:0,bar,fill:bar.firstChild,dead:false,die:0,phase:Math.random()*6,idle:0});
-}
-function spawnWave(){
-  let comp=D.waves.list[wave-1];
-  if(!comp){const E=D.waves.endless,n=E.base+wave*E.perWave,bs=Math.min(E.bruteShareMax,E.bruteShare+wave*E.bruteSharePerWave);comp={zombie:0,runner:0,brute:0};
-    for(let i=0;i<n;i++){const r=Math.random();comp[r<bs?'brute':r<bs+E.runnerShare?'runner':'zombie']++}if(wave%E.bossEvery===0)comp.king=Math.floor(wave/E.bossEvery)}
-  let boss=false;for(const k in comp){if(!TYPES[k])continue;if(TYPES[k].boss&&comp[k])boss=true;for(let i=0;i<comp[k];i++)spawn(k)}
-  if(window.Arcade)Arcade.record('blockHunterWave',wave);
-  const b=$('banner');b.textContent='웨이브 '+wave+(boss?' · 보스!':'');b.classList.remove('on');void b.offsetWidth;b.classList.add('on');if(wave>1)snd('level');
-}
-function pop(pos,text,cls,h=1){
-  const v=new THREE.Vector3(pos.x,pos.y+3.1*h,pos.z).project(camera);if(v.z>1)return;
-  const el=document.createElement('div');el.className='dmg '+cls;el.textContent=text;
-  el.style.left=((v.x+1)/2*W()+(Math.random()*20-10))+'px';el.style.top=((1-v.y)/2*H())+'px';
-  tags.appendChild(el);setTimeout(()=>el.remove(),900);
-}
-function burst(pos,color,n=10){
-  for(let i=0;i<n;i++){const c=box(.28,.28,.28,color);c.position.set(pos.x,1.5,pos.z);scene.add(c);
-    debris.push({m:c,vx:(Math.random()-.5)*8,vy:4+Math.random()*6,vz:(Math.random()-.5)*8,life:1.1})}
-}
-function hurtMon(m,dmg,crit){
-  m.hp-=dmg;m.flash=.18;const q=m.ch.g.position,p=P.g.position,dx=q.x-p.x,dz=q.z-p.z,d=Math.hypot(dx,dz)||1;
-  const kb=(crit?13:8)/m.T.sc;m.kx=dx/d*kb;m.kz=dz/d*kb;
-  pop(q,crit?dmg+'!':dmg,crit?'crit':'',m.T.sc);snd(crit?'crit':'hit');
-  if(m.state!=='chase'){m.state='chase';m.chaseT=8}
-  if(m.hp<=0){m.dead=true;m.die=.5;m.bar.remove();kills++;snd('pop');burst(q,m.T.c.head,m.T.sc>=1.5?16:10);shake=Math.max(shake,.15)}
-}
-function hurtPlayer(dmg){
-  if(dead)return;pl.hp-=dmg;pl.lastHurt=time;shake=.3;snd('hurt');pop(P.g.position,'-'+dmg,'hurt');
-  const v=$('vig');v.style.opacity=1;setTimeout(()=>v.style.opacity=pl.hp<30?.45:0,180);
-  if(pl.hp<=0){pl.hp=0;dead=true;snd('lose');if(window.Arcade)Arcade.record('blockHunterBest',kills);$('deadTxt').textContent=`웨이브 ${wave}까지 버티고 몬스터 ${kills}마리를 처치했어요.`;$('deadOv').hidden=false;$('againBtn').focus()}
-}
-function attack(){
-  if(!started||dead||pl.atk>0)return;pl.atk=.32;pl.hit=false;snd('slash');
-  let best=null,bd=5;const p=P.g.position;
-  for(const m of mons){if(m.dead)continue;const q=m.ch.g.position,d=Math.hypot(q.x-p.x,q.z-p.z);if(d<bd){bd=d;best=q}}
-  if(best)pl.face=Math.atan2(best.x-p.x,best.z-p.z);
-}
-function doHit(){
-  const p=P.g.position;
-  for(const m of mons){if(m.dead)continue;const q=m.ch.g.position,dx=q.x-p.x,dz=q.z-p.z,d=Math.hypot(dx,dz);
-    let da=Math.atan2(dx,dz)-pl.face;da=Math.atan2(Math.sin(da),Math.cos(da));
-    if(d<2.7+m.T.sc*.5&&(Math.abs(da)<1.25||d<1.3)){const crit=Math.random()<PS.critChance;hurtMon(m,Math.round((PS.attackMin+Math.random()*(PS.attackMax-PS.attackMin))*(crit?PS.critMult:1)),crit)}}
-}
-
-// ---- input
-const keys={},joy={x:0,y:0};
-addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='Space'){e.preventDefault();jump()}if(e.code==='KeyJ')attack()});
-addEventListener('keyup',e=>keys[e.code]=false);
-addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
-function jump(){if(started&&!dead&&P.g.position.y<=0.001){pl.vy=9.5;snd('jump')}}
-const cv=renderer.domElement;let drag=null;
-cv.addEventListener('contextmenu',e=>e.preventDefault());
-const jb=$('joy'),kn=$('knob');let jid=null,jo={x:0,y:0};
-function joyMove(e){let x=e.clientX-jo.x,y=e.clientY-jo.y;const l=Math.hypot(x,y),mx=50;
-  if(l>mx){x*=mx/l;y*=mx/l}kn.style.transform=`translate(${x}px,${y}px)`;joy.x=x/mx;joy.y=y/mx}
-function joyEnd(){jid=null;joy.x=joy.y=0;kn.style.transform='';jb.classList.remove('on');jb.style.left=jb.style.top=''}
-cv.addEventListener('pointerdown',e=>{
-  if(e.pointerType==='touch'&&jid===null&&e.clientX<innerWidth*.45&&e.clientY>innerHeight*.35){
-    jid=e.pointerId;jo={x:e.clientX,y:e.clientY};jb.style.left=e.clientX+'px';jb.style.top=e.clientY+'px';jb.classList.add('on');
-    cv.setPointerCapture(e.pointerId);joyMove(e);return}
-  if(drag)return;drag={x:e.clientX,y:e.clientY,moved:false,id:e.pointerId,touch:e.pointerType==='touch'};cv.setPointerCapture(e.pointerId)});
-cv.addEventListener('pointermove',e=>{if(e.pointerId===jid){joyMove(e);return}
-  if(!drag||drag.id!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
-  if(!drag.moved&&Math.hypot(dx,dy)<(drag.touch?10:7))return;drag.moved=true;const k=drag.touch?.009:.006;
-  yaw-=dx*k;pitch=Math.max(.12,Math.min(1.25,pitch+dy*k*.7));drag.x=e.clientX;drag.y=e.clientY});
-const ptrEnd=e=>{if(e.pointerId===jid){joyEnd();return}if(drag&&drag.id===e.pointerId){if(!drag.moved&&e.button===0&&e.type==='pointerup')attack();drag=null}};
-cv.addEventListener('pointerup',ptrEnd);cv.addEventListener('pointercancel',ptrEnd);
-cv.addEventListener('dblclick',e=>e.preventDefault());
-cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.max(6,Math.min(24,dist+e.deltaY*.01))},{passive:false});
-let atkHeld=false;const ta=$('tAtk');
-ta.addEventListener('pointerdown',e=>{e.preventDefault();atkHeld=true;try{ta.setPointerCapture(e.pointerId)}catch(_){}attack()});
-for(const ev of ['pointerup','pointercancel','lostpointercapture'])ta.addEventListener(ev,()=>atkHeld=false);
-$('tJmp').addEventListener('pointerdown',e=>{e.preventDefault();jump()});
-
-function reset(){
-  for(const m of mons){scene.remove(m.ch.g);m.bar.remove()}mons=[];
-  Object.assign(pl,{hp:pl.max,vy:0,atk:0,lastHurt:-9});P.g.position.set(0,0,0);
-  wave=1;kills=0;dead=false;$('vig').style.opacity=0;spawnWave();
-}
-$('startBtn').onclick=()=>{$('startOv').hidden=true;started=true;reset()};
-$('againBtn').onclick=()=>{$('deadOv').hidden=true;reset()};
-
-// ---- loop
-const lerpA=(a,b,t)=>{let d=Math.atan2(Math.sin(b-a),Math.cos(b-a));return a+d*Math.min(1,t)};
-const clock=new THREE.Clock(),tmp=new THREE.Vector3();
-function update(dt){
-  const p=P.g.position;
-  // player move
-  const fx=Math.sin(yaw),fz=Math.cos(yaw),rx=-fz,rz=fx;
-  let f=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0)-joy.y;
-  let s=(keys.KeyD?1:0)-(keys.KeyA?1:0)+joy.x;
-  if(keys.KeyQ||keys.ArrowLeft)yaw+=1.8*dt;if(keys.KeyE||keys.ArrowRight)yaw-=1.8*dt;
-  let mx=fx*f+rx*s,mz=fz*f+rz*s;const ml=Math.hypot(mx,mz);
-  const spd=dead?0:(keys.ShiftLeft||keys.ShiftRight?10:6.5);
-  if(ml>.1&&!dead){const k=Math.min(1,ml);mx/=ml;mz/=ml;p.x+=mx*spd*k*dt;p.z+=mz*spd*k*dt;if(pl.atk<=0)pl.face=lerpA(pl.face,Math.atan2(mx,mz),dt*12);pl.phase+=dt*spd*1.6*k}
-  pl.vy-=26*dt;p.y=Math.max(0,p.y+pl.vy*dt);if(p.y===0)pl.vy=0;
-  if(atkHeld)attack();
-  if(jid!==null&&!drag&&joy.y<-.5&&Math.abs(joy.x)<.6)yaw=lerpA(yaw,pl.face,dt*.9);
-  pushOut(p,.6);P.g.rotation.y=lerpA(P.g.rotation.y,pl.face,dt*20);
-  const walk=ml>.1&&p.y===0?Math.sin(pl.phase):0;
-  P.legL.rotation.x=walk*.8;P.legR.rotation.x=-walk*.8;P.armL.rotation.x=-walk*.7;
-  if(pl.atk>0){pl.atk-=dt;const t=1-Math.max(0,pl.atk)/.32,e=1-(1-t)**3;P.armR.rotation.x=-2.9+e*2.8;P.armR.rotation.z=.3-e*.5;
-    if(t>.45&&!pl.hit){pl.hit=true;doHit()}}
-  else{P.armR.rotation.x=walk*.7-.2;P.armR.rotation.z=0}
-  if(dead){P.body.rotation.x=Math.min(Math.PI/2,P.body.rotation.x+dt*4)}else P.body.rotation.x=0;
-  if(!dead&&time-pl.lastHurt>PS.regenDelay&&pl.hp<pl.max)pl.hp=Math.min(pl.max,pl.hp+PS.regenPerSec*dt);
-
-  // monsters
-  for(const m of mons){
-    const g=m.ch.g,q=g.position,T=m.T;
-    if(m.dead){m.die-=dt;g.rotation.x=Math.min(Math.PI/2,g.rotation.x+dt*6);g.scale.setScalar(T.sc*Math.max(.01,m.die/.5));continue}
-    const dx=p.x-q.x,dz=p.z-q.z,d=Math.hypot(dx,dz);
-    m.dt-=dt;m.chaseT-=dt;m.cd-=dt;
-    if(m.dt<=0){m.dt=.7+Math.random()*.6;
-      if(m.state==='wander'&&!dead&&d<T.aggro&&Math.random()<.5){m.state='chase';m.chaseT=5+Math.random()*6;pop(q,'!','alert',T.sc);if(d<10)snd('alert')}
-      else if(m.state==='chase'&&(dead||d>T.aggro+9||(m.chaseT<=0&&d>5&&Math.random()<.5))){m.state='wander';m.wt=0;pop(q,'?','alert',T.sc)}}
-    let tx,tz,sp,moving=true;
-    if(m.state==='chase'){tx=p.x;tz=p.z;sp=T.spd;
-      if(d<1.3*T.sc+.5){moving=false;if(m.cd<=0){m.cd=1.1;m.swing=.3;if(Math.abs(p.y)<1.4)hurtPlayer(T.dmg)}}}
-    else{m.wt-=dt;if(m.wt<=0||Math.hypot(m.tx-q.x,m.tz-q.z)<.6){m.wt=2+Math.random()*3;m.idle=Math.random()<.35?1.5+Math.random()*2:0;
-        m.tx=q.x+(Math.random()*2-1)*10;m.tz=q.z+(Math.random()*2-1)*10}
-      tx=m.tx;tz=m.tz;sp=T.spd*.4;if(m.idle>0){m.idle-=dt;moving=false}}
-    const ux=tx-q.x,uz=tz-q.z,ul=Math.hypot(ux,uz)||1;
-    if(moving){q.x+=ux/ul*sp*dt;q.z+=uz/ul*sp*dt;m.phase+=dt*sp*2.2;g.rotation.y=lerpA(g.rotation.y,Math.atan2(ux,uz),dt*8)}
-    else if(m.state==='chase')g.rotation.y=lerpA(g.rotation.y,Math.atan2(dx,dz),dt*10);
-    q.x+=m.kx*dt;q.z+=m.kz*dt;const dmp=Math.exp(-7*dt);m.kx*=dmp;m.kz*=dmp;
-    for(const o of mons){if(o===m||o.dead)continue;const ox=q.x-o.ch.g.position.x,oz=q.z-o.ch.g.position.z,od=Math.hypot(ox,oz),mn=.6*(T.sc+o.T.sc);
-      if(od<mn&&od>1e-4){q.x+=ox/od*(mn-od)*.5;q.z+=oz/od*(mn-od)*.5}}
-    if(d<.6+.5*T.sc&&d>1e-4){const mn=.6+.5*T.sc;q.x-=dx/d*(mn-d);q.z-=dz/d*(mn-d)}
-    pushOut(q,.55*T.sc);
-    const w=moving?Math.sin(m.phase):0;m.ch.legL.rotation.x=w*.7;m.ch.legR.rotation.x=-w*.7;
-    const base=T.zombie?-1.45:0;let sw=0;if(m.swing>0){m.swing-=dt;sw=-Math.sin((1-m.swing/.3)*Math.PI)*1.3}
-    m.ch.armL.rotation.x=base+(T.zombie?w*.15:-w*.7)+sw;m.ch.armR.rotation.x=base+(T.zombie?-w*.15:w*.7)+sw;
-    m.flash=Math.max(0,m.flash-dt);const fl=m.flash>0?.8:0;for(const mt of m.ch.mats)mt.emissive.setScalar(fl);
-    const show=m.hp<m.max||m.state==='chase';
-    tmp.set(q.x,3.15*T.sc+.1,q.z).project(camera);
-    if(show&&tmp.z<1&&d<45){m.bar.style.display='';m.bar.style.left=(tmp.x+1)/2*W()+'px';m.bar.style.top=(1-tmp.y)/2*H()+'px';m.fill.style.width=Math.max(0,m.hp/m.max*100)+'%'}
-    else m.bar.style.display='none';
-  }
-  mons=mons.filter(m=>{if(m.dead&&m.die<=0){scene.remove(m.ch.g);m.ch.g.traverse(n=>{if(n.isMesh){n.geometry.dispose();n.material.dispose()}});return false}return true});
-  if(started&&!dead&&mons.length===0){wave++;pl.hp=Math.min(pl.max,pl.hp+PS.waveHeal);pop(p,'+'+PS.waveHeal,'heal');spawnWave()}
-
-  for(let i=debris.length-1;i>=0;i--){const b=debris[i];b.life-=dt;b.vy-=22*dt;b.m.position.x+=b.vx*dt;b.m.position.z+=b.vz*dt;
-    b.m.position.y=Math.max(.14,b.m.position.y+b.vy*dt);if(b.m.position.y<=.14){b.vx*=.9;b.vz*=.9;b.vy*=-.3}
-    b.m.rotation.x+=dt*6;b.m.scale.setScalar(Math.max(.01,Math.min(1,b.life*2)));
-    if(b.life<=0){scene.remove(b.m);b.m.geometry.dispose();b.m.material.dispose();debris.splice(i,1)}}
-
-  $('hp').style.width=pl.hp/pl.max*100+'%';$('hp').style.background=pl.hp<30?'linear-gradient(#ff7a6a,#e0392b)':'';
-  $('hpTxt').textContent=Math.ceil(pl.hp)+' / '+pl.max;$('wave').textContent=wave;$('kills').textContent=kills;
-  $('left').textContent=mons.filter(m=>!m.dead).length;
-}
-function frame(){
-  const dt=Math.min(clock.getDelta(),.05);time+=dt;
-  if(started)update(dt);else{yaw+=dt*.15}
-  const p=P.g.position,cp=Math.cos(pitch);
-  shake=Math.max(0,shake-dt);const sk=shake*.6;
-  camera.position.set(p.x-Math.sin(yaw)*cp*dist+(Math.random()-.5)*sk,p.y+Math.sin(pitch)*dist+1.5+(Math.random()-.5)*sk,p.z-Math.cos(yaw)*cp*dist);
-  camera.lookAt(p.x,p.y+2,p.z);
-  renderer.render(scene,camera);requestAnimationFrame(frame);
-}
-frame();
-});
-</script>
+<script src="game.js"></script>
 </body></html>

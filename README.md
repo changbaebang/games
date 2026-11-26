@@ -4,7 +4,7 @@
 
 | 게임 | 장르 | 경로 |
 |---|---|---|
-| 블록 헌터 | 3D 블록 액션 | [`/block-hunter/`](./block-hunter/) |
+| 블록 헌터 | 3D 블록 액션 · 난이도 3단계, 이어 하기, 웨이브마다 바뀌는 지형, 무기 6종 | [`/block-hunter/`](./block-hunter/) |
 | 에이스 스트라이크 | 세로 스크롤 비행 슈팅 | [`/ace-strike/`](./ace-strike/) |
 | 달빛 생존자 | 생존 로그라이트 | [`/moon-survivor/`](./moon-survivor/) |
 | 블록 스택 | 낙하 블록 퍼즐 | [`/block-stack/`](./block-stack/) |
