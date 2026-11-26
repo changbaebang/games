@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>에어하키</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<style>
+/* VOICE: 오락실 에어하키 테이블, 빠르고 짜릿
+   IDEA: 반짝이는 하키 테이블 위의 빨강 대 파랑
+   PICTURE: 테이블 전체가 화면, 양쪽 골문과 퍽
+   COLOUR and TYPE: 얼음 흰색 테이블, 빨강·파랑 진영, 남색 테두리 / Jua + Press Start 2P
+   LAYOUT: 세로 테이블 중앙, 점수는 테이블 양쪽에 크게 */
+:root{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#141a2e;font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+#wrap{position:fixed;inset:0;display:grid;place-items:center}
+canvas{display:block}
+#pauseBtn{position:fixed;left:calc(10px + env(safe-area-inset-left));top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font:inherit;z-index:5}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(10,14,30,.6);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#f6f9ff;color:#1d2440;border-radius:20px;padding:24px 26px;max-width:400px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 #2f6bd0}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 8px;color:#e0303a;font-weight:400}
+.card p{margin:4px 0 16px;font-size:17px;color:#4a5270}
+.modes{display:grid;gap:10px}
+.btn{font:inherit;font-size:19px;border:0;border-radius:14px;padding:12px 18px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:50px}
+.btn.blue{background:#2f6bd0;color:#fff;box-shadow:0 5px 0 #1c4590}.btn.red{background:#e0303a;color:#fff;box-shadow:0 5px 0 #9a1a22}.btn.soft{background:#e3e9f6;box-shadow:0 5px 0 #b8c3dc}
+.btn:active{transform:translateY(3px)}.btn:focus-visible{outline:3px solid #2f6bd0;outline-offset:3px}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+@media(max-height:500px){.card{padding:14px 18px}.card h1{font-size:30px}.card p{margin-bottom:8px}}
+</style></head><body>
+<div id="wrap"><canvas id="c"></canvas></div>
+<button id="pauseBtn" aria-label="메뉴">II</button>
+<div class="overlay" id="menuOv"><div class="card">
+  <h1>에어하키</h1>
+  <p>내 쪽(아래) 반쪽에서 말렛을 끌어 퍽을 쳐요. 상대 골문에 먼저 7골!</p>
+  <div class="modes">
+    <div class="row"><button class="btn soft" data-m="1">AI 쉬움</button><button class="btn blue" data-m="2">AI 보통</button><button class="btn red" data-m="3">AI 어려움</button></div>
+    <button class="btn" data-m="0">둘이서 (한 화면 마주 보고)</button>
+  </div>
+  <p id="recTxt" style="font-size:15px;margin:12px 0 0"></p>
+  <p style="margin:14px 0 0;font-size:15px"><a href="../" style="color:inherit">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">승리!</h1><p id="eTxt"></p><div class="modes"><button class="btn" id="againBtn">한 판 더</button><button class="btn soft" id="menuBtn2">모드 선택</button></div></div></div>
+<script>
+{
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,snd=(...a)=>window.Arcade&&Arcade.play(...a);
+const GW=400,GH=700,M=14,GOALW=170,PR=30,KR=16,WIN=7;let S=1,DPR=1;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);S=Math.min(innerWidth/GW,innerHeight/GH);cv.style.width=GW*S+'px';cv.style.height=GH*S+'px';cv.width=Math.round(GW*S*DPR);cv.height=Math.round(GH*S*DPR)}
+addEventListener('resize',resize);resize();
+let st='menu',mode=2,me,op,puck,score,pause=0,flash=null,trail=[],shake=0,lastHit=0;
+const AIS=[0,{spd:420,react:.22,aim:.5},{spd:640,react:.12,aim:.8},{spd:900,react:.05,aim:1}];
+function mal(y){return {x:GW/2,y,tx:GW/2,ty:y,vx:0,vy:0,px:GW/2,py:y}}
+function newMatch(){me=mal(GH-90);op=mal(90);score=[0,0];serve(Math.random()<.5?0:1)}
+function serve(to){puck={x:GW/2,y:GH/2+(to===0?60:-60),vx:0,vy:0};pause=.8;trail=[]}
+function clampMal(m,top){m.tx=Math.max(M+PR,Math.min(GW-M-PR,m.tx));if(top)m.ty=Math.max(M+PR,Math.min(GH/2-PR,m.ty));else m.ty=Math.max(GH/2+PR,Math.min(GH-M-PR,m.ty))}
+function moveMal(m,dt,maxSpd){const dx=m.tx-m.x,dy=m.ty-m.y,d=Math.hypot(dx,dy),mv=Math.min(d,maxSpd*dt);if(d>0){m.x+=dx/d*mv;m.y+=dy/d*mv}}
+function aiThink(dt){const A=AIS[mode];op.th=(op.th||0)-dt;if(op.th>0)return;op.th=A.react;
+  const p=puck;if(p.y<GH/2+40&&(p.vy<120||p.y<op.y+10)){
+    if(p.y<op.y-4){if(p.y<M+KR+PR*2){op.tx=GW/2;op.ty=170;op.strike=false;return}op.tx=p.x+(p.x<GW/2?14:-14);op.ty=p.y-PR-KR-30;return}
+    const gx=GW/2+(Math.random()-.5)*GOALW*(1-A.aim),gy=GH,ang=Math.atan2(gy-p.y,gx-p.x);op.tx=p.x-Math.cos(ang)*(PR+KR)*.2+Math.cos(ang)*24;op.ty=p.y-Math.sin(ang)*(PR+KR)*.2+Math.sin(ang)*24;op.strike=true}
+  else{const t=p.vy<0?Math.min(1.2,(p.y-90)/-p.vy):0;let px=p.x+p.vx*t;let g=0;while((px<M||px>GW-M)&&g++<6)px=px<M?2*M-px:2*(GW-M)-px;
+    if(op.err===undefined||Math.random()<.15)op.err=(Math.random()-.5)*(1.15-A.aim)*170;op.tx=GW/2+(px-GW/2)*.62+op.err;op.ty=70+(p.y<GH/2?20:0);op.strike=false}}
+function collideMal(m){const dx=puck.x-m.x,dy=puck.y-m.y,d=Math.hypot(dx,dy),mn=PR+KR;if(d>=mn||d===0)return;
+  const nx=dx/d,ny=dy/d;puck.x=m.x+nx*mn;puck.y=m.y+ny*mn;const rv=(puck.vx-m.vx)*nx+(puck.vy-m.vy)*ny;
+  if(rv<0){puck.vx-=1.85*rv*nx;puck.vy-=1.85*rv*ny;const sp=Math.hypot(puck.vx,puck.vy);if(sp>1500){puck.vx*=1500/sp;puck.vy*=1500/sp}
+    const now=performance.now();if(now-lastHit>60){snd('hit');lastHit=now}shake=Math.min(.2,Math.abs(rv)/5000)}}
+function update(dt){
+  for(const m of [me,op]){m.px=m.x;m.py=m.y}
+  if(mode)aiThink(dt);clampMal(me,false);clampMal(op,true);
+  const sub=6,h=dt/sub;
+  for(let i=0;i<sub;i++){moveMal(me,h,2600);moveMal(op,h,mode?AIS[mode].spd*(op.strike?1.5:1):2600);
+    me.vx=(me.x-me.px)/dt;me.vy=(me.y-me.py)/dt;op.vx=(op.x-op.px)/dt;op.vy=(op.y-op.py)/dt;
+    if(pause>0)continue;
+    puck.x+=puck.vx*h;puck.y+=puck.vy*h;
+    if(puck.x<M+KR){puck.x=M+KR;puck.vx=Math.abs(puck.vx)*.9;snd('bounce')}if(puck.x>GW-M-KR){puck.x=GW-M-KR;puck.vx=-Math.abs(puck.vx)*.9;snd('bounce')}
+    const inGoal=Math.abs(puck.x-GW/2)<GOALW/2-KR*.3;
+    if(puck.y<M+KR&&!inGoal){puck.y=M+KR;puck.vy=Math.abs(puck.vy)*.9;snd('bounce')}if(puck.y>GH-M-KR&&!inGoal){puck.y=GH-M-KR;puck.vy=-Math.abs(puck.vy)*.9;snd('bounce')}
+    if(puck.y<-KR){goal(0);return}if(puck.y>GH+KR){goal(1);return}
+    collideMal(me);collideMal(op);
+    const ig=Math.abs(puck.x-GW/2)<GOALW/2-KR*.3;puck.x=Math.max(M+KR,Math.min(GW-M-KR,puck.x));if(!ig)puck.y=Math.max(M+KR,Math.min(GH-M-KR,puck.y));
+    for(const m of [me,op]){const dx=m.x-puck.x,dy=m.y-puck.y,d=Math.hypot(dx,dy)||1;if(d<PR+KR){m.x=puck.x+dx/d*(PR+KR);m.y=puck.y+dy/d*(PR+KR)}}}
+  if(pause>0){pause-=dt;return}
+  const f=Math.pow(.996,dt*60);puck.vx*=f;puck.vy*=f;
+  const sp=Math.abs(puck.vx)+Math.abs(puck.vy);puck.idle=sp<50?(puck.idle||0)+dt:0;
+  if(puck.idle>(puck.y<110||puck.y>GH-110?1.4:2.5)){let dx=GW/2-puck.x,dy=GH/2-puck.y,d=Math.hypot(dx,dy);if(d<60){dx=(Math.random()-.5)*40;dy=Math.random()<.5?-100:100;d=Math.hypot(dx,dy)}puck.vx=dx/d*280;puck.vy=dy/d*280;puck.idle=0;snd('whoosh')}
+  trail.push([puck.x,puck.y]);if(trail.length>12)trail.shift();
+}
+function goal(who){score[who]++;snd('goal');shake=.35;flash={who,t:1.2};
+  if(score[who]>=WIN){st='end';setTimeout(()=>endMatch(who),900);return}serve(who===0?1:0)}
+function endMatch(who){const youWin=who===0;let txt=`${score[0]} : ${score[1]}`;
+  if(mode){snd(youWin?'win':'lose');$('eTitle').textContent=youWin?'승리!':'AI 승리';$('eTitle').style.color=youWin?'#e0303a':'#2f6bd0';
+    if(youWin&&window.Arcade){const n=(Arcade.best('hockeyWins')||0)+1;Arcade.record('hockeyWins',n);txt+=` · AI 상대 통산 ${n}승`}}
+  else{snd('win');$('eTitle').textContent=youWin?'빨강 승리!':'파랑 승리!';$('eTitle').style.color=youWin?'#e0303a':'#2f6bd0'}
+  $('eTxt').textContent=txt;$('endOv').hidden=false;$('againBtn').focus()}
+// ---------- input (멀티터치: 시작한 쪽 반을 조종)
+const own=new Map();const toField=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)/S,(e.clientY-r.top)/S]};
+cv.addEventListener('pointerdown',e=>{if(st!=='play')return;const [x,y]=toField(e);const side=!mode||e.pointerType==='mouse'?(y<GH/2&&!mode?op:me):me;
+  if(e.pointerType!=='mouse')cv.setPointerCapture(e.pointerId);own.set(e.pointerId,side);side.tx=x;side.ty=y});
+addEventListener('pointermove',e=>{if(st!=='play')return;const [x,y]=toField(e);let m=own.get(e.pointerId);if(!m&&e.pointerType==='mouse')m=me;if(!m)return;m.tx=x;m.ty=y});
+const up=e=>own.delete(e.pointerId);cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+function rec(){const n=window.Arcade?Arcade.best('hockeyWins')||0:0;$('recTxt').textContent=n?`AI 상대 통산 ${n}승`:''}rec();
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mode=+b.dataset.m;newMatch();st='play';$('menuOv').hidden=true;snd('click')});
+$('againBtn').onclick=()=>{newMatch();st='play';$('endOv').hidden=true};$('menuBtn2').onclick=()=>{$('endOv').hidden=true;rec();$('menuOv').hidden=false;st='menu'};
+$('pauseBtn').onclick=()=>{rec();$('menuOv').hidden=false;st='menu'};
+// ---------- draw
+function malletDraw(m,c1,c2){ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.arc(m.x+3,m.y+5,PR,0,TAU);ctx.fill();
+  const g=ctx.createRadialGradient(m.x-8,m.y-8,4,m.x,m.y,PR);g.addColorStop(0,c1);g.addColorStop(1,c2);ctx.fillStyle=g;ctx.beginPath();ctx.arc(m.x,m.y,PR,0,TAU);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.25)';ctx.beginPath();ctx.arc(m.x,m.y,PR*.55,0,TAU);ctx.fill();ctx.fillStyle=c2;ctx.beginPath();ctx.arc(m.x,m.y,PR*.38,0,TAU);ctx.fill()}
+function draw(dt){ctx.setTransform(S*DPR,0,0,S*DPR,0,0);shake=Math.max(0,shake-dt);if(shake)ctx.translate((Math.random()-.5)*shake*20,(Math.random()-.5)*shake*20);
+  ctx.fillStyle='#1d2a58';ctx.beginPath();ctx.roundRect(0,0,GW,GH,22);ctx.fill();
+  ctx.fillStyle='#eef4fb';ctx.beginPath();ctx.roundRect(M,M,GW-M*2,GH-M*2,14);ctx.fill();
+  ctx.fillStyle='rgba(47,107,208,.05)';for(let x=M+16;x<GW-M;x+=22)for(let y=M+16;y<GH-M;y+=22){ctx.beginPath();ctx.arc(x,y,1.3,0,TAU);ctx.fill()}
+  ctx.strokeStyle='#e0303a';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(M,GH/2);ctx.lineTo(GW-M,GH/2);ctx.stroke();
+  ctx.strokeStyle='rgba(224,48,58,.5)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(GW/2,GH/2,60,0,TAU);ctx.stroke();
+  ctx.strokeStyle='rgba(47,107,208,.5)';ctx.beginPath();ctx.arc(GW/2,M,GOALW/2+10,0,Math.PI);ctx.stroke();ctx.beginPath();ctx.arc(GW/2,GH-M,GOALW/2+10,Math.PI,TAU);ctx.stroke();
+  ctx.fillStyle='#0b1020';ctx.fillRect(GW/2-GOALW/2,0,GOALW,M);ctx.fillRect(GW/2-GOALW/2,GH-M,GOALW,M);
+  if(!me)return;
+  ctx.font='90px "Press Start 2P",monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(47,107,208,.12)';ctx.fillText(score[1],GW/2,GH*.25);ctx.fillStyle='rgba(224,48,58,.12)';ctx.fillText(score[0],GW/2,GH*.75);
+  trail.forEach(([x,y],i)=>{ctx.fillStyle=`rgba(30,40,80,${i/trail.length*.15})`;ctx.beginPath();ctx.arc(x,y,KR*(i/trail.length),0,TAU);ctx.fill()});
+  ctx.fillStyle='rgba(0,0,0,.2)';ctx.beginPath();ctx.arc(puck.x+2,puck.y+4,KR,0,TAU);ctx.fill();ctx.fillStyle='#1b1f2e';ctx.beginPath();ctx.arc(puck.x,puck.y,KR,0,TAU);ctx.fill();ctx.strokeStyle='#ffcf3f';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(puck.x,puck.y,KR*.62,0,TAU);ctx.stroke();
+  malletDraw(op,'#7fb0ff','#2f6bd0');malletDraw(me,'#ff8a8f','#e0303a');
+  if(flash){flash.t-=dt;if(flash.t<=0)flash=null;else{ctx.globalAlpha=Math.min(1,flash.t*2);ctx.font='56px Jua,sans-serif';ctx.lineWidth=8;ctx.strokeStyle='#1d2a58';
+    const y=flash.who===0?GH*.36:GH*.64;ctx.save();ctx.translate(GW/2,y);if(!mode&&flash.who===1)ctx.rotate(Math.PI);ctx.strokeText('골!',0,0);ctx.fillStyle=flash.who===0?'#e0303a':'#2f6bd0';ctx.fillText('골!',0,0);ctx.restore();ctx.globalAlpha=1}}
+  if(pause>0&&!flash&&st==='play'){ctx.font='20px Jua,sans-serif';ctx.fillStyle='#4a5270';ctx.fillText('준비…',GW/2,GH/2+(puck.y>GH/2?40:-40))}
+  ctx.textBaseline='alphabetic'}
+if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
+let last=performance.now();
+function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play')update(dt);draw(dt);requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+}
+</script>
+</body></html>

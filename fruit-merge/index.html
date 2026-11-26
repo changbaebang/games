@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>과일 합치기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<style>
+/* VOICE: 말랑하고 달콤한 물리 퍼즐
+   IDEA: 과일 가게의 나무 상자
+   PICTURE: 상자 안에 차곡차곡 쌓이는 얼굴 달린 과일들
+   COLOUR and TYPE: 연두 바탕, 나무 상자 갈색, 과일 원색 / Jua
+   LAYOUT: 세로 무대 중앙, 상단 점수·다음 과일, 하단 진화 순서 */
+:root{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#cfe9a8 repeating-linear-gradient(45deg,#cfe9a8 0 18px,#c6e39c 18px 36px);font-family:'Jua',system-ui,sans-serif;color:#4a3420;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+#wrap{position:fixed;inset:0;display:grid;place-items:center}
+canvas{display:block}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(60,40,20,.42);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fffdf5;color:#4a3420;border-radius:20px;padding:24px 26px;max-width:400px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 #8fbf4a}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 8px;color:#e0503f;font-weight:400}
+.card p{margin:4px 0 16px;font-size:17px;color:#6a5440}
+.big{font-size:40px;color:#e0503f;margin:2px 0 4px}
+.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 34px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:50px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c79400}
+.btn:focus-visible{outline:3px solid #e0503f;outline-offset:3px}
+@media(max-height:500px){.card{padding:16px 20px}.card h1{font-size:32px}.card p{margin-bottom:10px}}
+</style></head><body>
+<div id="wrap"><canvas id="c"></canvas></div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>과일 합치기</h1>
+  <p>상자에 과일을 떨어뜨려요. 같은 과일끼리 닿으면 더 큰 과일로 합쳐져요. 수박 두 개를 만들면 대박!</p>
+  <p style="font-size:15px;margin-top:-6px">좌우로 끌어 위치를 정하고 손을 떼면 떨어져요. PC는 마우스 클릭이나 ← → 와 Space. 빨간 선 위로 과일이 넘치면 끝이에요.</p>
+  <button class="btn" id="startBtn">시작하기</button>
+  <p style="margin:14px 0 0;font-size:15px"><a href="../" style="color:inherit">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="endOv" hidden><div class="card"><h1>상자가 넘쳤어요</h1><div class="big" id="eScore">0</div><p id="eTxt"></p><button class="btn" id="againBtn">다시 하기</button></div></div>
+<script>
+{
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,snd=(...a)=>window.Arcade&&Arcade.play(...a);
+const GW=400,GH=700,L=22,R=378,B=626,TOP=118,DROPY=74;let S=1,DPR=1;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);S=Math.min(innerWidth/GW,innerHeight/GH);cv.style.width=GW*S+'px';cv.style.height=GH*S+'px';cv.width=Math.round(GW*S*DPR);cv.height=Math.round(GH*S*DPR)}
+addEventListener('resize',resize);resize();
+const FR=[['체리',13,'#e0303a','#8a1a22'],['딸기',18,'#ff4d5e','#c02a3a'],['포도',24,'#8a4ad0','#5a2a9a'],['귤',30,'#ffa024','#d07a10'],['감',37,'#ff7a1a','#c8560a'],['사과',44,'#e8323a','#a82028'],
+  ['배',51,'#e8d860','#b8a830'],['복숭아',58,'#ffb0a0','#e07a70'],['파인애플',66,'#ffd23f','#c89a10'],['멜론',75,'#a8e070','#6aa840'],['수박',86,'#3fae4a','#1f7a2a']];
+const PTS=[1,3,6,10,15,21,28,36,45,55,66];
+let st='title',fruits,cur,next,aimX,score,best=0,dropCd,overT,fx,pops,uid=0,shake=0;
+best=window.Arcade?Arcade.best('fruitBest')||0:0;
+const rndTier=()=>Math.floor(Math.random()*Math.random()*5.2);
+function newGame(){fruits=[];cur=rndTier();next=rndTier();aimX=GW/2;score=0;dropCd=0;overT=0;fx=[];pops=[]}
+newGame();
+function mk(t,x,y){return {id:uid++,t,r:FR[t][1],x,y,ox:x,oy:y,born:0,sq:0,blink:Math.random()*4}}
+function drop(){if(st!=='play'||dropCd>0)return;const r=FR[cur][1];const x=Math.max(L+r,Math.min(R-r,aimX));fruits.push(mk(cur,x,DROPY));cur=next;next=rndTier();dropCd=.55;snd('whoosh')}
+function step(dt){
+  const g=1500*dt*dt;
+  for(const f of fruits){const vx=(f.x-f.ox)*.996,vy=(f.y-f.oy)*.996;f.ox=f.x;f.oy=f.y;f.x+=vx;f.y+=vy+g;f.born+=dt}
+  const merges=[];
+  for(let it=0;it<4;it++){
+    for(let i=0;i<fruits.length;i++){const a=fruits[i];if(a.dead)continue;
+      for(let j=i+1;j<fruits.length;j++){const b=fruits[j];if(b.dead)continue;const dx=b.x-a.x,dy=b.y-a.y,rr=a.r+b.r;if(dx*dx+dy*dy>=rr*rr)continue;
+        const d=Math.sqrt(dx*dx+dy*dy)||.01;
+        if(a.t===b.t&&!a.m&&!b.m){a.m=b.m=true;merges.push([a,b]);continue}
+        const pen=(rr-d)*.5,nx=dx/d,ny=dy/d,ma=a.r*a.r,mb=b.r*b.r,wa=mb/(ma+mb),wb=ma/(ma+mb);
+        a.x-=nx*pen*wa;a.y-=ny*pen*wa;b.x+=nx*pen*wb;b.y+=ny*pen*wb}}
+    for(const f of fruits){if(f.x<L+f.r){f.x=L+f.r;f.ox=f.x+(f.x-f.ox)*-.2}if(f.x>R-f.r){f.x=R-f.r;f.ox=f.x+(f.x-f.ox)*-.2}
+      if(f.y>B-f.r){f.y=B-f.r;const vx=f.x-f.ox;f.ox=f.x-vx*.85;f.oy=f.y}}}
+  for(const [a,b] of merges){if(a.dead||b.dead)continue;a.dead=b.dead=true;const x=(a.x+b.x)/2,y=(a.y+b.y)/2;
+    if(a.t>=10){score+=100;snd('win');pop(x,y,'수박 대박! +100','#3fae4a');burst(x,y,'#3fae4a',30);shake=.4;continue}
+    const n=mk(a.t+1,x,y);n.ox=x-((a.x-a.ox)+(b.x-b.ox))/2;n.oy=y-((a.y-a.oy)+(b.y-b.oy))/2+1.5;n.sq=.25;n.born=1;fruits.push(n);
+    score+=PTS[a.t+1];snd('merge',a.t+1);burst(x,y,FR[a.t+1][2],8+a.t*2);if(a.t+1>=8){pop(x,y-n.r-10,FR[a.t+1][0]+'!','#fff');shake=.2}}
+  fruits=fruits.filter(f=>!f.dead);for(const f of fruits)f.m=false;
+}
+function burst(x,y,c,n){for(let i=0;i<n;i++){const a=Math.random()*TAU,v=60+Math.random()*200;fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:.5,c,r:2+Math.random()*4})}}
+function pop(x,y,t,c){pops.push({x,y,t,c,life:1.1})}
+let acc=0;
+function update(dt){dropCd=Math.max(0,dropCd-dt);acc+=dt;const h=1/240;while(acc>=h){step(h);acc-=h}
+  if(keys.ArrowLeft||keys.KeyA)aimX-=320*dt;if(keys.ArrowRight||keys.KeyD)aimX+=320*dt;const r=FR[cur][1];aimX=Math.max(L+r,Math.min(R-r,aimX));
+  const danger=fruits.some(f=>f.born>1.4&&f.y-f.r<TOP&&Math.abs(f.y-f.oy)<.5);
+  overT=danger?overT+dt:Math.max(0,overT-dt*2);
+  if(overT>2.2){st='end';snd('lose');const nb=window.Arcade?Arcade.record('fruitBest',score):score>best;if(score>best)best=score;
+    $('eScore').textContent=score.toLocaleString();const top=Math.max(...fruits.map(f=>f.t));$('eTxt').textContent=`가장 큰 과일: ${FR[top]?FR[top][0]:'-'} · ${nb?'새 최고 기록!':'최고 '+best.toLocaleString()}`;$('endOv').hidden=false;$('againBtn').focus()}
+}
+const keys={};addEventListener('keydown',e=>{keys[e.code]=true;if(['ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();if(e.code==='Space'||e.code==='ArrowDown')drop()});
+addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
+const fx2=x=>(x-cv.getBoundingClientRect().left)/S;let held=null;
+addEventListener('pointerdown',e=>{if(st!=='play'||e.target.closest('.overlay'))return;held=e.pointerId;aimX=fx2(e.clientX)});
+addEventListener('pointermove',e=>{if(st!=='play')return;if(e.pointerType==='mouse'||e.pointerId===held)aimX=fx2(e.clientX)});
+addEventListener('pointerup',e=>{if(e.pointerId===held){held=null;drop()}});addEventListener('pointercancel',()=>held=null);
+const go=()=>{newGame();st='play';$('titleOv').hidden=true;$('endOv').hidden=true;snd('click')};$('startBtn').onclick=go;$('againBtn').onclick=go;
+// ---------- draw
+function fruit(x,y,t,sq=0,blink=0,a=1){const [,r,c,d]=FR[t];ctx.save();ctx.translate(x,y);ctx.globalAlpha=a;const k=1+Math.sin(sq*30)*sq*.4;ctx.scale(k,1/k);
+  ctx.fillStyle=c;ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fill();
+  if(t===2){ctx.fillStyle=d;for(const [px,py] of [[-.4,-.1],[.35,-.15],[0,.35],[-.1,-.5],[.45,.35],[-.45,.35]]){ctx.beginPath();ctx.arc(px*r,py*r,r*.28,0,TAU);ctx.fill()}}
+  if(t===1){ctx.fillStyle='#ffe066';for(const [px,py] of [[-.4,0],[.4,0],[0,.45],[-.2,-.4],[.25,-.35],[-.45,.4],[.45,.4]])ctx.fillRect(px*r-1,py*r-1.5,2.5,3)}
+  if(t===10){ctx.strokeStyle='#1f6a2a';ctx.lineWidth=r*.09;for(const k of [-.55,-.15,.25,.6]){ctx.beginPath();ctx.ellipse(k*r*.6,0,r*.12,r*.95,0,0,TAU);ctx.stroke()}}
+  if(t===9){ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1.5;for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(-r,i*r*.35);ctx.quadraticCurveTo(0,i*r*.35+r*.15,r,i*r*.35);ctx.stroke()}}
+  if(t===8){ctx.strokeStyle=d;ctx.lineWidth=2;for(let i=-3;i<=3;i++){ctx.beginPath();ctx.moveTo(i*r*.3-r*.6,-r);ctx.lineTo(i*r*.3+r*.6,r);ctx.moveTo(i*r*.3+r*.6,-r);ctx.lineTo(i*r*.3-r*.6,r);ctx.stroke()}ctx.fillStyle='#3fae4a';for(const a of [-.5,0,.5]){ctx.save();ctx.rotate(a);ctx.beginPath();ctx.ellipse(0,-r*1.05,r*.12,r*.35,0,0,TAU);ctx.fill();ctx.restore()}}
+  ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.ellipse(-r*.38,-r*.42,r*.22,r*.14,-.6,0,TAU);ctx.fill();
+  if(t!==8&&t!==2){ctx.strokeStyle='#6a4a2a';ctx.lineWidth=Math.max(1.5,r*.07);ctx.beginPath();ctx.moveTo(0,-r*.85);ctx.quadraticCurveTo(r*.05,-r*1.15,r*.15,-r*1.2);ctx.stroke();
+    if(t>=3){ctx.fillStyle='#4fae3a';ctx.beginPath();ctx.ellipse(r*.28,-r*1.02,r*.2,r*.09,-.5,0,TAU);ctx.fill()}}
+  const ey=-r*.05,ex=r*.28,es=Math.max(1.6,r*.09),bl=(blink%4)<.12;ctx.fillStyle='#3a2416';
+  if(bl){ctx.fillRect(-ex-es,ey,es*2,1.6);ctx.fillRect(ex-es,ey,es*2,1.6)}else{ctx.beginPath();ctx.arc(-ex,ey,es,0,TAU);ctx.arc(ex,ey,es,0,TAU);ctx.fill()}
+  ctx.strokeStyle='#3a2416';ctx.lineWidth=Math.max(1.2,r*.05);ctx.beginPath();ctx.arc(0,ey+r*.14,r*.14,.15*Math.PI,.85*Math.PI);ctx.stroke();
+  ctx.fillStyle='rgba(255,120,140,.45)';ctx.beginPath();ctx.ellipse(-ex*1.6,ey+r*.2,r*.12,r*.07,0,0,TAU);ctx.ellipse(ex*1.6,ey+r*.2,r*.12,r*.07,0,0,TAU);ctx.fill();
+  ctx.restore()}
+function draw(dt){ctx.setTransform(S*DPR,0,0,S*DPR,0,0);ctx.clearRect(0,0,GW,GH);shake=Math.max(0,shake-dt);if(shake)ctx.translate((Math.random()-.5)*shake*14,(Math.random()-.5)*shake*14);
+  ctx.fillStyle='#b8834a';ctx.beginPath();ctx.roundRect(L-14,TOP-30,R-L+28,B-TOP+44,16);ctx.fill();
+  ctx.fillStyle='#f6ead0';ctx.fillRect(L,TOP-30,R-L,B-TOP+30);ctx.fillStyle='rgba(184,131,74,.12)';for(let y=TOP;y<B;y+=34)ctx.fillRect(L,y,R-L,2);
+  ctx.fillStyle='#9a6a38';ctx.fillRect(L-14,B,R-L+28,14);
+  const warn=overT>0;ctx.strokeStyle=warn?(Math.sin(performance.now()/80)>0?'#e0303a':'#ff9a9a'):'rgba(224,48,58,.45)';ctx.lineWidth=warn?4:2;ctx.setLineDash([10,8]);ctx.beginPath();ctx.moveTo(L,TOP);ctx.lineTo(R,TOP);ctx.stroke();ctx.setLineDash([]);
+  if(st==='play'||st==='title'){const r=FR[cur][1],x=Math.max(L+r,Math.min(R-r,aimX));ctx.strokeStyle='rgba(74,52,32,.18)';ctx.lineWidth=2;ctx.setLineDash([4,8]);ctx.beginPath();ctx.moveTo(x,DROPY+r);ctx.lineTo(x,B);ctx.stroke();ctx.setLineDash([]);
+    fruit(x,DROPY,cur,0,0,dropCd>0?.35:1)}
+  for(const f of fruits){f.sq=Math.max(0,f.sq-dt);f.blink+=dt;fruit(f.x,f.y,f.t,f.sq,f.blink)}
+  for(const f of fx){f.t-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=500*dt;ctx.globalAlpha=Math.max(0,f.t*2);ctx.fillStyle=f.c;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,TAU);ctx.fill()}ctx.globalAlpha=1;fx=fx.filter(f=>f.t>0);
+  ctx.textBaseline='middle';ctx.textAlign='left';ctx.fillStyle='#4a3420';ctx.font='15px Jua,sans-serif';ctx.fillText('점수',L,22);ctx.font='28px Jua,sans-serif';ctx.fillText(score.toLocaleString(),L,48);
+  ctx.font='13px Jua,sans-serif';ctx.fillStyle='#6a5440';ctx.fillText('최고 '+Math.max(best,score).toLocaleString(),L+110,24);
+  ctx.textAlign='right';ctx.font='15px Jua,sans-serif';ctx.fillStyle='#4a3420';ctx.fillText('다음',R-40,34);ctx.fillStyle='rgba(255,255,255,.6)';ctx.beginPath();ctx.arc(R-16,34,22,0,TAU);ctx.fill();
+  ctx.save();ctx.translate(R-16,34);const ns=Math.min(1,16/FR[next][1]);ctx.scale(ns,ns);fruit(0,0,next);ctx.restore();
+  let x=L-6;const y=B+42;for(let t=0;t<11;t++){const r=5+t*1.1;ctx.save();ctx.translate(x+r,y);const k=r/FR[t][1];ctx.scale(k,k);fruit(0,0,t);ctx.restore();x+=r*2+3.2}
+  ctx.textAlign='center';ctx.font='22px Jua,sans-serif';ctx.lineWidth=5;ctx.strokeStyle='#4a3420';
+  for(const p of pops){p.life-=dt;p.y-=26*dt;ctx.globalAlpha=Math.min(1,p.life*2);ctx.strokeText(p.t,p.x,p.y);ctx.fillStyle=p.c;ctx.fillText(p.t,p.x,p.y)}ctx.globalAlpha=1;pops=pops.filter(p=>p.life>0);ctx.textBaseline='alphabetic'}
+if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
+let last=performance.now();
+function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play')update(dt);draw(dt);requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+}
+</script>
+</body></html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>오목</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<style>
+/* VOICE: 차분하고 정갈한 한판 승부
+   IDEA: 툇마루 위 나무 바둑판
+   PICTURE: 결이 살아 있는 나무판과 윤기 나는 흑백 돌
+   COLOUR and TYPE: 한지 미색 바탕, 나무 황토, 먹색 / Jua
+   LAYOUT: 상단 차례·버튼, 중앙 바둑판, 하단 안내 */
+:root{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#efe6d2;font-family:'Jua',system-ui,sans-serif;color:#3a2a1a;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+canvas{display:block;position:fixed;inset:0}
+.bar{position:fixed;left:0;right:0;top:0;padding:calc(10px + env(safe-area-inset-top)) 12px 8px;display:flex;gap:8px;align-items:center;z-index:5;flex-wrap:wrap}
+#turn{font-size:20px;display:flex;align-items:center;gap:8px;flex:1;white-space:nowrap}
+#turn i{display:inline-block;width:20px;height:20px;border-radius:50%;box-shadow:0 1px 2px rgba(0,0,0,.4)}
+.tb{font:inherit;font-size:16px;border:0;border-radius:12px;min-height:42px;padding:0 14px;background:#fff;color:#3a2a1a;box-shadow:0 3px 0 #cdbb98;cursor:pointer}
+.tb:active{transform:translateY(2px);box-shadow:0 1px 0 #cdbb98}.tb:focus-visible{outline:3px solid #b5442f;outline-offset:2px}
+#hint{position:fixed;left:0;right:0;bottom:calc(12px + env(safe-area-inset-bottom));text-align:center;font-size:15px;color:#7a6a50;pointer-events:none;z-index:4}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(58,42,26,.4);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fffdf7;color:#3a2a1a;border-radius:20px;padding:24px 26px;max-width:400px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 #b08a50}
+.card h1{font-size:46px;line-height:1.05;margin:0 0 8px;font-weight:400}
+.card p{margin:4px 0 16px;font-size:17px;color:#6a5a40}
+.modes{display:grid;gap:10px;margin-bottom:6px}
+.btn{font:inherit;font-size:20px;border:0;border-radius:14px;padding:12px 20px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:52px}
+.btn.alt{background:#3a2a1a;color:#fff;box-shadow:0 5px 0 #1a120a}.btn.soft{background:#efe2c4;box-shadow:0 5px 0 #cdbb98}
+.btn:active{transform:translateY(3px)}.btn:focus-visible{outline:3px solid #b5442f;outline-offset:3px}
+@media(max-height:500px){.card{padding:16px 20px}.card h1{font-size:32px}.modes{grid-template-columns:1fr 1fr 1fr}}
+</style></head><body>
+<canvas id="c"></canvas>
+<div class="bar"><div id="turn"><i id="tStone"></i><span id="tTxt">흑 차례</span></div><button class="tb" id="undoBtn">무르기</button><button class="tb" id="menuBtn">새 판</button></div>
+<div id="hint"></div>
+<div class="overlay" id="menuOv"><div class="card">
+  <h1>오목</h1>
+  <p>가로·세로·대각선으로 내 돌 다섯 개를 먼저 이으면 이겨요. 흑이 먼저 둬요.</p>
+  <div class="modes"><button class="btn" id="mEasy">AI와 대결 · 쉬움</button><button class="btn alt" id="mHard">AI와 대결 · 보통</button><button class="btn soft" id="m2p">둘이서 하기</button></div>
+  <p id="recTxt" style="font-size:15px;margin:10px 0 0"></p>
+  <p style="margin:14px 0 0;font-size:15px"><a href="../" style="color:inherit">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">흑 승리!</h1><p id="eTxt"></p><div class="modes"><button class="btn" id="againBtn">한 판 더</button><button class="btn soft" id="viewBtn">판 다시 보기</button></div></div></div>
+<script>
+{
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,N=15,snd=(...a)=>window.Arcade&&Arcade.play(...a);
+const TOUCH=matchMedia('(pointer:coarse)').matches;
+let W,H,DPR,CS,BX,BY;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
+  const top=70,bot=44,sz=Math.min(W-16,H-top-bot);CS=sz/(N+.6);BX=(W-CS*(N-1))/2;BY=top+(H-top-bot-CS*(N-1))/2}
+addEventListener('resize',resize);resize();
+let board,moves,turn,mode='ai2',over=false,winLine=null,ghost=null,aiT=0,hover=null;
+const ai=()=>mode!=='2p',AI=2,HUM=1;
+function reset(){board=Array.from({length:N},()=>Array(N).fill(0));moves=[];turn=1;over=false;winLine=null;ghost=null;aiT=0;ui()}
+function ui(){$('tStone').style.background=turn===1?'radial-gradient(circle at 35% 35%,#666,#111)':'radial-gradient(circle at 35% 35%,#fff,#cfcfcf)';
+  $('tTxt').textContent=over?'대국 끝':ai()&&turn===AI?'AI가 생각 중…':(turn===1?'흑':'백')+' 차례'+(ai()?' (나)':'');
+  $('undoBtn').disabled=!moves.length;$('hint').textContent=over?'':TOUCH?'두고 싶은 곳을 탭하고, 같은 곳을 한 번 더 탭하면 둬요':'두고 싶은 곳을 클릭하세요'}
+const inb=(x,y)=>x>=0&&y>=0&&x<N&&y<N,DIR=[[1,0],[0,1],[1,1],[1,-1]];
+function lineAt(x,y,p){for(const [dx,dy] of DIR){const L=[[x,y]];for(const s of [1,-1]){let i=1;while(inb(x+dx*i*s,y+dy*i*s)&&board[y+dy*i*s][x+dx*i*s]===p){L.push([x+dx*i*s,y+dy*i*s]);i++}}if(L.length>=5)return L}return null}
+function place(x,y){if(over||board[y][x])return false;board[y][x]=turn;moves.push([x,y]);snd('place');ghost=null;
+  const L=lineAt(x,y,turn);if(L){over=true;winLine=L;finish(turn)}else if(moves.length===N*N){over=true;finish(0)}else{turn=3-turn;if(ai()&&turn===AI)aiT=.35}ui();return true}
+function finish(w){const youWin=ai()&&w===HUM,youLose=ai()&&w===AI;snd(youLose?'lose':'win');
+  setTimeout(()=>{$('eTitle').textContent=w===0?'무승부':ai()?(youWin?'승리!':'AI 승리'):(w===1?'흑 승리!':'백 승리!');
+    let txt=`${moves.length}수 만에 끝났어요.`;if(youWin&&window.Arcade){const k=mode==='ai2'?'omokWinsHard':'omokWinsEasy';const n=(Arcade.best(k)||0)+1;Arcade.record(k,n);txt+=` AI(${mode==='ai2'?'보통':'쉬움'}) 상대 ${n}승째!`}
+    $('eTxt').textContent=txt;$('endOv').hidden=false;$('againBtn').focus()},900)}
+// ---------- AI: 5칸 창 단위 패턴 점수
+const WT=[0,2,12,120,1500,100000];
+function cellScore(x,y,p){let s=0;const o=3-p;
+  for(const [dx,dy] of DIR)for(let k=-4;k<=0;k++){let cnt=1,bad=false;for(let i=0;i<5;i++){const xx=x+dx*(k+i),yy=y+dy*(k+i);if(!inb(xx,yy)){bad=true;break}if(xx===x&&yy===y)continue;const v=board[yy][xx];if(v===o){bad=true;break}if(v===p)cnt++}
+    if(!bad)s+=WT[Math.min(5,cnt)]}
+  return s}
+function aiMove(){const cand=[];
+  if(!moves.length){return [7,7]}
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){if(board[y][x])continue;let near=false;for(let dy=-2;dy<=2&&!near;dy++)for(let dx=-2;dx<=2;dx++)if(inb(x+dx,y+dy)&&board[y+dy][x+dx]){near=true;break}
+    if(!near)continue;const a=cellScore(x,y,AI),d=cellScore(x,y,HUM);let sc=a*1.08+d*(mode==='ai2'?1:.75);if(a>=100000)sc+=1e7;else if(d>=100000)sc+=1e6;
+    sc+=(7-Math.max(Math.abs(x-7),Math.abs(y-7)))*.5;if(mode==='ai1')sc*=.7+Math.random()*.6;cand.push([sc,x,y])}
+  cand.sort((a,b)=>b[0]-a[0]);
+  if(mode==='ai1'&&cand.length>2&&cand[0][0]<1e6&&Math.random()<.3)return cand[1+(Math.random()*2|0)].slice(1);
+  return cand[0].slice(1)}
+// ---------- input
+function cellFrom(e){const x=Math.round((e.clientX-BX)/CS),y=Math.round((e.clientY-BY)/CS);return inb(x,y)?[x,y]:null}
+cv.addEventListener('pointerdown',e=>{if(over||(ai()&&turn===AI)||!$('menuOv').hidden)return;const c=cellFrom(e);if(!c||board[c[1]][c[0]])return;
+  if(e.pointerType==='mouse'||!TOUCH){place(c[0],c[1]);return}
+  if(ghost&&ghost[0]===c[0]&&ghost[1]===c[1])place(c[0],c[1]);else{ghost=c;snd('select')}});
+cv.addEventListener('pointermove',e=>{if(e.pointerType==='mouse')hover=cellFrom(e)});cv.addEventListener('pointerleave',()=>hover=null);
+$('undoBtn').onclick=()=>{if(!moves.length)return;let n=1;if(ai()){const lastP=moves.length%2===1?1:2;if(lastP===AI&&moves.length>1)n=2}
+  for(let i=0;i<n&&moves.length;i++){const [x,y]=moves.pop();board[y][x]=0}
+  turn=moves.length%2===0?1:2;over=false;winLine=null;aiT=0;$('endOv').hidden=true;snd('click');ui()};
+$('menuBtn').onclick=()=>{rec();$('menuOv').hidden=false};
+function rec(){const e=window.Arcade?Arcade.best('omokWinsEasy')||0:0,h=window.Arcade?Arcade.best('omokWinsHard')||0:0;$('recTxt').textContent=e||h?`AI 상대 전적: 쉬움 ${e}승 · 보통 ${h}승`:''}
+for(const [id,m] of [['mEasy','ai1'],['mHard','ai2'],['m2p','2p']])$(id).onclick=()=>{mode=m;reset();$('menuOv').hidden=true;snd('click')};
+$('againBtn').onclick=()=>{reset();$('endOv').hidden=true};$('viewBtn').onclick=()=>{$('endOv').hidden=true};
+rec();
+// ---------- draw
+function stone(x,y,p,a=1){const X=BX+x*CS,Y=BY+y*CS,r=CS*.46;ctx.globalAlpha=a;ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.arc(X+r*.12,Y+r*.16,r,0,TAU);ctx.fill();
+  const g=ctx.createRadialGradient(X-r*.35,Y-r*.35,r*.1,X,Y,r);if(p===1){g.addColorStop(0,'#6a6a6a');g.addColorStop(1,'#111')}else{g.addColorStop(0,'#fff');g.addColorStop(1,'#cfcac0')}
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(X,Y,r,0,TAU);ctx.fill();ctx.globalAlpha=1}
+let t=0;
+function draw(dt){t+=dt;ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#efe6d2';ctx.fillRect(0,0,W,H);
+  const pad=CS*.8,bx=BX-pad,by=BY-pad,bs=CS*(N-1)+pad*2;ctx.fillStyle='rgba(0,0,0,.15)';ctx.beginPath();ctx.roundRect(bx+4,by+8,bs,bs,10);ctx.fill();
+  const g=ctx.createLinearGradient(bx,by,bx+bs,by+bs);g.addColorStop(0,'#e8bf78');g.addColorStop(1,'#d9a85e');ctx.fillStyle=g;ctx.beginPath();ctx.roundRect(bx,by,bs,bs,10);ctx.fill();
+  ctx.strokeStyle='rgba(150,100,40,.18)';ctx.lineWidth=1.5;for(let i=0;i<14;i++){ctx.beginPath();const yy=by+bs*(i+.5)/14;ctx.moveTo(bx,yy);ctx.bezierCurveTo(bx+bs*.3,yy+8,bx+bs*.6,yy-8,bx+bs,yy+3);ctx.stroke()}
+  ctx.strokeStyle='#5a3a1a';ctx.lineWidth=1;ctx.beginPath();for(let i=0;i<N;i++){ctx.moveTo(BX,BY+i*CS);ctx.lineTo(BX+(N-1)*CS,BY+i*CS);ctx.moveTo(BX+i*CS,BY);ctx.lineTo(BX+i*CS,BY+(N-1)*CS)}ctx.stroke();
+  ctx.fillStyle='#5a3a1a';for(const [x,y] of [[3,3],[11,3],[7,7],[3,11],[11,11]]){ctx.beginPath();ctx.arc(BX+x*CS,BY+y*CS,CS*.1,0,TAU);ctx.fill()}
+  if(!board)return;
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(board[y][x])stone(x,y,board[y][x]);
+  if(moves.length){const [x,y]=moves[moves.length-1];ctx.fillStyle='#e0403a';ctx.beginPath();ctx.arc(BX+x*CS,BY+y*CS,CS*.12,0,TAU);ctx.fill()}
+  const gh=ghost||(!TOUCH&&hover&&!board[hover[1]][hover[0]]?hover:null);if(gh&&!over&&!(ai()&&turn===AI)){stone(gh[0],gh[1],turn,.5);if(ghost){ctx.strokeStyle='#e0403a';ctx.lineWidth=2;ctx.beginPath();ctx.arc(BX+gh[0]*CS,BY+gh[1]*CS,CS*.52+Math.sin(t*6)*2,0,TAU);ctx.stroke()}}
+  if(winLine){ctx.strokeStyle='rgba(224,64,58,.85)';ctx.lineWidth=CS*.14;ctx.lineCap='round';const s=[...winLine].sort((a,b)=>a[0]-b[0]||a[1]-b[1]);ctx.beginPath();ctx.moveTo(BX+s[0][0]*CS,BY+s[0][1]*CS);ctx.lineTo(BX+s[s.length-1][0]*CS,BY+s[s.length-1][1]*CS);ctx.stroke()}
+}
+if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
+reset();
+let last=performance.now();
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(aiT>0&&!over&&ai()&&turn===AI){aiT-=dt;if(aiT<=0){const [x,y]=aiMove();place(x,y)}}
+  draw(dt);requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+}
+</script>
+</body></html>
