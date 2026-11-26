@@ -1,0 +1,33 @@
+{
+ "_설명": "오목 데이터. boardSize 줄 수(홀수 권장), winLength 이기는 줄 길이. ai.patternScore는 5칸 창 안에 내 돌이 0~5개일 때 점수. 난이도별 attack(공격 비중)·defense(수비 비중)·noise(무작위 흔들림 0~1)·mistake(가끔 2~3순위 수를 둘 확률). thinkSeconds는 AI가 두기 전 기다리는 시간.",
+ "boardSize": 15,
+ "winLength": 5,
+ "thinkSeconds": 0.35,
+ "ai": {
+  "patternScore": [
+   0,
+   2,
+   12,
+   120,
+   1500,
+   100000
+  ],
+  "centerBonus": 0.5,
+  "levels": {
+   "ai1": {
+    "name": "쉬움",
+    "attack": 1.08,
+    "defense": 0.75,
+    "noise": 0.6,
+    "mistake": 0.3
+   },
+   "ai2": {
+    "name": "보통",
+    "attack": 1.08,
+    "defense": 1,
+    "noise": 0,
+    "mistake": 0
+   }
+  }
+ }
+}

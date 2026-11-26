@@ -1,0 +1,182 @@
+{
+ "_설명": "달걀 바꾸기 데이터. levels는 단계별 목표 점수(target), 이동 횟수(moves), 달걀 색 수(colors, 3~6, 적을수록 쉬움). 마지막 단계를 넘으면 afterLast 규칙으로 계속 이어진다.",
+ "boardSize": 8,
+ "score": {
+  "perEgg": 20,
+  "perSpecial": 60
+ },
+ "hintDelay": 6,
+ "eggColors": [
+  "#ff6b6b",
+  "#ffb13d",
+  "#ffe066",
+  "#5fd35a",
+  "#4a9dff",
+  "#b06bff"
+ ],
+ "eggShades": [
+  "#d94848",
+  "#d98a1a",
+  "#d9b93a",
+  "#3fa83a",
+  "#2f74d0",
+  "#8a4ad0"
+ ],
+ "levels": [
+  {
+   "target": 900,
+   "moves": 20,
+   "colors": 5
+  },
+  {
+   "target": 1250,
+   "moves": 20,
+   "colors": 5
+  },
+  {
+   "target": 1600,
+   "moves": 20,
+   "colors": 5
+  },
+  {
+   "target": 1950,
+   "moves": 20,
+   "colors": 5
+  },
+  {
+   "target": 2300,
+   "moves": 20,
+   "colors": 5
+  },
+  {
+   "target": 2650,
+   "moves": 22,
+   "colors": 5
+  },
+  {
+   "target": 3000,
+   "moves": 22,
+   "colors": 5
+  },
+  {
+   "target": 3350,
+   "moves": 22,
+   "colors": 5
+  },
+  {
+   "target": 3700,
+   "moves": 22,
+   "colors": 5
+  },
+  {
+   "target": 4050,
+   "moves": 22,
+   "colors": 5
+  },
+  {
+   "target": 2400,
+   "moves": 24,
+   "colors": 6
+  },
+  {
+   "target": 2510,
+   "moves": 24,
+   "colors": 6
+  },
+  {
+   "target": 2620,
+   "moves": 24,
+   "colors": 6
+  },
+  {
+   "target": 2730,
+   "moves": 24,
+   "colors": 6
+  },
+  {
+   "target": 2840,
+   "moves": 23,
+   "colors": 6
+  },
+  {
+   "target": 2950,
+   "moves": 23,
+   "colors": 6
+  },
+  {
+   "target": 3060,
+   "moves": 23,
+   "colors": 6
+  },
+  {
+   "target": 3170,
+   "moves": 23,
+   "colors": 6
+  },
+  {
+   "target": 3280,
+   "moves": 22,
+   "colors": 6
+  },
+  {
+   "target": 3390,
+   "moves": 22,
+   "colors": 6
+  },
+  {
+   "target": 3500,
+   "moves": 22,
+   "colors": 6
+  },
+  {
+   "target": 3610,
+   "moves": 22,
+   "colors": 6
+  },
+  {
+   "target": 3720,
+   "moves": 21,
+   "colors": 6
+  },
+  {
+   "target": 3830,
+   "moves": 21,
+   "colors": 6
+  },
+  {
+   "target": 3940,
+   "moves": 21,
+   "colors": 6
+  },
+  {
+   "target": 4050,
+   "moves": 21,
+   "colors": 6
+  },
+  {
+   "target": 4160,
+   "moves": 20,
+   "colors": 6
+  },
+  {
+   "target": 4270,
+   "moves": 20,
+   "colors": 6
+  },
+  {
+   "target": 4380,
+   "moves": 20,
+   "colors": 6
+  },
+  {
+   "target": 4490,
+   "moves": 20,
+   "colors": 6
+  }
+ ],
+ "afterLast": {
+  "targetStep": 120,
+  "moves": 19,
+  "colors": 6
+ }
+}

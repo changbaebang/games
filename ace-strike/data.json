@@ -1,0 +1,274 @@
+{
+ "_설명": "에이스 스트라이크 데이터. stages는 순서대로 진행되고, 마지막 스테이지를 깬 뒤에는 마지막 스테이지 모습으로 afterLast.diffStep만큼씩 어려워진다. mix는 적 편대가 나올 비율(line 일렬, swoop 옆에서 휘어 들어옴, zig 지그재그, bomber 폭격기, rush 아래에서 돌진). length는 보스가 나오기 전까지 초. sea는 바다 위·아래 색, island는 섬 모래·풀 색.",
+ "player": {
+  "lives": 3,
+  "bombs": 3,
+  "maxBombs": 6,
+  "fireGap": 0.085,
+  "maxPower": 4,
+  "respawnBombs": 2
+ },
+ "enemies": {
+  "small": {
+   "hp": 2,
+   "r": 14,
+   "score": 100,
+   "s": 0.85,
+   "c": {
+    "wing": "#5d8a3f",
+    "body": "#3f6328",
+    "mark": "#e04030",
+    "glass": "#22303a"
+   }
+  },
+  "zig": {
+   "hp": 7,
+   "r": 17,
+   "score": 300,
+   "s": 1.05,
+   "c": {
+    "wing": "#e08a2e",
+    "body": "#9a5418",
+    "mark": "#fff1c2",
+    "glass": "#22303a"
+   }
+  },
+  "bomber": {
+   "hp": 45,
+   "r": 36,
+   "score": 2000,
+   "s": 2.1,
+   "eng": true,
+   "c": {
+    "wing": "#7d828c",
+    "body": "#565b64",
+    "mark": "#e04030",
+    "glass": "#9fd3ff"
+   }
+  }
+ },
+ "enemyHpPerStage": 0.3,
+ "bossBonus": 20000,
+ "stages": [
+  {
+   "name": "새벽 바다",
+   "sub": "출격!",
+   "diff": 1.0,
+   "length": 45,
+   "spawnGap": [
+    2.2,
+    3.2
+   ],
+   "mix": {
+    "line": 3,
+    "swoop": 3,
+    "zig": 2,
+    "bomber": 1.2,
+    "rush": 0
+   },
+   "bossHp": 600,
+   "sea": [
+    "#1f6fb8",
+    "#1a5c9e"
+   ],
+   "island": {
+    "sand": "#e8d29a",
+    "grass": "#3f9b4a",
+    "grass2": "#2f7d3a"
+   }
+  },
+  {
+   "name": "산호섬",
+   "sub": "얕은 바다 위의 편대",
+   "diff": 1.2,
+   "length": 50,
+   "spawnGap": [
+    2,
+    3
+   ],
+   "mix": {
+    "line": 3,
+    "swoop": 3,
+    "zig": 2,
+    "bomber": 1,
+    "rush": 0.5
+   },
+   "bossHp": 760,
+   "sea": [
+    "#2a95cc",
+    "#1f78b4"
+   ],
+   "island": {
+    "sand": "#f3dfa6",
+    "grass": "#4fb35a",
+    "grass2": "#3a9446"
+   }
+  },
+  {
+   "name": "폭풍 해역",
+   "sub": "거센 바람을 뚫어라",
+   "diff": 1.45,
+   "length": 55,
+   "spawnGap": [
+    1.8,
+    2.8
+   ],
+   "mix": {
+    "line": 2,
+    "swoop": 3,
+    "zig": 3,
+    "bomber": 1,
+    "rush": 0.8
+   },
+   "bossHp": 920,
+   "sea": [
+    "#2c4f78",
+    "#1d3a5e"
+   ],
+   "island": {
+    "sand": "#9a9a92",
+    "grass": "#6a7a6a",
+    "grass2": "#55635a"
+   }
+  },
+  {
+   "name": "화산 군도",
+   "sub": "불타는 섬 사이로",
+   "diff": 1.7,
+   "length": 55,
+   "spawnGap": [
+    1.6,
+    2.6
+   ],
+   "mix": {
+    "line": 2,
+    "swoop": 2,
+    "zig": 3,
+    "bomber": 1.5,
+    "rush": 1
+   },
+   "bossHp": 1080,
+   "sea": [
+    "#1f5a80",
+    "#174463"
+   ],
+   "island": {
+    "sand": "#5a4a44",
+    "grass": "#c0502a",
+    "grass2": "#ff7a30"
+   }
+  },
+  {
+   "name": "노을 하늘",
+   "sub": "해가 진다, 서둘러!",
+   "diff": 1.95,
+   "length": 60,
+   "spawnGap": [
+    1.5,
+    2.4
+   ],
+   "mix": {
+    "line": 2,
+    "swoop": 3,
+    "zig": 3,
+    "bomber": 1.5,
+    "rush": 1.2
+   },
+   "bossHp": 1240,
+   "sea": [
+    "#e08a5a",
+    "#8a4a7a"
+   ],
+   "island": {
+    "sand": "#6a3a4a",
+    "grass": "#4a2a3a",
+    "grass2": "#3a1f2e"
+   }
+  },
+  {
+   "name": "빙하 바다",
+   "sub": "얼음 섬을 지나",
+   "diff": 2.2,
+   "length": 60,
+   "spawnGap": [
+    1.4,
+    2.3
+   ],
+   "mix": {
+    "line": 2,
+    "swoop": 3,
+    "zig": 3,
+    "bomber": 2,
+    "rush": 1.2
+   },
+   "bossHp": 1400,
+   "sea": [
+    "#7fc4e0",
+    "#5aa6c8"
+   ],
+   "island": {
+    "sand": "#e8f4fb",
+    "grass": "#bfe2f2",
+    "grass2": "#9fd0e8"
+   }
+  },
+  {
+   "name": "밤바다",
+   "sub": "어둠 속의 대공습",
+   "diff": 2.5,
+   "length": 65,
+   "spawnGap": [
+    1.3,
+    2.2
+   ],
+   "mix": {
+    "line": 2,
+    "swoop": 3,
+    "zig": 3,
+    "bomber": 2,
+    "rush": 1.5
+   },
+   "bossHp": 1560,
+   "sea": [
+    "#14244a",
+    "#0b1630"
+   ],
+   "island": {
+    "sand": "#3a4a6a",
+    "grass": "#24345a",
+    "grass2": "#1a2848"
+   }
+  },
+  {
+   "name": "적 본거지",
+   "sub": "마지막 결전!",
+   "diff": 2.8,
+   "length": 70,
+   "spawnGap": [
+    1.2,
+    2
+   ],
+   "mix": {
+    "line": 2,
+    "swoop": 3,
+    "zig": 4,
+    "bomber": 2.5,
+    "rush": 2
+   },
+   "bossHp": 1800,
+   "sea": [
+    "#3a3a48",
+    "#24242e"
+   ],
+   "island": {
+    "sand": "#6a6a78",
+    "grass": "#4a4a58",
+    "grass2": "#8a8a98"
+   }
+  }
+ ],
+ "afterLast": {
+  "diffStep": 0.3,
+  "bossHpStep": 200
+ }
+}

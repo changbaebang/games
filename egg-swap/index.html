@@ -42,10 +42,11 @@ canvas{display:block;position:fixed;inset:0}
 </div></div>
 <div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">아쉬워요!</h1><p id="eTxt"></p><button class="btn" id="eBtn">다시 하기</button></div></div>
 <script>
-{
+Arcade.boot(D=>{
 const snd=(...a)=>window.Arcade&&Arcade.play(...a);
-const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,N=8;
-const EC=['#ff6b6b','#ffb13d','#ffe066','#5fd35a','#4a9dff','#b06bff'],ED=['#d94848','#d98a1a','#d9b93a','#3fa83a','#2f74d0','#8a4ad0'];
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,N=D.boardSize||8;
+const EC=D.eggColors,ED=D.eggShades;let NC=6;
+function levelInfo(n){const L=D.levels;if(n<=L.length)return L[n-1];const last=L[L.length-1],A=D.afterLast;return {target:last.target+(n-L.length)*A.targetStep,moves:A.moves,colors:A.colors}}
 let W,H,DPR,CS,BX,BY;
 function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
   const top=Math.min(120,H*.16),bot=Math.min(90,H*.12);CS=Math.floor(Math.min((W-24)/N,(H-top-bot)/N));BX=Math.round((W-CS*N)/2);BY=Math.round(top+(H-top-bot-CS*N)/2)}
@@ -53,9 +54,9 @@ addEventListener('resize',resize);resize();
 let st='title',grid,level=1,score,target,moves,busy=false,combo=0,sel=null,fx=[],pops=[],idleT=0,hint=null,uid=0,totalScore=0;
 const rnd=n=>Math.random()*n|0;
 function mk(c,sp=0){return {c,sp,id:uid++,rx:0,ry:0,vy:0,clr:0,pulse:0}}
-function fill(){grid=[];for(let r=0;r<N;r++){grid.push([]);for(let c=0;c<N;c++){let k;do k=rnd(6);while(c>=2&&grid[r][c-1].c===k&&grid[r][c-2].c===k||r>=2&&grid[r-1][c].c===k&&grid[r-2][c].c===k);
+function fill(){grid=[];for(let r=0;r<N;r++){grid.push([]);for(let c=0;c<N;c++){let k;do k=rnd(NC);while(c>=2&&grid[r][c-1].c===k&&grid[r][c-2].c===k||r>=2&&grid[r-1][c].c===k&&grid[r-2][c].c===k);
   const e=mk(k);e.rx=c;e.ry=r-N-1-rnd(3);grid[r].push(e)}}if(!findMove())fill()}
-function startLevel(){score=0;target=1200+level*700;moves=Math.max(16,24-Math.floor(level/2));combo=0;sel=null;hint=null;fill()}
+function startLevel(){const LI=levelInfo(level);NC=Math.max(3,Math.min(EC.length,LI.colors||6));score=0;target=LI.target;moves=LI.moves;combo=0;sel=null;hint=null;fill()}
 function runs(){const out=[];
   for(let r=0;r<N;r++){let s=0;for(let c=1;c<=N;c++){if(c<N&&grid[r][c]&&grid[r][s]&&grid[r][c].c===grid[r][s].c&&grid[r][c].sp!=='gold'&&grid[r][s].sp!=='gold')continue;if(c-s>=3)out.push({cells:Array.from({length:c-s},(_,i)=>[r,s+i]),dir:'h'});s=c}}
   for(let c=0;c<N;c++){let s=0;for(let r=1;r<=N;r++){if(r<N&&grid[r][c]&&grid[s][c]&&grid[r][c].c===grid[s][c].c&&grid[r][c].sp!=='gold'&&grid[s][c].sp!=='gold')continue;if(r-s>=3)out.push({cells:Array.from({length:r-s},(_,i)=>[s+i,c]),dir:'v'});s=r}}
@@ -91,7 +92,7 @@ async function clearSet(set,make){
   while(q.length){const [r,c]=q.pop(),k=r+','+c;if(done.has(k))continue;done.add(k);const e=grid[r][c];if(!e)continue;
     if(e.sp==='h'){for(let x=0;x<N;x++)q.push([r,x]);beams.push({r,c,dir:'h',t:.35});snd('zap')}if(e.sp==='v'){for(let y=0;y<N;y++)q.push([y,c]);beams.push({r,c,dir:'v',t:.35});snd('zap')}}
   for(const m of make)done.delete(m.pos.join(','));
-  const gain=done.size*20*combo+(make.length?make.length*60:0);score+=gain;totalScore+=gain;
+  const gain=done.size*D.score.perEgg*combo+make.length*D.score.perSpecial;score+=gain;totalScore+=gain;
   let sx=0,sy=0;for(const k of done){const [r,c]=k.split(',').map(Number);const e=grid[r][c];if(!e)continue;e.clr=.001;sx+=c;sy+=r;
     const X=BX+(c+.5)*CS,Y=BY+(r+.5)*CS;for(let i=0;i<5;i++)fx.push({x:X,y:Y,vx:(Math.random()-.5)*260,vy:-Math.random()*220,t:.6,c:EC[e.c],r:CS*.08+Math.random()*CS*.06,shell:true});chicks.push({x:X,y:Y,t:.7})}
   if(done.size)pop(BX+(sx/done.size+.5)*CS,BY+(sy/done.size+.5)*CS,'+'+gain,'#fff');
@@ -100,7 +101,7 @@ async function clearSet(set,make){
   await wait(.22);
   for(const k of done){const [r,c]=k.split(',').map(Number);grid[r][c]=null}
   for(let c=0;c<N;c++){let w=N-1;for(let r=N-1;r>=0;r--)if(grid[r][c]){const e=grid[r][c];grid[r][c]=null;grid[w][c]=e;w--}
-    let k=0;for(let r=w;r>=0;r--){const e=mk(rnd(6));e.rx=c;e.ry=-1-k;k++;grid[r][c]=e}}
+    let k=0;for(let r=w;r>=0;r--){const e=mk(rnd(NC));e.rx=c;e.ry=-1-k;k++;grid[r][c]=e}}
   await settle()}
 function pop(x,y,t,c){pops.push({x,y,t,c,life:1})}
 function showEnd(win){snd(win?'win':'lose');if(win&&window.Arcade)Arcade.record('eggSwapBest',level);$('eTitle').textContent=win?`${level}단계 성공!`:'이동을 다 썼어요';$('eTitle').style.color=win?'#e07a2e':'#c0504d';
@@ -172,9 +173,9 @@ function draw(dt){clock+=dt;ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#f7
 if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
 let last=performance.now();
 function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
-  if(st==='play'&&!busy){idleT+=dt;if(idleT>6&&!hint)hint=findMove()}
+  if(st==='play'&&!busy){idleT+=dt;if(idleT>D.hintDelay&&!hint)hint=findMove()}
   draw(dt);for(let i=waiters.length-1;i>=0;i--)if(waiters[i].fn()){const w=waiters.splice(i,1)[0];w.res()}requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
-}
+});
 </script>
 </body></html>

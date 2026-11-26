@@ -97,7 +97,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#87c8f0;font-family:'J
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-{
+Arcade.boot(D=>{
 const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const W=()=>innerWidth,H=()=>innerHeight,$=id=>document.getElementById(id);
 const tags=$('tags');
@@ -160,27 +160,26 @@ const P=makeChar({head:0xffd23f,torso:0x2f7de1,arm:0xffd23f,leg:0x3a9a48,smile:t
 const sword=new THREE.Group(),blade=box(.16,1.7,.08,0xe4edf5),hilt=box(.55,.12,.18,0x8a5a2a),grip=box(.12,.35,.12,0x5a3a1a);
 blade.position.y=.85;grip.position.y=-.2;sword.add(blade,hilt,grip);sword.position.set(0,-.95,.15);sword.rotation.x=Math.PI/2;
 P.armR.add(sword);scene.add(P.g);
-const pl={hp:100,max:100,vy:0,face:0,atk:0,hit:false,lastHurt:-9,phase:0};
+const PS=D.player;const pl={hp:PS.hp,max:PS.hp,vy:0,face:0,atk:0,hit:false,lastHurt:-9,phase:0};
 let yaw=0,pitch=.48,dist=13,shake=0,time=0,started=false,dead=false,wave=1,kills=0;
 
 // ---- monsters
-const TYPES={
-  zombie:{c:{head:0x6fc36a,torso:0x3c7a8c,arm:0x6fc36a,leg:0x4b3a6b,eye:0xff2a2a},hp:40,spd:2.7,dmg:8,sc:1,aggro:14,zombie:true},
-  runner:{c:{head:0xff9b3d,torso:0x7a3b12,arm:0xff9b3d,leg:0x3a2410,eye:0x111111,eyeH:.08},hp:24,spd:4.6,dmg:5,sc:.8,aggro:17},
-  brute:{c:{head:0x9b59d0,torso:0x4a2470,arm:0x9b59d0,leg:0x2a1440,eye:0xffe23f},hp:110,spd:1.9,dmg:16,sc:1.5,aggro:12}
-};
+const TYPES=D.monsters;
 let mons=[];const debris=[];
 function spawn(type){
   const T=TYPES[type],p=P.g.position;let x,z,n=0;
   do{x=(Math.random()*2-1)*(ARENA-4);z=(Math.random()*2-1)*(ARENA-4)}while((Math.hypot(x-p.x,z-p.z)<20||blocked(x,z,1.2))&&++n<60);
   const ch=makeChar(T.c);ch.g.scale.setScalar(T.sc);ch.g.position.set(x,0,z);scene.add(ch.g);
   const bar=document.createElement('div');bar.className='mbar';bar.innerHTML='<i></i>';tags.appendChild(bar);
-  mons.push({T,ch,hp:T.hp,state:'wander',tx:x,tz:z,wt:0,dt:Math.random(),chaseT:0,kx:0,kz:0,cd:0,flash:0,swing:0,bar,fill:bar.firstChild,dead:false,die:0,phase:Math.random()*6,idle:0});
+  const hpm=T.hp*(1+(wave-1)*D.waves.hpPerWave);mons.push({T,ch,hp:hpm,max:hpm,state:'wander',tx:x,tz:z,wt:0,dt:Math.random(),chaseT:0,kx:0,kz:0,cd:0,flash:0,swing:0,bar,fill:bar.firstChild,dead:false,die:0,phase:Math.random()*6,idle:0});
 }
 function spawnWave(){
-  const n=3+wave*2;
-  for(let i=0;i<n;i++){const r=Math.random();spawn(wave>=3&&r<.12+wave*.03?'brute':wave>=2&&r<.45?'runner':'zombie')}
-  const b=$('banner');b.textContent='웨이브 '+wave;b.classList.remove('on');void b.offsetWidth;b.classList.add('on');if(wave>1)snd('level');
+  let comp=D.waves.list[wave-1];
+  if(!comp){const E=D.waves.endless,n=E.base+wave*E.perWave,bs=Math.min(E.bruteShareMax,E.bruteShare+wave*E.bruteSharePerWave);comp={zombie:0,runner:0,brute:0};
+    for(let i=0;i<n;i++){const r=Math.random();comp[r<bs?'brute':r<bs+E.runnerShare?'runner':'zombie']++}if(wave%E.bossEvery===0)comp.king=Math.floor(wave/E.bossEvery)}
+  let boss=false;for(const k in comp){if(!TYPES[k])continue;if(TYPES[k].boss&&comp[k])boss=true;for(let i=0;i<comp[k];i++)spawn(k)}
+  if(window.Arcade)Arcade.record('blockHunterWave',wave);
+  const b=$('banner');b.textContent='웨이브 '+wave+(boss?' · 보스!':'');b.classList.remove('on');void b.offsetWidth;b.classList.add('on');if(wave>1)snd('level');
 }
 function pop(pos,text,cls,h=1){
   const v=new THREE.Vector3(pos.x,pos.y+3.1*h,pos.z).project(camera);if(v.z>1)return;
@@ -197,7 +196,7 @@ function hurtMon(m,dmg,crit){
   const kb=(crit?13:8)/m.T.sc;m.kx=dx/d*kb;m.kz=dz/d*kb;
   pop(q,crit?dmg+'!':dmg,crit?'crit':'',m.T.sc);snd(crit?'crit':'hit');
   if(m.state!=='chase'){m.state='chase';m.chaseT=8}
-  if(m.hp<=0){m.dead=true;m.die=.5;m.bar.remove();kills++;snd('pop');burst(q,m.T.c.head,m.T===TYPES.brute?16:10);shake=Math.max(shake,.15)}
+  if(m.hp<=0){m.dead=true;m.die=.5;m.bar.remove();kills++;snd('pop');burst(q,m.T.c.head,m.T.sc>=1.5?16:10);shake=Math.max(shake,.15)}
 }
 function hurtPlayer(dmg){
   if(dead)return;pl.hp-=dmg;pl.lastHurt=time;shake=.3;snd('hurt');pop(P.g.position,'-'+dmg,'hurt');
@@ -214,7 +213,7 @@ function doHit(){
   const p=P.g.position;
   for(const m of mons){if(m.dead)continue;const q=m.ch.g.position,dx=q.x-p.x,dz=q.z-p.z,d=Math.hypot(dx,dz);
     let da=Math.atan2(dx,dz)-pl.face;da=Math.atan2(Math.sin(da),Math.cos(da));
-    if(d<2.7+m.T.sc*.5&&(Math.abs(da)<1.25||d<1.3)){const crit=Math.random()<.15;hurtMon(m,Math.round((12+Math.random()*7)*(crit?2:1)),crit)}}
+    if(d<2.7+m.T.sc*.5&&(Math.abs(da)<1.25||d<1.3)){const crit=Math.random()<PS.critChance;hurtMon(m,Math.round((PS.attackMin+Math.random()*(PS.attackMax-PS.attackMin))*(crit?PS.critMult:1)),crit)}}
 }
 
 // ---- input
@@ -278,7 +277,7 @@ function update(dt){
     if(t>.45&&!pl.hit){pl.hit=true;doHit()}}
   else{P.armR.rotation.x=walk*.7-.2;P.armR.rotation.z=0}
   if(dead){P.body.rotation.x=Math.min(Math.PI/2,P.body.rotation.x+dt*4)}else P.body.rotation.x=0;
-  if(!dead&&time-pl.lastHurt>4&&pl.hp<pl.max)pl.hp=Math.min(pl.max,pl.hp+5*dt);
+  if(!dead&&time-pl.lastHurt>PS.regenDelay&&pl.hp<pl.max)pl.hp=Math.min(pl.max,pl.hp+PS.regenPerSec*dt);
 
   // monsters
   for(const m of mons){
@@ -307,13 +306,13 @@ function update(dt){
     const base=T.zombie?-1.45:0;let sw=0;if(m.swing>0){m.swing-=dt;sw=-Math.sin((1-m.swing/.3)*Math.PI)*1.3}
     m.ch.armL.rotation.x=base+(T.zombie?w*.15:-w*.7)+sw;m.ch.armR.rotation.x=base+(T.zombie?-w*.15:w*.7)+sw;
     m.flash=Math.max(0,m.flash-dt);const fl=m.flash>0?.8:0;for(const mt of m.ch.mats)mt.emissive.setScalar(fl);
-    const show=m.hp<T.hp||m.state==='chase';
+    const show=m.hp<m.max||m.state==='chase';
     tmp.set(q.x,3.15*T.sc+.1,q.z).project(camera);
-    if(show&&tmp.z<1&&d<45){m.bar.style.display='';m.bar.style.left=(tmp.x+1)/2*W()+'px';m.bar.style.top=(1-tmp.y)/2*H()+'px';m.fill.style.width=Math.max(0,m.hp/T.hp*100)+'%'}
+    if(show&&tmp.z<1&&d<45){m.bar.style.display='';m.bar.style.left=(tmp.x+1)/2*W()+'px';m.bar.style.top=(1-tmp.y)/2*H()+'px';m.fill.style.width=Math.max(0,m.hp/m.max*100)+'%'}
     else m.bar.style.display='none';
   }
   mons=mons.filter(m=>{if(m.dead&&m.die<=0){scene.remove(m.ch.g);m.ch.g.traverse(n=>{if(n.isMesh){n.geometry.dispose();n.material.dispose()}});return false}return true});
-  if(started&&!dead&&mons.length===0){wave++;pl.hp=Math.min(pl.max,pl.hp+25);pop(p,'+25','heal');spawnWave()}
+  if(started&&!dead&&mons.length===0){wave++;pl.hp=Math.min(pl.max,pl.hp+PS.waveHeal);pop(p,'+'+PS.waveHeal,'heal');spawnWave()}
 
   for(let i=debris.length-1;i>=0;i--){const b=debris[i];b.life-=dt;b.vy-=22*dt;b.m.position.x+=b.vx*dt;b.m.position.z+=b.vz*dt;
     b.m.position.y=Math.max(.14,b.m.position.y+b.vy*dt);if(b.m.position.y<=.14){b.vx*=.9;b.vz*=.9;b.vy*=-.3}
@@ -334,6 +333,6 @@ function frame(){
   renderer.render(scene,camera);requestAnimationFrame(frame);
 }
 frame();
-}
+});
 </script>
 </body></html>

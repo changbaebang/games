@@ -1,0 +1,93 @@
+{
+ "_설명": "달걀 받기 데이터. days는 하루(단계)마다 받아야 할 달걀 수(quota), 닭 수(hens), 빠르기(speed 0~1), 달걀 종류 확률(gold 황금알, heart 분홍알, rot 썩은 알). 하루를 채우면 하트 1개를 돌려받고 다음 날로 넘어간다. 마지막 날 다음부터는 afterLast 규칙.",
+ "lives": 5,
+ "basket": {
+  "width": 84,
+  "speed": 560,
+  "size": 6,
+  "fullBonus": 30
+ },
+ "points": {
+  "egg": 10,
+  "gold": 50
+ },
+ "streakEvery": 10,
+ "fall": {
+  "base": 380,
+  "perSpeed": 420
+ },
+ "lay": {
+  "gapBase": 2.4,
+  "gapPerSpeed": 1.6,
+  "gapMin": 0.45,
+  "warnBase": 0.5,
+  "warnPerSpeed": 0.25,
+  "warnMin": 0.22
+ },
+ "days": [
+  {
+   "quota": 15,
+   "hens": 2,
+   "speed": 0.0,
+   "gold": 0.07,
+   "heart": 0.0,
+   "rot": 0.0
+  },
+  {
+   "quota": 20,
+   "hens": 2,
+   "speed": 0.15,
+   "gold": 0.07,
+   "heart": 0.03,
+   "rot": 0.03
+  },
+  {
+   "quota": 25,
+   "hens": 3,
+   "speed": 0.3,
+   "gold": 0.07,
+   "heart": 0.04,
+   "rot": 0.06
+  },
+  {
+   "quota": 30,
+   "hens": 3,
+   "speed": 0.45,
+   "gold": 0.07,
+   "heart": 0.04,
+   "rot": 0.09
+  },
+  {
+   "quota": 30,
+   "hens": 4,
+   "speed": 0.6,
+   "gold": 0.07,
+   "heart": 0.04,
+   "rot": 0.12
+  },
+  {
+   "quota": 35,
+   "hens": 4,
+   "speed": 0.75,
+   "gold": 0.07,
+   "heart": 0.04,
+   "rot": 0.15
+  },
+  {
+   "quota": 40,
+   "hens": 5,
+   "speed": 0.9,
+   "gold": 0.07,
+   "heart": 0.04,
+   "rot": 0.18
+  }
+ ],
+ "afterLast": {
+  "quota": 45,
+  "hens": 5,
+  "speed": 1,
+  "gold": 0.07,
+  "heart": 0.04,
+  "rot": 0.2
+ }
+}

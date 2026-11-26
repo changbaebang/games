@@ -71,7 +71,7 @@ canvas{display:block;box-shadow:0 0 0 3px #1c2c48,0 0 60px rgba(0,0,0,.6)}
 </div></div>
 
 <script>
-{
+Arcade.boot(D=>{
 const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d');
 const GW=480,GH=720;let S=1,DPR=1;
@@ -102,14 +102,14 @@ function blob(p,k,x,y){ctx.beginPath();const n=p.length;
   for(let i=0;i<=n;i++){const a=p[i%n],b=p[(i+1)%n],mx=(a[0]+b[0])/2*k+x,my=(a[1]+b[1])/2*k+y;
     if(i===0)ctx.moveTo(mx,my);else ctx.quadraticCurveTo(a[0]*k+x,a[1]*k+y,mx,my)}ctx.fill()}
 function drawBg(dt){
-  const g=ctx.createLinearGradient(0,0,0,GH);g.addColorStop(0,'#1f6fb8');g.addColorStop(1,'#1a5c9e');ctx.fillStyle=g;ctx.fillRect(0,0,GW,GH);
+  const g=ctx.createLinearGradient(0,0,0,GH);const TH=SD();g.addColorStop(0,TH.sea[0]);g.addColorStop(1,TH.sea[1]);ctx.fillStyle=g;ctx.fillRect(0,0,GW,GH);
   ctx.fillStyle='rgba(255,255,255,.18)';
   for(const w of waves){w.y+=50*dt;if(w.y>GH)w.y-=GH+10;ctx.fillRect(w.x,w.y,w.w,2)}
   for(const s of islands){s.y+=45*dt;
     ctx.fillStyle='rgba(120,200,230,.35)';blob(s.p,1.35,s.x,s.y);
-    ctx.fillStyle='#e8d29a';blob(s.p,1.12,s.x,s.y);
-    ctx.fillStyle='#3f9b4a';blob(s.p,1,s.x,s.y);
-    ctx.fillStyle='#2f7d3a';blob(s.p2,1,s.x+s.r*.1,s.y);}
+    ctx.fillStyle=TH.island.sand;blob(s.p,1.12,s.x,s.y);
+    ctx.fillStyle=TH.island.grass;blob(s.p,1,s.x,s.y);
+    ctx.fillStyle=TH.island.grass2;blob(s.p2,1,s.x+s.r*.1,s.y);}
   for(let i=islands.length-1;i>=0;i--)if(islands[i].y-islands[i].r*1.4>GH){islands.splice(i,1);addIsland(-130)}
 }
 function drawClouds(dt){ctx.fillStyle='rgba(255,255,255,.28)';
@@ -128,10 +128,8 @@ function plane(x,y,s,c,down,eng){ctx.save();ctx.translate(x,y);ctx.scale(s,down?
   if(c!==SHADOW&&c!==WHITE){ctx.fillStyle='rgba(235,240,245,.55)';ctx.fillRect(-9,-17.5,18,2)}
   ctx.restore()}
 const PC={wing:'#3d8bd9',body:'#245fa0',mark:'#ffd23f',glass:'#bfe9ff'};
-const ET={
-  small:{hp:2,r:14,score:100,s:.85,c:{wing:'#5d8a3f',body:'#3f6328',mark:'#e04030',glass:'#22303a'}},
-  zig:{hp:7,r:17,score:300,s:1.05,c:{wing:'#e08a2e',body:'#9a5418',mark:'#fff1c2',glass:'#22303a'}},
-  bomber:{hp:45,r:36,score:2000,s:2.1,eng:true,c:{wing:'#7d828c',body:'#565b64',mark:'#e04030',glass:'#9fd3ff'}}};
+const ET=D.enemies,PL=D.player;
+const SD=()=>{const L=D.stages;if(stage<=L.length)return L[stage-1];const l=L[L.length-1],k=stage-L.length;return Object.assign({},l,{diff:l.diff+k*D.afterLast.diffStep,bossHp:l.bossHp+k*D.afterLast.bossHpStep,sub:'끝없는 하늘 '+k})};
 function drawBoss(b,white){ctx.save();ctx.translate(b.x,b.y);
   const W=white?'#fff':'#5b616d',D=white?'#fff':'#40454f',A=white?'#fff':'#c0392b';
   ctx.fillStyle='rgba(0,20,50,.25)';ctx.fillRect(-150+20,-14+30,300,34);
@@ -148,24 +146,24 @@ function drawBoss(b,white){ctx.save();ctx.translate(b.x,b.y);
 let st='title',score=0,stage=1,stT=0,spawnT=0,boss=null,clearT=0,overT=0,flash=0,shake=0,banner={t:0,a:'',b:''};
 let P,pb=[],eb=[],en=[],items=[],fx=[],rings=[];
 const keys={};
-const diff=()=>1+(stage-1)*.35;
+const diff=()=>SD().diff;
 function showBanner(a,b=''){banner={t:2.4,a,b}}
-function newGame(){P={x:GW/2,y:GH-110,lives:3,bombs:3,pow:1,inv:2.5,ft:0,alive:true,resp:0};score=0;stage=1;pb=[];eb=[];en=[];items=[];fx=[];rings=[];startStage()}
-function startStage(){stT=0;spawnT=1.2;boss=null;clearT=0;showBanner('STAGE '+stage,stage===1?'출격!':'적의 반격이 거세진다');snd(stage===1?'go':'level')}
+function newGame(){P={x:GW/2,y:GH-110,lives:PL.lives,bombs:PL.bombs,pow:1,inv:2.5,ft:0,alive:true,resp:0};score=0;stage=1;pb=[];eb=[];en=[];items=[];fx=[];rings=[];startStage()}
+function startStage(){stT=0;spawnT=1.2;boss=null;clearT=0;showBanner('STAGE '+stage,SD().name+' · '+SD().sub);snd(stage===1?'go':'level')}
 
-function addEnemy(type,o){const T=ET[type];const e=Object.assign({type,T,hp:Math.ceil(T.hp*(1+(stage-1)*.3)),r:T.r,t:0,hit:0,delay:0,fire:rand(1,2.5)/diff(),group:null,vx:0,vy:0},o);en.push(e);return e}
+function addEnemy(type,o){const T=ET[type];const e=Object.assign({type,T,hp:Math.ceil(T.hp*(1+(stage-1)*D.enemyHpPerStage)),r:T.r,t:0,hit:0,delay:0,fire:rand(1,2.5)/diff(),group:null,vx:0,vy:0},o);en.push(e);return e}
 function aimed(x,y,sp,n=1,step=.2,base){const a=base??Math.atan2(P.y-y,P.x-x);for(let i=0;i<n;i++){const b=a+(i-(n-1)/2)*step;eb.push({x,y,vx:Math.cos(b)*sp,vy:Math.sin(b)*sp,r:5})}}
 function spawnWave(){
-  const r=Math.random(),d=diff();
-  if(r<.3){const x0=rand(80,GW-80),g={n:5,k:0};
+  const d=diff(),M=SD().mix;let tot=0;for(const q in M)tot+=M[q];let r=Math.random()*tot,k='line';for(const q in M){if((r-=M[q])<0){k=q;break}}
+  if(k==='line'){const x0=rand(80,GW-80),g={n:5,k:0};
     for(let i=0;i<5;i++)addEnemy('small',{x:x0,y:-30-i*42,group:g,upd(e,dt){e.y+=160*dt;e.x=x0+Math.sin(e.t*2.4)*55}})}
-  else if(r<.58){const L=Math.random()<.5,g={n:6,k:0},y0=rand(60,200);
+  else if(k==='swoop'){const L=Math.random()<.5,g={n:6,k:0},y0=rand(60,200);
     for(let i=0;i<6;i++)addEnemy('small',{x:L?-30:GW+30,y:y0,a:.15,delay:i*.2,group:g,upd(e,dt){if(e.t<1.9)e.a+=1.55*dt;const v=230;e.x+=(L?1:-1)*Math.cos(e.a)*v*dt;e.y+=Math.sin(e.a)*v*dt}})}
-  else if(r<.8){for(let i=0;i<3;i++){const x0=GW*(i+1)/4;addEnemy('zig',{x:x0,y:-40-i*30,upd(e,dt){e.y+=95*dt;e.x=x0+Math.sin(e.t*1.8+i)*70}})}}
-  else if(r<.93||stage===1){addEnemy('bomber',{x:rand(120,GW-120),y:-60,upd(e,dt){if(e.t<2.6)e.y+=65*dt;else if(e.t>9)e.y+=80*dt;e.x+=Math.sin(e.t*.9)*30*dt}})}
+  else if(k==='zig'){for(let i=0;i<3;i++){const x0=GW*(i+1)/4;addEnemy('zig',{x:x0,y:-40-i*30,upd(e,dt){e.y+=95*dt;e.x=x0+Math.sin(e.t*1.8+i)*70}})}}
+  else if(k==='bomber'){addEnemy('bomber',{x:rand(120,GW-120),y:-60,upd(e,dt){if(e.t<2.6)e.y+=65*dt;else if(e.t>9)e.y+=80*dt;e.x+=Math.sin(e.t*.9)*30*dt}})}
   else{const g={n:4,k:0};for(let i=0;i<4;i++)addEnemy('small',{x:rand(40,GW-40),y:GH+30+i*50,group:g,upd(e,dt){e.y-=260*dt;if(e.t>.1)e.x+=(P.x-e.x)*.4*dt}})}
 }
-function spawnBoss(){const d=diff();boss={x:GW/2,y:-140,hp:700*d,max:700*d,t:0,hit:0,ft:1.5,f2:0,spin:0,dead:false,dT:0};showBanner('WARNING','거대 폭격기 접근 중!');snd('alert')}
+function spawnBoss(){const d=diff();boss={x:GW/2,y:-140,hp:SD().bossHp,max:SD().bossHp,t:0,hit:0,ft:1.5,f2:0,spin:0,dead:false,dT:0};showBanner('WARNING','거대 폭격기 접근 중!');snd('alert')}
 const bossHit=[[0,-10,30],[-60,4,26],[60,4,26],[-115,4,22],[115,4,22],[0,-62,24]];
 
 function explode(x,y,big=1){sfx('boom',.18+.12*big);
@@ -192,12 +190,12 @@ function update(dt){
     let mx=(keys.ArrowRight||keys.KeyD?1:0)-(keys.ArrowLeft||keys.KeyA?1:0),my=(keys.ArrowDown||keys.KeyS?1:0)-(keys.ArrowUp||keys.KeyW?1:0);
     const l=Math.hypot(mx,my)||1,sp=keys.ShiftLeft||keys.ShiftRight?150:310;P.x+=mx/l*sp*dt;P.y+=my/l*sp*dt;
     P.x=Math.max(18,Math.min(GW-18,P.x));P.y=Math.max(30,Math.min(GH-26,P.y));
-    P.ft-=dt;if(P.ft<=0){P.ft=.085;fire()}P.inv=Math.max(0,P.inv-dt);
-  }else if(P.lives>=0){P.resp-=dt;if(P.resp<=0){P.alive=true;P.x=GW/2;P.y=GH-110;P.inv=2.6;P.bombs=Math.max(P.bombs,2);eb=[]}}
+    P.ft-=dt;if(P.ft<=0){P.ft=PL.fireGap;fire()}P.inv=Math.max(0,P.inv-dt);
+  }else if(P.lives>=0){P.resp-=dt;if(P.resp<=0){P.alive=true;P.x=GW/2;P.y=GH-110;P.inv=2.6;P.bombs=Math.max(P.bombs,PL.respawnBombs);eb=[]}}
   if(overT>0){overT-=dt;if(overT<=0)gameOver()}
 
-  if(!boss&&clearT<=0&&stT<55){spawnT-=dt;if(spawnT<=0){spawnWave();spawnT=Math.max(1,2.7-stage*.2)+rand(0,1)}}
-  if(!boss&&clearT<=0&&stT>=57&&!en.some(e=>!e.dead&&e.y>-50))spawnBoss();
+  if(!boss&&clearT<=0&&stT<SD().length){spawnT-=dt;if(spawnT<=0){spawnWave();spawnT=rand(SD().spawnGap[0],SD().spawnGap[1])}}
+  if(!boss&&clearT<=0&&stT>=SD().length+2&&!en.some(e=>!e.dead&&e.y>-50))spawnBoss();
 
   for(const b of pb){b.x+=b.vx*dt;b.y+=b.vy*dt}
   pb=pb.filter(b=>b.y>-20&&b.x>-20&&b.x<GW+20&&!b.gone);
@@ -218,7 +216,7 @@ function update(dt){
 
   if(boss){const b=boss;b.t+=dt;b.hit=Math.max(0,b.hit-dt);
     if(b.dead){b.dT-=dt;b.y+=25*dt;if(Math.random()<dt*14)explode(b.x+rand(-140,140),b.y+rand(-60,40),rand(1,2.2));
-      if(b.dT<=0){explode(b.x,b.y,4);flash=.6;boss=null;score+=20000*stage;clearT=3;snd('win');showBanner('STAGE CLEAR','보너스 +'+(20000*stage).toLocaleString())}}
+      if(b.dT<=0){explode(b.x,b.y,4);flash=.6;boss=null;score+=D.bossBonus*stage;clearT=3;snd('win');if(window.Arcade)Arcade.record('aceStage',stage);showBanner('STAGE CLEAR','보너스 +'+(D.bossBonus*stage).toLocaleString())}}
     else{
       if(b.y<140)b.y+=70*dt;else b.x=GW/2+Math.sin(b.t*.55)*100;
       const ph=b.hp/b.max,sp=150+stage*10;b.ft-=dt;b.spin+=dt*(ph<.34?2.6:1.6);
@@ -234,7 +232,7 @@ function update(dt){
 
   for(const it of items){it.t+=dt;it.y+=55*dt;it.x+=Math.sin(it.t*2.5)*40*dt;
     if(P.alive&&Math.hypot(it.x-P.x,it.y-P.y)<24){it.gone=true;sfx('up');
-      if(it.k==='P'){if(P.pow<4)P.pow++;else score+=1000}else P.bombs=Math.min(6,P.bombs+1)}}
+      if(it.k==='P'){if(P.pow<PL.maxPower)P.pow++;else score+=1000}else P.bombs=Math.min(PL.maxBombs,P.bombs+1)}}
   items=items.filter(i=>!i.gone&&i.y<GH+20);
   for(const r of rings){r.life-=dt;r.r+=900*dt}rings=rings.filter(r=>r.life>0);
   if(score>hi){hi=score}
@@ -303,6 +301,6 @@ $('pauseBtn').addEventListener('pointerdown',e=>{e.preventDefault();setPause(st=
 $('resumeBtn').onclick=()=>setPause(false);
 function start(){initAudio();newGame();st='play';$('titleOv').hidden=true;$('overOv').hidden=true}
 $('startBtn').onclick=start;$('retryBtn').onclick=start;
-}
+});
 </script>
 </body></html>

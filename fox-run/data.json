@@ -1,0 +1,174 @@
+{
+ "_설명": "여우 달리기 데이터. zones는 거리(m) 순서대로 바뀌는 구역: 하늘 3색(아래·가운데·위), 언덕 3색(앞·중간·뒤), 땅·풀 색, 밤이면 night=true. mix는 장애물이 나올 비율(rock 바위, double 이중 바위, thorn 가시덤불, birdLow 낮게 나는 새(미끄러져 피함), birdHigh 높게 나는 새(점프하지 말 것), pit 구덩이).",
+ "speed": {
+  "base": 330,
+  "perMeter": 0.55,
+  "max": 720
+ },
+ "jump": {
+  "first": 820,
+  "second": 700,
+  "holdGravity": 1900,
+  "gravity": 2700
+ },
+ "slideTime": 0.65,
+ "zoneBlendMeters": 60,
+ "zones": [
+  {
+   "from": 0,
+   "name": "노을 들판",
+   "sky": [
+    "#ffb36b",
+    "#ff7f8a",
+    "#8a5aa8"
+   ],
+   "hills": [
+    "#c46a8a",
+    "#8a4d86",
+    "#5c3570"
+   ],
+   "ground": "#4a2a55",
+   "grass": "#6fb85a",
+   "grass2": "#5a9d48",
+   "night": false,
+   "mix": {
+    "rock": 26,
+    "double": 14,
+    "thorn": 15,
+    "birdLow": 17,
+    "birdHigh": 0,
+    "pit": 28
+   }
+  },
+  {
+   "from": 400,
+   "name": "꽃 피는 언덕",
+   "sky": [
+    "#d6f0ff",
+    "#9fd6f5",
+    "#5aa8e0"
+   ],
+   "hills": [
+    "#9fd88a",
+    "#6fbf6a",
+    "#4a9a50"
+   ],
+   "ground": "#6a4a2a",
+   "grass": "#7ad35a",
+   "grass2": "#5fb848",
+   "night": false,
+   "mix": {
+    "rock": 24,
+    "double": 14,
+    "thorn": 16,
+    "birdLow": 16,
+    "birdHigh": 5,
+    "pit": 25
+   }
+  },
+  {
+   "from": 900,
+   "name": "보랏빛 저녁",
+   "sky": [
+    "#ff9a6b",
+    "#c45c8f",
+    "#3d2f6b"
+   ],
+   "hills": [
+    "#a86a9a",
+    "#7a4a86",
+    "#4c2f66"
+   ],
+   "ground": "#3a2244",
+   "grass": "#5fae6a",
+   "grass2": "#4c9a5a",
+   "night": false,
+   "mix": {
+    "rock": 22,
+    "double": 15,
+    "thorn": 16,
+    "birdLow": 16,
+    "birdHigh": 7,
+    "pit": 26
+   }
+  },
+  {
+   "from": 1500,
+   "name": "별빛 밤길",
+   "sky": [
+    "#3a3570",
+    "#272452",
+    "#141233"
+   ],
+   "hills": [
+    "#3a3a6a",
+    "#2a2a55",
+    "#1c1c40"
+   ],
+   "ground": "#1a1530",
+   "grass": "#3a6a4a",
+   "grass2": "#2f5a40",
+   "night": true,
+   "mix": {
+    "rock": 20,
+    "double": 15,
+    "thorn": 15,
+    "birdLow": 18,
+    "birdHigh": 9,
+    "pit": 28
+   }
+  },
+  {
+   "from": 2200,
+   "name": "눈 내린 새벽",
+   "sky": [
+    "#eef5fc",
+    "#c8dcf0",
+    "#8aa8d0"
+   ],
+   "hills": [
+    "#e8f0f8",
+    "#cfdced",
+    "#b0c2dc"
+   ],
+   "ground": "#6a7a9a",
+   "grass": "#f4f8fc",
+   "grass2": "#dfe8f2",
+   "night": false,
+   "mix": {
+    "rock": 18,
+    "double": 18,
+    "thorn": 20,
+    "birdLow": 16,
+    "birdHigh": 8,
+    "pit": 26
+   }
+  },
+  {
+   "from": 3000,
+   "name": "용암 협곡",
+   "sky": [
+    "#ff9a5a",
+    "#c8503a",
+    "#5a1f2a"
+   ],
+   "hills": [
+    "#8a3a2a",
+    "#6a2a22",
+    "#4a1a18"
+   ],
+   "ground": "#2a1414",
+   "grass": "#ff7a3a",
+   "grass2": "#d8502a",
+   "night": false,
+   "mix": {
+    "rock": 18,
+    "double": 16,
+    "thorn": 16,
+    "birdLow": 16,
+    "birdHigh": 9,
+    "pit": 32
+   }
+  }
+ ]
+}

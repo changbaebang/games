@@ -1,0 +1,220 @@
+{
+ "_설명": "달빛 생존자 데이터. weapons의 값은 레벨 1 기준이고 PerLv가 붙은 값은 레벨마다 더해진다(쿨타임 cd는 초). passives의 per는 한 단계마다 오르는 양. spawn.phases는 시작 초(from)부터 나오는 몬스터 비율. duration초를 버티면 승리.",
+ "duration": 600,
+ "player": {
+  "hp": 100,
+  "speed": 150,
+  "magnet": 70,
+  "maxWeapons": 5,
+  "maxLevel": 5
+ },
+ "xpCurve": {
+  "base": 5,
+  "perLevel": 4,
+  "power": 1.35
+ },
+ "weapons": {
+  "bolt": {
+   "n": "마력탄",
+   "c": "#8f7bff",
+   "desc": "가장 가까운 적에게 마력탄을 쏜다",
+   "up": "탄 수와 피해 증가",
+   "cd": 1.05,
+   "cdPerLv": -0.07,
+   "dmg": 10,
+   "dmgPerLv": 4,
+   "speed": 430,
+   "countPer2Lv": 1
+  },
+  "knife": {
+   "n": "투척 단검",
+   "c": "#7ad0ff",
+   "desc": "바라보는 방향으로 관통 단검을 던진다",
+   "up": "단검 수와 관통 증가",
+   "cd": 0.85,
+   "dmg": 7,
+   "dmgPerLv": 3,
+   "speed": 540,
+   "pierce": 2
+  },
+  "orbit": {
+   "n": "회전 칼날",
+   "c": "#ffb13d",
+   "desc": "몸 주위를 도는 칼날 2개",
+   "up": "칼날 수와 피해 증가",
+   "dmg": 6,
+   "dmgPerLv": 3,
+   "radius": 78,
+   "spin": 2.6,
+   "spinPerLv": 0.2,
+   "maxBlades": 6,
+   "hitGap": 0.45
+  },
+  "aura": {
+   "n": "달빛 오라",
+   "c": "#7dffb0",
+   "desc": "주변 적에게 계속 피해를 준다",
+   "up": "범위와 피해 증가",
+   "dmg": 3,
+   "dmgPerLv": 2,
+   "radius": 52,
+   "radiusPerLv": 11,
+   "tick": 0.45
+  },
+  "thunder": {
+   "n": "천둥",
+   "c": "#ffe44d",
+   "desc": "화면 안 무작위 적에게 번개가 떨어진다",
+   "up": "낙뢰 수 증가, 쿨타임 감소",
+   "cd": 3,
+   "cdPerLv": -0.25,
+   "dmg": 22,
+   "dmgPerLv": 9,
+   "radius": 42
+  }
+ },
+ "passives": {
+  "hp": {
+   "n": "튼튼한 몸",
+   "c": "#ff6b81",
+   "d": "최대 체력 +20, 회복",
+   "per": 20
+  },
+  "spd": {
+   "n": "가벼운 발",
+   "c": "#4dd4c6",
+   "d": "이동 속도 +10%",
+   "per": 0.1
+  },
+  "might": {
+   "n": "마력 증폭",
+   "c": "#ff7a4d",
+   "d": "모든 피해 +15%",
+   "per": 0.15
+  },
+  "cd": {
+   "n": "빠른 영창",
+   "c": "#b07bff",
+   "d": "모든 쿨타임 -8%",
+   "per": 0.08,
+   "min": 0.4
+  },
+  "mag": {
+   "n": "자석",
+   "c": "#5aa9ff",
+   "d": "보석 끌어당기는 범위 +40%",
+   "per": 0.4
+  },
+  "regen": {
+   "n": "재생",
+   "c": "#6ee06e",
+   "d": "초당 체력 +0.5 회복",
+   "per": 0.5
+  },
+  "area": {
+   "n": "확장",
+   "c": "#ffd23f",
+   "d": "공격 범위 +12%",
+   "per": 0.12
+  }
+ },
+ "enemies": {
+  "bat": {
+   "hp": 5,
+   "spd": 98,
+   "dmg": 6,
+   "r": 10,
+   "xp": 1
+  },
+  "ghoul": {
+   "hp": 14,
+   "spd": 58,
+   "dmg": 10,
+   "r": 13,
+   "xp": 1
+  },
+  "skel": {
+   "hp": 30,
+   "spd": 68,
+   "dmg": 12,
+   "r": 13,
+   "xp": 2
+  },
+  "knight": {
+   "hp": 80,
+   "spd": 50,
+   "dmg": 18,
+   "r": 17,
+   "xp": 4
+  },
+  "golem": {
+   "hp": 600,
+   "spd": 44,
+   "dmg": 26,
+   "r": 30,
+   "xp": 0
+  }
+ },
+ "growth": {
+  "_설명": "시간이 지날수록 강해지는 정도: 체력 x(1+초/hpSec), 골렘 x(1+초/golemSec), 공격력 x(1+초/dmgSec)",
+  "hpSec": 80,
+  "golemSec": 150,
+  "dmgSec": 400
+ },
+ "spawn": {
+  "rateBase": 0.9,
+  "ratePerSec": 0.0625,
+  "rateMax": 16,
+  "maxEnemies": 380,
+  "phases": [
+   {
+    "from": 0,
+    "mix": {
+     "bat": 55,
+     "ghoul": 45
+    }
+   },
+   {
+    "from": 100,
+    "mix": {
+     "skel": 45,
+     "bat": 10,
+     "ghoul": 45
+    }
+   },
+   {
+    "from": 240,
+    "mix": {
+     "knight": 18,
+     "skel": 27,
+     "bat": 10,
+     "ghoul": 45
+    }
+   },
+   {
+    "from": 420,
+    "mix": {
+     "knight": 28,
+     "skel": 32,
+     "bat": 10,
+     "ghoul": 30
+    }
+   }
+  ],
+  "swarm": {
+   "first": 50,
+   "every": 55,
+   "base": 24,
+   "perSec": 0.1,
+   "type": "bat",
+   "lateType": "skel",
+   "lateFrom": 200
+  },
+  "elite": {
+   "first": 75,
+   "every": 75,
+   "type": "golem"
+  }
+ },
+ "soupHeal": 50
+}

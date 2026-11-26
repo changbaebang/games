@@ -1,0 +1,138 @@
+{
+ "_설명": "블록 헌터 데이터. monsters의 색은 머리(head)·몸통(torso)·팔(arm)·다리(leg)·눈(eye). sc는 크기 배율, aggro는 쫓아오기 시작하는 거리. waves.list는 웨이브별 몬스터 수, 목록이 끝나면 endless 규칙으로 계속 만든다.",
+ "player": {
+  "hp": 100,
+  "regenPerSec": 5,
+  "regenDelay": 4,
+  "attackMin": 12,
+  "attackMax": 19,
+  "critChance": 0.15,
+  "critMult": 2,
+  "waveHeal": 25
+ },
+ "monsters": {
+  "zombie": {
+   "n": "좀비",
+   "c": {
+    "head": "#6fc36a",
+    "torso": "#3c7a8c",
+    "arm": "#6fc36a",
+    "leg": "#4b3a6b",
+    "eye": "#ff2a2a"
+   },
+   "hp": 40,
+   "spd": 2.7,
+   "dmg": 8,
+   "sc": 1,
+   "aggro": 14,
+   "zombie": true
+  },
+  "runner": {
+   "n": "러너",
+   "c": {
+    "head": "#ff9b3d",
+    "torso": "#7a3b12",
+    "arm": "#ff9b3d",
+    "leg": "#3a2410",
+    "eye": "#111111",
+    "eyeH": 0.08
+   },
+   "hp": 24,
+   "spd": 4.6,
+   "dmg": 5,
+   "sc": 0.8,
+   "aggro": 17
+  },
+  "brute": {
+   "n": "브루트",
+   "c": {
+    "head": "#9b59d0",
+    "torso": "#4a2470",
+    "arm": "#9b59d0",
+    "leg": "#2a1440",
+    "eye": "#ffe23f"
+   },
+   "hp": 110,
+   "spd": 1.9,
+   "dmg": 16,
+   "sc": 1.5,
+   "aggro": 12
+  },
+  "king": {
+   "n": "킹 브루트",
+   "c": {
+    "head": "#e05a4a",
+    "torso": "#5a1a22",
+    "arm": "#e05a4a",
+    "leg": "#2a0e12",
+    "eye": "#ffe23f"
+   },
+   "hp": 380,
+   "spd": 2.2,
+   "dmg": 22,
+   "sc": 2.3,
+   "aggro": 40,
+   "boss": true
+  }
+ },
+ "waves": {
+  "hpPerWave": 0.06,
+  "list": [
+   {
+    "zombie": 4
+   },
+   {
+    "zombie": 4,
+    "runner": 2
+   },
+   {
+    "zombie": 5,
+    "runner": 2,
+    "brute": 1
+   },
+   {
+    "zombie": 5,
+    "runner": 4,
+    "brute": 1
+   },
+   {
+    "king": 1,
+    "zombie": 4
+   },
+   {
+    "zombie": 6,
+    "runner": 4,
+    "brute": 2
+   },
+   {
+    "zombie": 6,
+    "runner": 6,
+    "brute": 2
+   },
+   {
+    "zombie": 8,
+    "runner": 5,
+    "brute": 3
+   },
+   {
+    "zombie": 8,
+    "runner": 6,
+    "brute": 4
+   },
+   {
+    "king": 2,
+    "brute": 3,
+    "runner": 4
+   }
+  ],
+  "endless": {
+   "base": 3,
+   "perWave": 2,
+   "runnerShare": 0.33,
+   "bruteShare": 0.12,
+   "bruteSharePerWave": 0.02,
+   "bruteShareMax": 0.4,
+   "bossEvery": 5
+  }
+ }
+}

@@ -133,6 +133,29 @@
   }
   function best(key) { var v = parseFloat(store.get(key)); return isNaN(v) ? null : v; }
 
+  /* 게임 데이터(data.json) 불러오기: Arcade.boot(function (D) { ...게임 코드... })
+   * 같은 폴더의 data.json을 읽어 게임에 넘긴다. 못 읽으면 화면에 다시 시도 버튼을 띄운다. */
+  function boot(fn, url) {
+    url = url || 'data.json';
+    var box = null;
+    function fail(err) {
+      if (!box) {
+        box = document.createElement('div');
+        box.style.cssText = 'position:fixed;inset:0;z-index:99;display:grid;place-items:center;background:rgba(10,14,30,.85);color:#fff;font:17px/1.5 Jua,system-ui,sans-serif;text-align:center;padding:24px';
+        box.innerHTML = '<div><p style="font-size:22px;margin:0 0 8px">게임 데이터를 불러오지 못했어요</p><p style="margin:0 0 16px;opacity:.8">인터넷 연결을 확인하고 다시 시도해 주세요.</p><button type="button" style="font:inherit;font-size:19px;border:0;border-radius:12px;padding:10px 24px;background:#ffcf3f;color:#3b2a00;cursor:pointer">다시 시도</button></div>';
+        box.querySelector('button').onclick = function () { box.remove(); box = null; load(); };
+        document.body.appendChild(box);
+      }
+      if (window.console) console.error('data.json', err);
+    }
+    function load() {
+      fetch(url, { cache: 'no-cache' })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (D) { try { fn(D); } catch (e) { fail(e); } }, fail);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load); else load();
+  }
+
   function installLinks() {
     var head = document.head;
     if (!head.querySelector('link[rel="manifest"]')) {
@@ -150,7 +173,7 @@
   }
 
   window.Arcade = {
-    play: play, record: record, best: best, base: base.href,
+    play: play, record: record, best: best, boot: boot, base: base.href,
     get muted() { return muted; }, setMuted: setMuted, toggleMute: function () { setMuted(!muted); }
   };
   installLinks();

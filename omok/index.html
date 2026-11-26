@@ -44,8 +44,8 @@ canvas{display:block;position:fixed;inset:0}
 </div></div>
 <div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">흑 승리!</h1><p id="eTxt"></p><div class="modes"><button class="btn" id="againBtn">한 판 더</button><button class="btn soft" id="viewBtn">판 다시 보기</button></div></div></div>
 <script>
-{
-const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,N=15,snd=(...a)=>window.Arcade&&Arcade.play(...a);
+Arcade.boot(D=>{
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,N=D.boardSize,WINL=D.winLength,MID=(D.boardSize-1)/2,snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const TOUCH=matchMedia('(pointer:coarse)').matches;
 let W,H,DPR,CS,BX,BY;
 function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
@@ -58,26 +58,26 @@ function ui(){$('tStone').style.background=turn===1?'radial-gradient(circle at 3
   $('tTxt').textContent=over?'대국 끝':ai()&&turn===AI?'AI가 생각 중…':(turn===1?'흑':'백')+' 차례'+(ai()?' (나)':'');
   $('undoBtn').disabled=!moves.length;$('hint').textContent=over?'':TOUCH?'두고 싶은 곳을 탭하고, 같은 곳을 한 번 더 탭하면 둬요':'두고 싶은 곳을 클릭하세요'}
 const inb=(x,y)=>x>=0&&y>=0&&x<N&&y<N,DIR=[[1,0],[0,1],[1,1],[1,-1]];
-function lineAt(x,y,p){for(const [dx,dy] of DIR){const L=[[x,y]];for(const s of [1,-1]){let i=1;while(inb(x+dx*i*s,y+dy*i*s)&&board[y+dy*i*s][x+dx*i*s]===p){L.push([x+dx*i*s,y+dy*i*s]);i++}}if(L.length>=5)return L}return null}
+function lineAt(x,y,p){for(const [dx,dy] of DIR){const L=[[x,y]];for(const s of [1,-1]){let i=1;while(inb(x+dx*i*s,y+dy*i*s)&&board[y+dy*i*s][x+dx*i*s]===p){L.push([x+dx*i*s,y+dy*i*s]);i++}}if(L.length>=WINL)return L}return null}
 function place(x,y){if(over||board[y][x])return false;board[y][x]=turn;moves.push([x,y]);snd('place');ghost=null;
-  const L=lineAt(x,y,turn);if(L){over=true;winLine=L;finish(turn)}else if(moves.length===N*N){over=true;finish(0)}else{turn=3-turn;if(ai()&&turn===AI)aiT=.35}ui();return true}
+  const L=lineAt(x,y,turn);if(L){over=true;winLine=L;finish(turn)}else if(moves.length===N*N){over=true;finish(0)}else{turn=3-turn;if(ai()&&turn===AI)aiT=D.thinkSeconds}ui();return true}
 function finish(w){const youWin=ai()&&w===HUM,youLose=ai()&&w===AI;snd(youLose?'lose':'win');
   setTimeout(()=>{$('eTitle').textContent=w===0?'무승부':ai()?(youWin?'승리!':'AI 승리'):(w===1?'흑 승리!':'백 승리!');
     let txt=`${moves.length}수 만에 끝났어요.`;if(youWin&&window.Arcade){const k=mode==='ai2'?'omokWinsHard':'omokWinsEasy';const n=(Arcade.best(k)||0)+1;Arcade.record(k,n);txt+=` AI(${mode==='ai2'?'보통':'쉬움'}) 상대 ${n}승째!`}
     $('eTxt').textContent=txt;$('endOv').hidden=false;$('againBtn').focus()},900)}
 // ---------- AI: 5칸 창 단위 패턴 점수
-const WT=[0,2,12,120,1500,100000];
+const WT=D.ai.patternScore;
 function cellScore(x,y,p){let s=0;const o=3-p;
-  for(const [dx,dy] of DIR)for(let k=-4;k<=0;k++){let cnt=1,bad=false;for(let i=0;i<5;i++){const xx=x+dx*(k+i),yy=y+dy*(k+i);if(!inb(xx,yy)){bad=true;break}if(xx===x&&yy===y)continue;const v=board[yy][xx];if(v===o){bad=true;break}if(v===p)cnt++}
-    if(!bad)s+=WT[Math.min(5,cnt)]}
+  for(const [dx,dy] of DIR)for(let k=1-WINL;k<=0;k++){let cnt=1,bad=false;for(let i=0;i<WINL;i++){const xx=x+dx*(k+i),yy=y+dy*(k+i);if(!inb(xx,yy)){bad=true;break}if(xx===x&&yy===y)continue;const v=board[yy][xx];if(v===o){bad=true;break}if(v===p)cnt++}
+    if(!bad)s+=WT[Math.min(WT.length-1,Math.round(cnt*5/WINL))]}
   return s}
 function aiMove(){const cand=[];
-  if(!moves.length){return [7,7]}
+  if(!moves.length){return [MID,MID]}const LV=D.ai.levels[mode]||D.ai.levels.ai2,WIN=WT[WT.length-1];
   for(let y=0;y<N;y++)for(let x=0;x<N;x++){if(board[y][x])continue;let near=false;for(let dy=-2;dy<=2&&!near;dy++)for(let dx=-2;dx<=2;dx++)if(inb(x+dx,y+dy)&&board[y+dy][x+dx]){near=true;break}
-    if(!near)continue;const a=cellScore(x,y,AI),d=cellScore(x,y,HUM);let sc=a*1.08+d*(mode==='ai2'?1:.75);if(a>=100000)sc+=1e7;else if(d>=100000)sc+=1e6;
-    sc+=(7-Math.max(Math.abs(x-7),Math.abs(y-7)))*.5;if(mode==='ai1')sc*=.7+Math.random()*.6;cand.push([sc,x,y])}
+    if(!near)continue;const a=cellScore(x,y,AI),d=cellScore(x,y,HUM);let sc=a*LV.attack+d*LV.defense;if(a>=WIN)sc+=1e7;else if(d>=WIN)sc+=1e6;
+    sc+=(MID-Math.max(Math.abs(x-MID),Math.abs(y-MID)))*D.ai.centerBonus;if(LV.noise)sc*=1-LV.noise/2+Math.random()*LV.noise;cand.push([sc,x,y])}
   cand.sort((a,b)=>b[0]-a[0]);
-  if(mode==='ai1'&&cand.length>2&&cand[0][0]<1e6&&Math.random()<.3)return cand[1+(Math.random()*2|0)].slice(1);
+  if(LV.mistake&&cand.length>2&&cand[0][0]<1e6&&Math.random()<LV.mistake)return cand[1+(Math.random()*2|0)].slice(1);
   return cand[0].slice(1)}
 // ---------- input
 function cellFrom(e){const x=Math.round((e.clientX-BX)/CS),y=Math.round((e.clientY-BY)/CS);return inb(x,y)?[x,y]:null}
@@ -103,7 +103,7 @@ function draw(dt){t+=dt;ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#efe6d2
   const g=ctx.createLinearGradient(bx,by,bx+bs,by+bs);g.addColorStop(0,'#e8bf78');g.addColorStop(1,'#d9a85e');ctx.fillStyle=g;ctx.beginPath();ctx.roundRect(bx,by,bs,bs,10);ctx.fill();
   ctx.strokeStyle='rgba(150,100,40,.18)';ctx.lineWidth=1.5;for(let i=0;i<14;i++){ctx.beginPath();const yy=by+bs*(i+.5)/14;ctx.moveTo(bx,yy);ctx.bezierCurveTo(bx+bs*.3,yy+8,bx+bs*.6,yy-8,bx+bs,yy+3);ctx.stroke()}
   ctx.strokeStyle='#5a3a1a';ctx.lineWidth=1;ctx.beginPath();for(let i=0;i<N;i++){ctx.moveTo(BX,BY+i*CS);ctx.lineTo(BX+(N-1)*CS,BY+i*CS);ctx.moveTo(BX+i*CS,BY);ctx.lineTo(BX+i*CS,BY+(N-1)*CS)}ctx.stroke();
-  ctx.fillStyle='#5a3a1a';for(const [x,y] of [[3,3],[11,3],[7,7],[3,11],[11,11]]){ctx.beginPath();ctx.arc(BX+x*CS,BY+y*CS,CS*.1,0,TAU);ctx.fill()}
+  ctx.fillStyle='#5a3a1a';for(const [x,y] of [[3,3],[N-4,3],[MID,MID],[3,N-4],[N-4,N-4]]){ctx.beginPath();ctx.arc(BX+x*CS,BY+y*CS,CS*.1,0,TAU);ctx.fill()}
   if(!board)return;
   for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(board[y][x])stone(x,y,board[y][x]);
   if(moves.length){const [x,y]=moves[moves.length-1];ctx.fillStyle='#e0403a';ctx.beginPath();ctx.arc(BX+x*CS,BY+y*CS,CS*.12,0,TAU);ctx.fill()}
@@ -117,6 +117,6 @@ function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
   if(aiT>0&&!over&&ai()&&turn===AI){aiT-=dt;if(aiT<=0){const [x,y]=aiMove();place(x,y)}}
   draw(dt);requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
-}
+});
 </script>
 </body></html>

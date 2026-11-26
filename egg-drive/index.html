@@ -45,18 +45,23 @@ canvas{display:block;position:fixed;inset:0}
 </div></div>
 <div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">달걀이 깨졌어요</h1><p id="eTxt"></p><button class="btn" id="againBtn">다시 출발</button></div></div>
 <script>
-{
+Arcade.boot(D=>{
 const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2;
 let W,H,DPR,Z;
 function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';Z=Math.max(.5,Math.min(1.3,Math.min(W/640,H/440)))}
 addEventListener('resize',resize);resize();
 // ---------- terrain
-function amp(x){return Math.min(1.7,.3+Math.max(0,x-300)/7000)}
-function h(x){const k=Math.min(1,Math.max(0,(x-250)/400));return 420-k*amp(x)*(Math.sin(x*.0035)*70+Math.sin(x*.0089+1.3)*26+Math.sin(x*.019+2.1)*6)}
+const TRN=D.terrain,PHY=D.physics,ZN=D.zones;
+function amp(x){return Math.min(TRN.ampMax,TRN.ampStart+Math.max(0,x-TRN.ampGrowFrom)/TRN.ampGrowPx)}
+function h(x){const k=Math.min(1,Math.max(0,(x-TRN.flatUntil)/TRN.ramp));let w=0;for(const [f,a,p] of TRN.waves)w+=Math.sin(x*f+p)*a;return TRN.base-k*amp(x)*w}
+const mixc=(a,b,t)=>{const p=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16)),A=p(a),B=p(b);return `rgb(${A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(',')})`};
+function zoneAt(m){let i=0;for(let k=0;k<ZN.length;k++)if(m>=ZN[k].from)i=k;return i}
+function zc(key,idx){const m=meters(),i=zoneAt(m),z=ZN[i],e=i>0?Math.min(1,(m-z.from)/D.zoneBlendMeters):1,a=idx==null?z[key]:z[key][idx];if(e>=1)return a;const p=idx==null?ZN[i-1][key]:ZN[i-1][key][idx];return mixc(p,a,e)}
+let zoneI=0,zoneT=0;
 const dh=x=>(h(x+1)-h(x-1))/2;
 // ---------- physics
-const DT=1/120,G=950*DT*DT;
+const DT=1/120,G=PHY.gravity*DT*DT;
 let P,C,egg,st='title',best=0,dist0,broken,brokenT,flipT,camX,camY,gas=0,brk=0,wheelRot=0,maxX=0;
 try{best=+localStorage.getItem('eggDriveBest')||0}catch(e){}
 const pt=(x,y,r,m=1)=>({x,y,ox:x,oy:y,r,m,ground:false});
@@ -64,14 +69,14 @@ function newGame(){const x=160,y=h(160)-20;
   P=[pt(x-38,y,16,2),pt(x+38,y,16,2),pt(x-44,y-34,6,3),pt(x+44,y-34,6,3)];
   C=[];const link=(a,b,s)=>C.push({a:P[a],b:P[b],d:Math.hypot(P[a].x-P[b].x,P[a].y-P[b].y),s});
   link(0,1,1);link(2,3,1);link(0,2,.5);link(1,3,.5);link(0,3,.5);link(1,2,.5);
-  egg=pt(x,y-34-14,13,.4);egg.rot=0;broken=false;brokenT=0;flipT=0;camX=x;camY=y;dist0=x;maxX=x}
+  egg=pt(x,y-34-PHY.eggRadius-1,PHY.eggRadius,PHY.eggMass);zoneI=0;zoneT=0;egg.rot=0;broken=false;brokenT=0;flipT=0;camX=x;camY=y;dist0=x;maxX=x}
 newGame();
 function groundCollide(p,isWheel,drive){const ty=h(p.x),s=dh(p.x),len=Math.hypot(1,s),nx=s/len,ny=-1/len;
   const d=(ty-p.y)/len;p.ground=false;
   if(d<p.r){p.ground=true;const pen=p.r-d;p.x+=nx*pen;p.y+=ny*pen;
     let vx=p.x-p.ox,vy=p.y-p.oy;const tx=1/len,tyy=s/len;let vn=vx*nx+vy*ny,vt=vx*tx+vy*tyy;
     if(vn>0)vn*=-.15;
-    if(isWheel){vt*=.999;if(drive>0&&vt<5.2)vt+=drive*.05;if(drive<0)vt=vt>0?Math.max(0,vt-.09):Math.max(-2.2,vt-.03)}else vt*=.9;
+    if(isWheel){vt*=.999;if(drive>0&&vt<PHY.maxWheelSpeed)vt+=drive*PHY.drive;if(drive<0)vt=vt>0?Math.max(0,vt-PHY.brake):Math.max(-PHY.reverseMax,vt-PHY.reverse)}else vt*=.9;
     vx=nx*vn+tx*vt;vy=ny*vn+tyy*vt;p.ox=p.x-vx;p.oy=p.y-vy;return true}return false}
 function segCollide(e,a,b,push){const abx=b.x-a.x,aby=b.y-a.y,l2=abx*abx+aby*aby;let t=((e.x-a.x)*abx+(e.y-a.y)*aby)/l2;t=Math.max(0,Math.min(1,t));
   const cx=a.x+abx*t,cy=a.y+aby*t,dx=e.x-cx,dy=e.y-cy,d=Math.hypot(dx,dy);
@@ -81,28 +86,28 @@ function step(){
   for(const p of [...P,egg]){const vx=(p.x-p.ox)*.9995,vy=(p.y-p.oy)*.9995;p.ox=p.x;p.oy=p.y;p.x+=vx;p.y+=vy+G}
   const drive=broken?0:gas?1:brk?-1:0;
   const onGround=P[0].ground||P[1].ground;
-  if(!onGround&&!broken&&drive){const [b1,b2]=[P[2],P[3]],cx=(b1.x+b2.x)/2,cy=(b1.y+b2.y)/2;for(const q of [P[0],P[1],b1,b2]){const rx=q.x-cx,ry=q.y-cy,k=-drive*.0016;q.x+=-ry*k;q.y+=rx*k}}
+  if(!onGround&&!broken&&drive){const [b1,b2]=[P[2],P[3]],cx=(b1.x+b2.x)/2,cy=(b1.y+b2.y)/2;for(const q of [P[0],P[1],b1,b2]){const rx=q.x-cx,ry=q.y-cy,k=-drive*PHY.airRotate;q.x+=-ry*k;q.y+=rx*k}}
   for(let it=0;it<8;it++){
     for(const c of C){const dx=c.b.x-c.a.x,dy=c.b.y-c.a.y,d=Math.hypot(dx,dy)||1e-6,diff=(d-c.d)/d*c.s,ma=c.a.m,mb=c.b.m,wa=mb/(ma+mb),wb=ma/(ma+mb);
       c.a.x+=dx*diff*wa;c.a.y+=dy*diff*wa;c.b.x-=dx*diff*wb;c.b.y-=dy*diff*wb}
     groundCollide(P[0],true,drive);groundCollide(P[1],true,drive);groundCollide(P[2],false,0);groundCollide(P[3],false,0);
-    const b1=P[2],b2=P[3],ux=b2.x-b1.x,uy=b2.y-b1.y,ul=Math.hypot(ux,uy),nx=uy/ul,ny=-ux/ul,wall=19;
+    const b1=P[2],b2=P[3],ux=b2.x-b1.x,uy=b2.y-b1.y,ul=Math.hypot(ux,uy),nx=uy/ul,ny=-ux/ul,wall=PHY.wallHeight;
     const w1={x:b1.x+nx*wall,y:b1.y+ny*wall},w2={x:b2.x+nx*wall,y:b2.y+ny*wall};
     segCollide(egg,b1,b2,true);segCollide(egg,b1,w1,false);segCollide(egg,b2,w2,false);
   }
   const ty=h(egg.x);if(!broken&&egg.y+egg.r*.8>=ty){broken=true;brokenT=0;snd('crack');snd('splat');egg.splat=egg.x;egg.splatY=ty}
   if(broken){egg.x=egg.ox;egg.y=Math.min(egg.y,ty-egg.r*.4)}
-  const b1=P[2],b2=P[3];const up=(b2.x-b1.x);if(up<-10&&!broken)flipT+=DT;else flipT=0;if(flipT>2.5&&!broken){broken=true;brokenT=0;snd('thud');egg.splat=egg.x;egg.splatY=h(egg.x)}
+  const b1=P[2],b2=P[3];const up=(b2.x-b1.x);if(up<-10&&!broken)flipT+=DT;else flipT=0;if(flipT>PHY.flipSeconds&&!broken){broken=true;brokenT=0;snd('thud');egg.splat=egg.x;egg.splatY=h(egg.x)}
   wheelRot+=((P[0].x-P[0].ox)+(P[1].x-P[1].ox))/2/16;
   maxX=Math.max(maxX,(P[0].x+P[1].x)/2);
 }
 let acc=0;
 function update(dt){acc+=dt;while(acc>=DT){step();acc-=DT}
-  {const m=meters(),f=Math.floor(m/100);if(f>(update.f||0)){update.f=f;snd('coin')}if(best>0&&m>best&&!update.pb){update.pb=true;snd('level')}}
+  {const m=meters(),f=Math.floor(m/D.flagEvery);if(f>(update.f||0)){update.f=f;snd('coin')}const zi=zoneAt(m);if(zi>zoneI){zoneI=zi;zoneT=2.6;snd('level');if(window.Arcade)Arcade.record('eggDriveZone',zi+1)}zoneT=Math.max(0,zoneT-dt);if(best>0&&m>best&&!update.pb){update.pb=true;snd('level')}}
   if(broken){brokenT+=dt;if(brokenT>1.3&&st==='play')end()}}
 const meters=()=>Math.max(0,Math.floor((maxX-dist0)/40));
 function end(){st='end';snd('lose');const m=meters();if(m>best){best=m;try{localStorage.setItem('eggDriveBest',best)}catch(e){}}
-  $('eTitle').textContent=flipT>2.5?'트럭이 뒤집혔어요':'달걀이 깨졌어요';$('eTxt').textContent=`${m} m 달렸어요 · 최고 ${best} m`;$('endOv').hidden=false;$('againBtn').focus()}
+  $('eTitle').textContent=flipT>PHY.flipSeconds?'트럭이 뒤집혔어요':'달걀이 깨졌어요';$('eTxt').textContent=`${m} m 달렸어요 · 최고 ${best} m`;$('endOv').hidden=false;$('againBtn').focus()}
 // ---------- input
 const keys={};
 addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('Arrow'))e.preventDefault();sync()});addEventListener('keyup',e=>{keys[e.code]=false;sync()});
@@ -120,18 +125,18 @@ function eggShape(x,y,s,rot){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.f
 function wheel(p){ctx.save();ctx.translate(p.x,p.y);ctx.rotate(wheelRot);ctx.fillStyle='#2a2a2e';ctx.beginPath();ctx.arc(0,0,p.r,0,TAU);ctx.fill();ctx.fillStyle='#c9ced6';ctx.beginPath();ctx.arc(0,0,p.r*.5,0,TAU);ctx.fill();
   ctx.strokeStyle='#8a9099';ctx.lineWidth=3;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(i*TAU/3)*p.r*.5,Math.sin(i*TAU/3)*p.r*.5);ctx.stroke()}ctx.restore()}
 function draw(dt){
-  ctx.setTransform(DPR,0,0,DPR,0,0);const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#7cc6f0');g.addColorStop(1,'#d6f0ff');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.setTransform(DPR,0,0,DPR,0,0);const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,zc('sky',0));g.addColorStop(1,zc('sky',1));ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   const cx=(P[0].x+P[1].x)/2,cy=(P[0].y+P[1].y)/2-30;camX+=(cx-camX)*Math.min(1,dt*5);camY+=(cy-camY)*Math.min(1,dt*3);
   ctx.fillStyle='#fff6c0';ctx.beginPath();ctx.arc(W*.82,H*.16,Math.min(W,H)*.07,0,TAU);ctx.fill();
   ctx.fillStyle='rgba(255,255,255,.9)';for(let i=0;i<6;i++){const x=((i*260-camX*.1)%(W+300)+W+300)%(W+300)-150,y=H*.12+(i*47)%(H*.25);ctx.beginPath();ctx.arc(x,y,26,0,TAU);ctx.arc(x+30,y+6,20,0,TAU);ctx.arc(x-28,y+8,18,0,TAU);ctx.fill()}
-  for(const [par,col,off,a] of [[.25,'#a8d8a0',120,70],[.5,'#86c47a',70,50]]){ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(0,H);for(let sx=0;sx<=W+20;sx+=20){const wx=sx/Z+camX*par;ctx.lineTo(sx,H*.58-off*Z*.5+Math.sin(wx*.006)*a*Z+Math.sin(wx*.017)*a*.3*Z)}ctx.lineTo(W,H);ctx.fill()}
+  for(const [par,col,off,a] of [[.25,zc('hills',0),120,70],[.5,zc('hills',1),70,50]]){ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(0,H);for(let sx=0;sx<=W+20;sx+=20){const wx=sx/Z+camX*par;ctx.lineTo(sx,H*.58-off*Z*.5+Math.sin(wx*.006)*a*Z+Math.sin(wx*.017)*a*.3*Z)}ctx.lineTo(W,H);ctx.fill()}
   const ox=W*.38-camX*Z,oy=H*.56-camY*Z;ctx.setTransform(DPR*Z,0,0,DPR*Z,DPR*ox,DPR*oy);
   const x0=camX-W*.38/Z-20,x1=camX+W*.62/Z+20,bottom=camY+H/Z;
-  ctx.fillStyle='#8a5a34';ctx.beginPath();ctx.moveTo(x0,bottom);for(let x=x0;x<=x1;x+=10)ctx.lineTo(x,h(x));ctx.lineTo(x1,bottom);ctx.fill();
-  ctx.strokeStyle='#5fb84a';ctx.lineWidth=14;ctx.lineJoin='round';ctx.beginPath();for(let x=x0;x<=x1;x+=10)x===x0?ctx.moveTo(x,h(x)+4):ctx.lineTo(x,h(x)+4);ctx.stroke();
-  ctx.strokeStyle='#4ea33c';ctx.lineWidth=3;ctx.beginPath();for(let x=x0;x<=x1;x+=10)x===x0?ctx.moveTo(x,h(x)+11):ctx.lineTo(x,h(x)+11);ctx.stroke();
+  ctx.fillStyle=zc('ground');ctx.beginPath();ctx.moveTo(x0,bottom);for(let x=x0;x<=x1;x+=10)ctx.lineTo(x,h(x));ctx.lineTo(x1,bottom);ctx.fill();
+  ctx.strokeStyle=zc('grass');ctx.lineWidth=14;ctx.lineJoin='round';ctx.beginPath();for(let x=x0;x<=x1;x+=10)x===x0?ctx.moveTo(x,h(x)+4):ctx.lineTo(x,h(x)+4);ctx.stroke();
+  ctx.strokeStyle=zc('grass2');ctx.lineWidth=3;ctx.beginPath();for(let x=x0;x<=x1;x+=10)x===x0?ctx.moveTo(x,h(x)+11):ctx.lineTo(x,h(x)+11);ctx.stroke();
   ctx.fillStyle='rgba(120,80,40,.5)';for(let x=Math.floor(x0/90)*90;x<x1;x+=90){const y=h(x)+30+((x*7)%40);ctx.beginPath();ctx.ellipse(x+((x*13)%50),y,6,4,0,0,TAU);ctx.fill()}
-  for(let m=Math.ceil((x0-dist0)/40/100)*100;m*40+dist0<x1;m+=100){if(m<=0)continue;const x=dist0+m*40,y=h(x);ctx.fillStyle='#6a4a2a';ctx.fillRect(x-2,y-50,4,50);ctx.fillStyle=m<=best?'#ffd23f':'#fff';ctx.beginPath();ctx.moveTo(x+2,y-50);ctx.lineTo(x+30,y-42);ctx.lineTo(x+2,y-34);ctx.fill();ctx.fillStyle='#3a2a1a';ctx.font='12px Jua,sans-serif';ctx.textAlign='left';ctx.fillText(m+'m',x+5,y-38)}
+  for(let m=Math.ceil((x0-dist0)/40/D.flagEvery)*D.flagEvery;m*40+dist0<x1;m+=D.flagEvery){if(m<=0)continue;const x=dist0+m*40,y=h(x);ctx.fillStyle='#6a4a2a';ctx.fillRect(x-2,y-50,4,50);ctx.fillStyle=m<=best?'#ffd23f':'#fff';ctx.beginPath();ctx.moveTo(x+2,y-50);ctx.lineTo(x+30,y-42);ctx.lineTo(x+2,y-34);ctx.fill();ctx.fillStyle='#3a2a1a';ctx.font='12px Jua,sans-serif';ctx.textAlign='left';ctx.fillText(m+'m',x+5,y-38)}
   if(best>0){const bx=dist0+best*40,by=h(bx);ctx.fillStyle='#e0503f';ctx.fillRect(bx-2,by-70,4,70);ctx.fillStyle='#e0503f';ctx.font='13px Jua,sans-serif';ctx.textAlign='center';ctx.fillText('최고',bx,by-76)}
   const [w1,w2,b1,b2]=P,ux=b2.x-b1.x,uy=b2.y-b1.y,ul=Math.hypot(ux,uy),nx=uy/ul,ny=-ux/ul;
   {const a=Math.atan2(uy,ux),mx=(b1.x+b2.x)/2,my=(b1.y+b2.y)/2;ctx.save();ctx.translate(mx,my);ctx.rotate(a);
@@ -149,10 +154,11 @@ function draw(dt){
     ctx.fillStyle='#fff8ec';for(const [dx,a] of [[-18,-.6],[16,.7]]){ctx.save();ctx.translate(sx+dx,sy-8);ctx.rotate(a);ctx.beginPath();ctx.moveTo(-7,0);ctx.lineTo(0,-10);ctx.lineTo(7,0);ctx.lineTo(3,-3);ctx.lineTo(-2,-2);ctx.closePath();ctx.fill();ctx.restore()}}
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.textAlign='left';ctx.textBaseline='top';ctx.lineWidth=5;ctx.strokeStyle='rgba(30,50,70,.4)';ctx.font='34px Jua,sans-serif';
   const m=meters()+' m';ctx.strokeText(m,16,14);ctx.fillStyle='#fff';ctx.fillText(m,16,14);ctx.font='16px Jua,sans-serif';const bt='최고 '+best+' m';ctx.strokeText(bt,18,56);ctx.fillText(bt,18,56);ctx.textBaseline='alphabetic';
+  if(zoneT>0){ctx.globalAlpha=Math.min(1,zoneT*2,(2.6-zoneT)*4);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='30px Jua,sans-serif';ctx.lineWidth=6;ctx.strokeStyle='rgba(30,50,70,.5)';const zt=`${ZN[zoneI].name}`;ctx.strokeText(zt,W/2,H*.22);ctx.fillStyle='#fff';ctx.fillText(zt,W/2,H*.22);ctx.globalAlpha=1;ctx.textBaseline='alphabetic'}
 }
 let last=performance.now();
 function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(st==='play')update(dt);draw(dt);requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
-}
+});
 </script>
 </body></html>

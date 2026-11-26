@@ -69,7 +69,7 @@ canvas{display:block;position:fixed;inset:0}
 </div></div>
 
 <script>
-{
+Arcade.boot(D=>{
 const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2;
 const rand=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.random()*a.length|0];
@@ -78,39 +78,27 @@ function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight
 addEventListener('resize',resize);resize();
 
 // ---------- data
-const WP={
-  bolt:{n:'마력탄',c:'#8f7bff',d:l=>l?`탄 ${1+(l>>1)}→${1+((l+1)>>1)}발, 피해 증가`:'가장 가까운 적에게 마력탄을 쏜다'},
-  knife:{n:'투척 단검',c:'#7ad0ff',d:l=>l?'단검 수와 관통 증가':'바라보는 방향으로 관통 단검을 던진다'},
-  orbit:{n:'회전 칼날',c:'#ffb13d',d:l=>l?`칼날 ${l+1}→${Math.min(6,l+2)}개, 피해 증가`:'몸 주위를 도는 칼날 2개'},
-  aura:{n:'달빛 오라',c:'#7dffb0',d:l=>l?'범위와 피해 증가':'주변 적에게 계속 피해를 준다'},
-  thunder:{n:'천둥',c:'#ffe44d',d:l=>l?'낙뢰 수 증가, 쿨타임 감소':'화면 안 무작위 적에게 번개가 떨어진다'}};
-const PA={
-  hp:{n:'튼튼한 몸',c:'#ff6b81',d:'최대 체력 +20, 회복'},spd:{n:'가벼운 발',c:'#4dd4c6',d:'이동 속도 +10%'},
-  might:{n:'마력 증폭',c:'#ff7a4d',d:'모든 피해 +15%'},cd:{n:'빠른 영창',c:'#b07bff',d:'모든 쿨타임 -8%'},
-  mag:{n:'자석',c:'#5aa9ff',d:'보석 끌어당기는 범위 +40%'},regen:{n:'재생',c:'#6ee06e',d:'초당 체력 +0.5 회복'},area:{n:'확장',c:'#ffd23f',d:'공격 범위 +12%'}};
-const ET={
-  bat:{hp:5,spd:98,dmg:6,r:10,xp:1},ghoul:{hp:14,spd:58,dmg:10,r:13,xp:1},skel:{hp:30,spd:68,dmg:12,r:13,xp:2},
-  knight:{hp:80,spd:50,dmg:18,r:17,xp:4},golem:{hp:600,spd:44,dmg:26,r:30,xp:0}};
+const WP=D.weapons,PA=D.passives,ET=D.enemies,SP=D.spawn,GR=D.growth,PLD=D.player;
 
 // ---------- state
-let st='title',T=0,kills=0,P,en=[],shots=[],gems=[],fx=[],nums=[],chests=[],bolts=[],spawnAcc=0,eliteT=75,swarmT=50,pendingLv=0,shake=0;
-const S=()=>({might:1+.15*P.pa.might,cd:Math.max(.4,1-.08*P.pa.cd),area:1+.12*P.pa.area,spd:150*(1+.1*P.pa.spd),mag:70*(1+.4*P.pa.mag),regen:.5*P.pa.regen,max:100+20*P.pa.hp});
+let st='title',T=0,kills=0,P,en=[],shots=[],gems=[],fx=[],nums=[],chests=[],bolts=[],spawnAcc=0,eliteT=SP.elite.first,swarmT=SP.swarm.first,pendingLv=0,shake=0;
+const S=()=>({might:1+PA.might.per*P.pa.might,cd:Math.max(PA.cd.min,1-PA.cd.per*P.pa.cd),area:1+PA.area.per*P.pa.area,spd:PLD.speed*(1+PA.spd.per*P.pa.spd),mag:PLD.magnet*(1+PA.mag.per*P.pa.mag),regen:PA.regen.per*P.pa.regen,max:PLD.hp+PA.hp.per*P.pa.hp});
 function newGame(){
-  P={x:0,y:0,hp:100,lvl:1,xp:0,next:5,face:1,fx:1,fy:0,inv:0,moving:false,bob:0,w:{bolt:1},cd:{},pa:{hp:0,spd:0,might:0,cd:0,mag:0,regen:0,area:0},orbA:0,auraT:0};
-  T=0;kills=0;en=[];shots=[];gems=[];fx=[];nums=[];chests=[];bolts=[];spawnAcc=0;eliteT=75;swarmT=50;pendingLv=0;
+  P={x:0,y:0,hp:PLD.hp,lvl:1,xp:0,next:5,face:1,fx:1,fy:0,inv:0,moving:false,bob:0,w:{bolt:1},cd:{},pa:{hp:0,spd:0,might:0,cd:0,mag:0,regen:0,area:0},orbA:0,auraT:0};
+  T=0;kills=0;en=[];shots=[];gems=[];fx=[];nums=[];chests=[];bolts=[];spawnAcc=0;eliteT=SP.elite.first;swarmT=SP.swarm.first;pendingLv=0;
 }
 const fmt=t=>`${t/60|0}:${String(t%60|0).padStart(2,'0')}`;
 
 // ---------- spawning
 function spawnPos(extra=40){const a=rand(0,TAU),d=Math.hypot(W,H)/2/Z+extra;return [P.x+Math.cos(a)*d,P.y+Math.sin(a)*d]}
-function addEnemy(type,x,y){const b=ET[type],m=1+T/80;en.push({type,x,y,hp:b.hp*(type==='golem'?1+T/150:m),max:b.hp*(type==='golem'?1+T/150:m),spd:b.spd*rand(.9,1.1),dmg:b.dmg*(1+T/400),r:b.r,xp:b.xp,hit:0,kx:0,ky:0,ph:rand(0,TAU),ohit:0,ahit:0})}
+function addEnemy(type,x,y){const b=ET[type],m=type===SP.elite.type?1+T/GR.golemSec:1+T/GR.hpSec;en.push({type,x,y,hp:b.hp*m,max:b.hp*m,spd:b.spd*rand(.9,1.1),dmg:b.dmg*(1+T/GR.dmgSec),r:b.r,xp:b.xp,hit:0,kx:0,ky:0,ph:rand(0,TAU),ohit:0,ahit:0})}
 function spawn(dt){
-  if(en.length>380)return;
-  spawnAcc+=dt*Math.min(16,.9+T/16);
+  if(en.length>SP.maxEnemies)return;
+  spawnAcc+=dt*Math.min(SP.rateMax,SP.rateBase+T*SP.ratePerSec);
   while(spawnAcc>=1){spawnAcc--;const r=Math.random();
-    const type=T>240&&r<.18?'knight':T>100&&r<.45?'skel':r<.55?'bat':'ghoul';const [x,y]=spawnPos();addEnemy(type,x,y)}
-  swarmT-=dt;if(swarmT<=0){swarmT=55;const n=24+T/10|0;for(let i=0;i<n;i++){const a=i/n*TAU,d=Math.hypot(W,H)/2/Z+30;addEnemy(T>200?'skel':'bat',P.x+Math.cos(a)*d,P.y+Math.sin(a)*d)}}
-  eliteT-=dt;if(eliteT<=0){eliteT=75;const [x,y]=spawnPos(60);addEnemy('golem',x,y);toast('거대 골렘 등장!');snd('alert')}
+    let ph=SP.phases[0];for(const q of SP.phases)if(T>=q.from)ph=q;let tot=0;for(const k in ph.mix)tot+=ph.mix[k];let rr=r*tot,type='ghoul';for(const k in ph.mix){if((rr-=ph.mix[k])<0){type=k;break}}const [x,y]=spawnPos();addEnemy(type,x,y)}
+  swarmT-=dt;if(swarmT<=0){const SW=SP.swarm;swarmT=SW.every;const n=SW.base+T*SW.perSec|0;for(let i=0;i<n;i++){const a=i/n*TAU,d=Math.hypot(W,H)/2/Z+30;addEnemy(T>SW.lateFrom?SW.lateType:SW.type,P.x+Math.cos(a)*d,P.y+Math.sin(a)*d)}}
+  eliteT-=dt;if(eliteT<=0){eliteT=SP.elite.every;const [x,y]=spawnPos(60);addEnemy(SP.elite.type,x,y);toast('거대 골렘 등장!');snd('alert')}
 }
 let toastMsg='',toastT=0;function toast(m){toastMsg=m;toastT=2.2}
 
@@ -124,19 +112,20 @@ function nearest(x,y,skip){let best=null,bd=1e9;for(const e of en){if(e.dead||sk
 function weapons(dt){
   const s=S(),w=P.w,cd=P.cd;
   const tick=(k,base)=>{cd[k]=(cd[k]??.3)-dt;if(cd[k]<=0){cd[k]=base*s.cd;return true}return false};
-  if(w.bolt&&tick('bolt',1.05-.07*w.bolt)){const n=1+(w.bolt>>1),used=new Set();
+  const B=WP.bolt,K=WP.knife,O=WP.orbit,A=WP.aura,TH=WP.thunder;
+  if(w.bolt&&tick('bolt',B.cd+B.cdPerLv*w.bolt)){const n=1+B.countPer2Lv*(w.bolt>>1),used=new Set();
     for(let i=0;i<n;i++){const e=nearest(P.x,P.y,used);if(!e)break;used.add(e);const a=Math.atan2(e.y-P.y,e.x-P.x);
-      shots.push({k:'bolt',x:P.x,y:P.y-6,vx:Math.cos(a)*430,vy:Math.sin(a)*430,dmg:(10+4*w.bolt)*s.might,pierce:w.bolt>=5?2:1,t:1.4,r:6*s.area,hs:new Set()})}}
-  if(w.knife&&tick('knife',.85)){const n=w.knife,a0=Math.atan2(P.fy,P.fx);
-    for(let i=0;i<n;i++){const a=a0+(i-(n-1)/2)*.14;shots.push({k:'knife',x:P.x,y:P.y,vx:Math.cos(a)*540,vy:Math.sin(a)*540,dmg:(7+3*w.knife)*s.might,pierce:2+w.knife,t:.9,r:6,hs:new Set()})}}
-  if(w.thunder&&tick('thunder',3-.25*w.thunder)){const vw=W/2/Z,vh=H/2/Z,vis=en.filter(e=>!e.dead&&Math.abs(e.x-P.x)<vw&&Math.abs(e.y-P.y)<vh);
-    for(let i=0;i<w.thunder+1&&vis.length;i++){const e=vis.splice(Math.random()*vis.length|0,1)[0],R=42*s.area;bolts.push({x:e.x,y:e.y,t:.25,R});shake=Math.max(shake,.12);snd('zap');
-      for(const o of en)if(!o.dead&&Math.hypot(o.x-e.x,o.y-e.y)<R+o.r)hurt(o,(22+9*w.thunder)*s.might)}}
-  if(w.orbit){P.orbA+=dt*(2.6+.2*w.orbit);const n=Math.min(6,w.orbit+1),R=78*s.area,br=11*s.area;
+      shots.push({k:'bolt',x:P.x,y:P.y-6,vx:Math.cos(a)*B.speed,vy:Math.sin(a)*B.speed,dmg:(B.dmg+B.dmgPerLv*w.bolt)*s.might,pierce:w.bolt>=5?2:1,t:1.4,r:6*s.area,hs:new Set()})}}
+  if(w.knife&&tick('knife',K.cd)){const n=w.knife,a0=Math.atan2(P.fy,P.fx);
+    for(let i=0;i<n;i++){const a=a0+(i-(n-1)/2)*.14;shots.push({k:'knife',x:P.x,y:P.y,vx:Math.cos(a)*K.speed,vy:Math.sin(a)*K.speed,dmg:(K.dmg+K.dmgPerLv*w.knife)*s.might,pierce:K.pierce+w.knife,t:.9,r:6,hs:new Set()})}}
+  if(w.thunder&&tick('thunder',TH.cd+TH.cdPerLv*w.thunder)){const vw=W/2/Z,vh=H/2/Z,vis=en.filter(e=>!e.dead&&Math.abs(e.x-P.x)<vw&&Math.abs(e.y-P.y)<vh);
+    for(let i=0;i<w.thunder+1&&vis.length;i++){const e=vis.splice(Math.random()*vis.length|0,1)[0],R=TH.radius*s.area;bolts.push({x:e.x,y:e.y,t:.25,R});shake=Math.max(shake,.12);snd('zap');
+      for(const o of en)if(!o.dead&&Math.hypot(o.x-e.x,o.y-e.y)<R+o.r)hurt(o,(TH.dmg+TH.dmgPerLv*w.thunder)*s.might)}}
+  if(w.orbit){P.orbA+=dt*(O.spin+O.spinPerLv*w.orbit);const n=Math.min(O.maxBlades,w.orbit+1),R=O.radius*s.area,br=11*s.area;
     for(let i=0;i<n;i++){const a=P.orbA+i/n*TAU,bx=P.x+Math.cos(a)*R,by=P.y+Math.sin(a)*R;
-      for(const e of en)if(!e.dead&&e.ohit<=0&&Math.hypot(e.x-bx,e.y-by)<br+e.r){e.ohit=.45;const d=Math.hypot(e.x-P.x,e.y-P.y)||1;hurt(e,(6+3*w.orbit)*s.might,(e.x-P.x)/d*160,(e.y-P.y)/d*160)}}}
-  if(w.aura){P.auraT-=dt;if(P.auraT<=0){P.auraT=.45;const R=(52+11*w.aura)*s.area;
-    for(const e of en)if(!e.dead&&Math.hypot(e.x-P.x,e.y-P.y)<R+e.r){const d=Math.hypot(e.x-P.x,e.y-P.y)||1;hurt(e,(3+2*w.aura)*s.might,(e.x-P.x)/d*40,(e.y-P.y)/d*40)}}}
+      for(const e of en)if(!e.dead&&e.ohit<=0&&Math.hypot(e.x-bx,e.y-by)<br+e.r){e.ohit=O.hitGap;const d=Math.hypot(e.x-P.x,e.y-P.y)||1;hurt(e,(O.dmg+O.dmgPerLv*w.orbit)*s.might,(e.x-P.x)/d*160,(e.y-P.y)/d*160)}}}
+  if(w.aura){P.auraT-=dt;if(P.auraT<=0){P.auraT=A.tick;const R=(A.radius+A.radiusPerLv*w.aura)*s.area;
+    for(const e of en)if(!e.dead&&Math.hypot(e.x-P.x,e.y-P.y)<R+e.r){const d=Math.hypot(e.x-P.x,e.y-P.y)||1;hurt(e,(A.dmg+A.dmgPerLv*w.aura)*s.might,(e.x-P.x)/d*40,(e.y-P.y)/d*40)}}}
 }
 
 // ---------- input
@@ -186,30 +175,30 @@ function update(dt){
   gems=gems.filter(g=>!g.got);
   for(const c of chests){c.t+=dt;if(Math.hypot(P.x-c.x,P.y-c.y)<24){c.got=true;pendingLv+=1;P.hp=Math.min(s.max,P.hp+30);toast('보물 상자! 보너스 레벨업');snd('win')}}
   chests=chests.filter(c=>!c.got);
-  while(P.xp>=P.next){P.xp-=P.next;P.lvl++;P.next=Math.round(5+P.lvl*4+P.lvl**1.35);pendingLv++}
+  while(P.xp>=P.next){P.xp-=P.next;P.lvl++;P.next=Math.round(D.xpCurve.base+P.lvl*D.xpCurve.perLevel+P.lvl**D.xpCurve.power);pendingLv++}
   if(P.hp<=0){P.hp=0;end(false);return}
-  if(T>=600){end(true);return}
+  if(T>=D.duration){end(true);return}
   if(pendingLv>0)openLevel();
 }
 
 // ---------- level up
 function choices(){
   const pool=[],nw=Object.keys(P.w).length;
-  for(const k in WP){const l=P.w[k]||0;if(l<5&&(l||nw<5))pool.push({t:'w',k,l})}
-  for(const k in PA)if(P.pa[k]<5)pool.push({t:'p',k,l:P.pa[k]});
+  for(const k in WP){const l=P.w[k]||0;if(l<PLD.maxLevel&&(l||nw<PLD.maxWeapons))pool.push({t:'w',k,l})}
+  for(const k in PA)if(P.pa[k]<PLD.maxLevel)pool.push({t:'p',k,l:P.pa[k]});
   for(let i=pool.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[pool[i],pool[j]]=[pool[j],pool[i]]}
   const out=pool.slice(0,3);if(!out.length)out.push({t:'heal'});return out}
 function openLevel(){st='lvl';snd('level');$('lvSub').textContent=pendingLv>1?`능력 하나를 고르세요 (남은 선택 ${pendingLv})`:'능력 하나를 고르세요';
   const box=$('picks');box.innerHTML='';
   choices().forEach((o,i)=>{const b=document.createElement('button');b.className='pick';
-    const D=o.t==='w'?WP[o.k]:o.t==='p'?PA[o.k]:{n:'따뜻한 수프',c:'#ff9f6b',d:'체력 50 회복'};
-    b.style.setProperty('--c',D.c);
+    const DD=o.t==='w'?WP[o.k]:o.t==='p'?PA[o.k]:{n:'따뜻한 수프',c:'#ff9f6b',d:`체력 ${D.soupHeal} 회복`};
+    b.style.setProperty('--c',DD.c);
     const tag=document.createElement('span');tag.className='tag';tag.textContent=o.t==='w'?(o.l?`무기 Lv ${o.l} → ${o.l+1}`:'새 무기'):o.t==='p'?`강화 Lv ${o.l} → ${o.l+1}`:'회복';
-    const nm=document.createElement('span');nm.className='nm';nm.innerHTML='<i class="ic"></i>';nm.append(D.n);
-    const ds=document.createElement('span');ds.className='ds';ds.textContent=o.t==='w'?D.d(o.l):D.d;
+    const nm=document.createElement('span');nm.className='nm';nm.innerHTML='<i class="ic"></i>';nm.append(DD.n);
+    const ds=document.createElement('span');ds.className='ds';ds.textContent=o.t==='w'?(o.l?DD.up:DD.desc):DD.d;
     const k=document.createElement('span');k.className='k';k.textContent='키보드 '+(i+1);
     b.append(tag,nm,ds,k);
-    b.onclick=()=>{snd('power');if(o.t==='w')P.w[o.k]=o.l+1;else if(o.t==='p'){P.pa[o.k]++;if(o.k==='hp')P.hp+=20}else P.hp+=50;
+    b.onclick=()=>{snd('power');if(o.t==='w')P.w[o.k]=o.l+1;else if(o.t==='p'){P.pa[o.k]++;if(o.k==='hp')P.hp+=PA.hp.per}else P.hp+=D.soupHeal;
       P.hp=Math.min(S().max,P.hp);pendingLv--;P.inv=.6;if(pendingLv>0)openLevel();else{$('lvOv').hidden=true;st='play'}};
     box.append(b)});
   $('lvOv').hidden=false;Object.assign(joy,{on:false,id:null,x:0,y:0});
@@ -266,12 +255,12 @@ function draw(dt){
   shake=Math.max(0,shake-dt);
   ctx.setTransform(DPR*Z,0,0,DPR*Z,DPR*(W/2-P.x*Z+rand(-1,1)*shake*12),DPR*(H/2-P.y*Z+rand(-1,1)*shake*12));
   ground();const s=S();
-  if(P.w.aura){const R=(52+11*P.w.aura)*s.area,p=1+Math.sin(T*4)*.03;const g=ctx.createRadialGradient(P.x,P.y,R*.3,P.x,P.y,R*p);g.addColorStop(0,'rgba(125,255,176,0)');g.addColorStop(1,'rgba(125,255,176,.22)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(P.x,P.y,R*p,0,TAU);ctx.fill();ctx.strokeStyle='rgba(125,255,176,.35)';ctx.lineWidth=2;ctx.stroke()}
+  if(P.w.aura){const R=(WP.aura.radius+WP.aura.radiusPerLv*P.w.aura)*s.area,p=1+Math.sin(T*4)*.03;const g=ctx.createRadialGradient(P.x,P.y,R*.3,P.x,P.y,R*p);g.addColorStop(0,'rgba(125,255,176,0)');g.addColorStop(1,'rgba(125,255,176,.22)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(P.x,P.y,R*p,0,TAU);ctx.fill();ctx.strokeStyle='rgba(125,255,176,.35)';ctx.lineWidth=2;ctx.stroke()}
   for(const g of gems){const c=g.v>=4?'#ff6b81':g.v>=2?'#7dffb0':'#6fd8ff',r=g.v>=4?7:5;ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(g.x,g.y-r);ctx.lineTo(g.x+r*.75,g.y);ctx.lineTo(g.x,g.y+r);ctx.lineTo(g.x-r*.75,g.y);ctx.fill();ctx.fillStyle='rgba(255,255,255,.6)';ctx.fillRect(g.x-1,g.y-r*.5,2,2)}
   for(const c of chests){const y=c.y+Math.sin(c.t*4)*3;ctx.fillStyle='rgba(255,210,63,.25)';ctx.beginPath();ctx.arc(c.x,y,24+Math.sin(c.t*6)*3,0,TAU);ctx.fill();ctx.fillStyle='#b5651d';ctx.fillRect(c.x-12,y-8,24,16);ctx.fillStyle='#ffd23f';ctx.fillRect(c.x-12,y-3,24,3);ctx.fillRect(c.x-2,y-5,4,7)}
   for(const e of en)drawEnemy(e);
   drawPlayer();
-  if(P.w.orbit){const n=Math.min(6,P.w.orbit+1),R=78*s.area,br=11*s.area;for(let i=0;i<n;i++){const a=P.orbA+i/n*TAU,x=P.x+Math.cos(a)*R,y=P.y+Math.sin(a)*R;
+  if(P.w.orbit){const n=Math.min(WP.orbit.maxBlades,P.w.orbit+1),R=WP.orbit.radius*s.area,br=11*s.area;for(let i=0;i<n;i++){const a=P.orbA+i/n*TAU,x=P.x+Math.cos(a)*R,y=P.y+Math.sin(a)*R;
     ctx.save();ctx.translate(x,y);ctx.rotate(a*3);ctx.fillStyle='#ffb13d';ctx.beginPath();ctx.moveTo(0,-br);ctx.lineTo(br*.35,0);ctx.lineTo(0,br);ctx.lineTo(-br*.35,0);ctx.fill();ctx.fillStyle='#fff3c4';ctx.fillRect(-1.5,-1.5,3,3);ctx.restore()}}
   for(const b of shots){if(b.k==='bolt'){ctx.fillStyle='rgba(143,123,255,.35)';ctx.beginPath();ctx.arc(b.x,b.y,b.r*1.8,0,TAU);ctx.fill();ctx.fillStyle='#e2dbff';ctx.beginPath();ctx.arc(b.x,b.y,b.r*.8,0,TAU);ctx.fill()}
     else{ctx.save();ctx.translate(b.x,b.y);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.fillStyle='#cfefff';ctx.fillRect(-9,-1.5,18,3);ctx.fillStyle='#7ad0ff';ctx.fillRect(-11,-2.5,5,5);ctx.restore()}}
@@ -305,6 +294,6 @@ let last=performance.now();
 function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play')update(dt);draw(st==='play'?dt:0);requestAnimationFrame(frame)}
 if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
 newGame();requestAnimationFrame(frame);
-}
+});
 </script>
 </body></html>

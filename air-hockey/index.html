@@ -33,7 +33,7 @@ canvas{display:block}
 <button id="pauseBtn" aria-label="메뉴">II</button>
 <div class="overlay" id="menuOv"><div class="card">
   <h1>에어하키</h1>
-  <p>내 쪽(아래) 반쪽에서 말렛을 끌어 퍽을 쳐요. 상대 골문에 먼저 7골!</p>
+  <p>내 쪽(아래) 반쪽에서 말렛을 끌어 퍽을 쳐요. 상대 골문에 먼저 <span id="winTxt">7</span>골!</p>
   <div class="modes">
     <div class="row"><button class="btn soft" data-m="1">AI 쉬움</button><button class="btn blue" data-m="2">AI 보통</button><button class="btn red" data-m="3">AI 어려움</button></div>
     <button class="btn" data-m="0">둘이서 (한 화면 마주 보고)</button>
@@ -43,13 +43,13 @@ canvas{display:block}
 </div></div>
 <div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">승리!</h1><p id="eTxt"></p><div class="modes"><button class="btn" id="againBtn">한 판 더</button><button class="btn soft" id="menuBtn2">모드 선택</button></div></div></div>
 <script>
-{
+Arcade.boot(D=>{
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,snd=(...a)=>window.Arcade&&Arcade.play(...a);
-const GW=400,GH=700,M=14,GOALW=170,PR=30,KR=16,WIN=7;let S=1,DPR=1;
+const GW=400,GH=700,M=D.table.wall,GOALW=D.table.goalWidth,PR=D.table.malletRadius,KR=D.table.puckRadius,WIN=D.winScore,PHY=D.physics;let S=1,DPR=1;
 function resize(){DPR=Math.min(devicePixelRatio||1,2);S=Math.min(innerWidth/GW,innerHeight/GH);cv.style.width=GW*S+'px';cv.style.height=GH*S+'px';cv.width=Math.round(GW*S*DPR);cv.height=Math.round(GH*S*DPR)}
 addEventListener('resize',resize);resize();
 let st='menu',mode=2,me,op,puck,score,pause=0,flash=null,trail=[],shake=0,lastHit=0;
-const AIS=[0,{spd:420,react:.22,aim:.5},{spd:640,react:.12,aim:.8},{spd:900,react:.05,aim:1}];
+const AIS=D.ai.map(a=>a&&{spd:a.speed,react:a.react,aim:a.aim});
 function mal(y){return {x:GW/2,y,tx:GW/2,ty:y,vx:0,vy:0,px:GW/2,py:y}}
 function newMatch(){me=mal(GH-90);op=mal(90);score=[0,0];serve(Math.random()<.5?0:1)}
 function serve(to){puck={x:GW/2,y:GH/2+(to===0?60:-60),vx:0,vy:0};pause=.8;trail=[]}
@@ -63,27 +63,27 @@ function aiThink(dt){const A=AIS[mode];op.th=(op.th||0)-dt;if(op.th>0)return;op.
     if(op.err===undefined||Math.random()<.15)op.err=(Math.random()-.5)*(1.15-A.aim)*170;op.tx=GW/2+(px-GW/2)*.62+op.err;op.ty=70+(p.y<GH/2?20:0);op.strike=false}}
 function collideMal(m){const dx=puck.x-m.x,dy=puck.y-m.y,d=Math.hypot(dx,dy),mn=PR+KR;if(d>=mn||d===0)return;
   const nx=dx/d,ny=dy/d;puck.x=m.x+nx*mn;puck.y=m.y+ny*mn;const rv=(puck.vx-m.vx)*nx+(puck.vy-m.vy)*ny;
-  if(rv<0){puck.vx-=1.85*rv*nx;puck.vy-=1.85*rv*ny;const sp=Math.hypot(puck.vx,puck.vy);if(sp>1500){puck.vx*=1500/sp;puck.vy*=1500/sp}
+  if(rv<0){puck.vx-=PHY.hitPower*rv*nx;puck.vy-=PHY.hitPower*rv*ny;const sp=Math.hypot(puck.vx,puck.vy);if(sp>PHY.maxPuckSpeed){puck.vx*=PHY.maxPuckSpeed/sp;puck.vy*=PHY.maxPuckSpeed/sp}
     const now=performance.now();if(now-lastHit>60){snd('hit');lastHit=now}shake=Math.min(.2,Math.abs(rv)/5000)}}
 function update(dt){
   for(const m of [me,op]){m.px=m.x;m.py=m.y}
   if(mode)aiThink(dt);clampMal(me,false);clampMal(op,true);
   const sub=6,h=dt/sub;
-  for(let i=0;i<sub;i++){moveMal(me,h,2600);moveMal(op,h,mode?AIS[mode].spd*(op.strike?1.5:1):2600);
+  for(let i=0;i<sub;i++){moveMal(me,h,PHY.playerSpeed);moveMal(op,h,mode?AIS[mode].spd*(op.strike?PHY.strikeBoost:1):PHY.playerSpeed);
     me.vx=(me.x-me.px)/dt;me.vy=(me.y-me.py)/dt;op.vx=(op.x-op.px)/dt;op.vy=(op.y-op.py)/dt;
     if(pause>0)continue;
     puck.x+=puck.vx*h;puck.y+=puck.vy*h;
-    if(puck.x<M+KR){puck.x=M+KR;puck.vx=Math.abs(puck.vx)*.9;snd('bounce')}if(puck.x>GW-M-KR){puck.x=GW-M-KR;puck.vx=-Math.abs(puck.vx)*.9;snd('bounce')}
+    if(puck.x<M+KR){puck.x=M+KR;puck.vx=Math.abs(puck.vx)*PHY.wallBounce;snd('bounce')}if(puck.x>GW-M-KR){puck.x=GW-M-KR;puck.vx=-Math.abs(puck.vx)*PHY.wallBounce;snd('bounce')}
     const inGoal=Math.abs(puck.x-GW/2)<GOALW/2-KR*.3;
-    if(puck.y<M+KR&&!inGoal){puck.y=M+KR;puck.vy=Math.abs(puck.vy)*.9;snd('bounce')}if(puck.y>GH-M-KR&&!inGoal){puck.y=GH-M-KR;puck.vy=-Math.abs(puck.vy)*.9;snd('bounce')}
+    if(puck.y<M+KR&&!inGoal){puck.y=M+KR;puck.vy=Math.abs(puck.vy)*PHY.wallBounce;snd('bounce')}if(puck.y>GH-M-KR&&!inGoal){puck.y=GH-M-KR;puck.vy=-Math.abs(puck.vy)*PHY.wallBounce;snd('bounce')}
     if(puck.y<-KR){goal(0);return}if(puck.y>GH+KR){goal(1);return}
     collideMal(me);collideMal(op);
     const ig=Math.abs(puck.x-GW/2)<GOALW/2-KR*.3;puck.x=Math.max(M+KR,Math.min(GW-M-KR,puck.x));if(!ig)puck.y=Math.max(M+KR,Math.min(GH-M-KR,puck.y));
     for(const m of [me,op]){const dx=m.x-puck.x,dy=m.y-puck.y,d=Math.hypot(dx,dy)||1;if(d<PR+KR){m.x=puck.x+dx/d*(PR+KR);m.y=puck.y+dy/d*(PR+KR)}}}
   if(pause>0){pause-=dt;return}
-  const f=Math.pow(.996,dt*60);puck.vx*=f;puck.vy*=f;
+  const f=Math.pow(PHY.friction,dt*60);puck.vx*=f;puck.vy*=f;
   const sp=Math.abs(puck.vx)+Math.abs(puck.vy);puck.idle=sp<50?(puck.idle||0)+dt:0;
-  if(puck.idle>(puck.y<110||puck.y>GH-110?1.4:2.5)){let dx=GW/2-puck.x,dy=GH/2-puck.y,d=Math.hypot(dx,dy);if(d<60){dx=(Math.random()-.5)*40;dy=Math.random()<.5?-100:100;d=Math.hypot(dx,dy)}puck.vx=dx/d*280;puck.vy=dy/d*280;puck.idle=0;snd('whoosh')}
+  if(puck.idle>(puck.y<110||puck.y>GH-110?PHY.stuckCornerSeconds:PHY.stuckSeconds)){let dx=GW/2-puck.x,dy=GH/2-puck.y,d=Math.hypot(dx,dy);if(d<60){dx=(Math.random()-.5)*40;dy=Math.random()<.5?-100:100;d=Math.hypot(dx,dy)}puck.vx=dx/d*PHY.nudgeSpeed;puck.vy=dy/d*PHY.nudgeSpeed;puck.idle=0;snd('whoosh')}
   trail.push([puck.x,puck.y]);if(trail.length>12)trail.shift();
 }
 function goal(who){score[who]++;snd('goal');shake=.35;flash={who,t:1.2};
@@ -99,6 +99,7 @@ cv.addEventListener('pointerdown',e=>{if(st!=='play')return;const [x,y]=toField(
   if(e.pointerType!=='mouse')cv.setPointerCapture(e.pointerId);own.set(e.pointerId,side);side.tx=x;side.ty=y});
 addEventListener('pointermove',e=>{if(st!=='play')return;const [x,y]=toField(e);let m=own.get(e.pointerId);if(!m&&e.pointerType==='mouse')m=me;if(!m)return;m.tx=x;m.ty=y});
 const up=e=>own.delete(e.pointerId);cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+$('winTxt').textContent=WIN;
 function rec(){const n=window.Arcade?Arcade.best('hockeyWins')||0:0;$('recTxt').textContent=n?`AI 상대 통산 ${n}승`:''}rec();
 document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mode=+b.dataset.m;newMatch();st='play';$('menuOv').hidden=true;snd('click')});
 $('againBtn').onclick=()=>{newMatch();st='play';$('endOv').hidden=true};$('menuBtn2').onclick=()=>{$('endOv').hidden=true;rec();$('menuOv').hidden=false;st='menu'};
@@ -128,6 +129,6 @@ if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.protot
 let last=performance.now();
 function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play')update(dt);draw(dt);requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
-}
+});
 </script>
 </body></html>

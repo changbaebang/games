@@ -48,7 +48,7 @@ canvas{display:block;position:fixed;inset:0}
 </div></div>
 <div class="overlay" id="pauseOv" hidden><div class="card"><h1>일시정지</h1><p>숨 고르는 중.</p><button class="btn" id="resumeBtn">계속하기</button></div></div>
 <script>
-{
+Arcade.boot(D=>{
 const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2,rand=(a,b)=>a+Math.random()*(b-a);
 let W,H,DPR,SC,VW,VH,GY,FX;
@@ -60,32 +60,33 @@ let st='title',dist,speed,coins,fox,obs,pits,coinL,fx,nextX,best=0,shake=0,time=
 try{best=+localStorage.getItem('foxBest')||0}catch(e){}
 function genHills(){hills=[0,1,2].map(l=>{const a=[];for(let i=0;i<14;i++)a.push(rand(.4,1));return a})}
 genHills();
-function reset(){dist=0;speed=330;coins=0;fox={y:0,vy:0,jumps:0,slide:0,hold:false,dead:false,phase:0,ground:true,spin:0};obs=[];pits=[];coinL=[];fx=[];nextX=700;time=0}
+const ZN=D.zones;let zoneI=0,zoneT=0;
+function reset(){zoneI=0;zoneT=0;dist=0;speed=D.speed.base;coins=0;fox={y:0,vy:0,jumps:0,slide:0,hold:false,dead:false,phase:0,ground:true,spin:0};obs=[];pits=[];coinL=[];fx=[];nextX=700;time=0}
 reset();
 const overPit=x=>pits.some(p=>x>p[0]+8&&x<p[1]-8);
 function coinArc(x,y0,n=5,h=60){for(let i=0;i<n;i++){const t=i/(n-1);coinL.push({x:x+i*34,y:y0-Math.sin(t*Math.PI)*h,got:false})}}
 function spawnChunk(){
-  const gap=speed*rand(.75,1.25)+120,x=nextX,r=Math.random(),lvl=Math.min(1,dist/9000);
-  if(r<.26){const w=rand(26,44);obs.push({k:'rock',x,w,h:rand(24,38)});if(Math.random()<.5)coinArc(x-40,GY-60,5,70)}
-  else if(r<.4){obs.push({k:'rock',x,w:30,h:30});obs.push({k:'rock',x:x+34,w:30,h:52});coinArc(x-30,GY-110,4,30)}
-  else if(r<.55){const w=rand(60,90+lvl*60);obs.push({k:'thorn',x,w,h:24});coinArc(x,GY-80,Math.round(w/34)+1,60)}
-  else if(r<.72){obs.push({k:'bird',x,w:34,h:20,y:GY-30,ph:0});for(let i=0;i<4;i++)coinL.push({x:x-30+i*30,y:GY-14,got:false})}
-  else if(r<.8&&dist>1500){obs.push({k:'bird',x,w:34,h:20,y:GY-100,ph:0});coinArc(x-20,GY-24,4,0)}
+  const gap=speed*rand(.75,1.25)+120,x=nextX,lvl=Math.min(1,dist/9000),M=ZN[zoneAt(dist/40)].mix;let tot=0;for(const q in M)tot+=M[q];let rr=Math.random()*tot,k='rock';for(const q in M){if((rr-=M[q])<0){k=q;break}}
+  if(k==='rock'){const w=rand(26,44);obs.push({k:'rock',x,w,h:rand(24,38)});if(Math.random()<.5)coinArc(x-40,GY-60,5,70)}
+  else if(k==='double'){obs.push({k:'rock',x,w:30,h:30});obs.push({k:'rock',x:x+34,w:30,h:52});coinArc(x-30,GY-110,4,30)}
+  else if(k==='thorn'){const w=rand(60,90+lvl*60);obs.push({k:'thorn',x,w,h:24});coinArc(x,GY-80,Math.round(w/34)+1,60)}
+  else if(k==='birdLow'){obs.push({k:'bird',x,w:34,h:20,y:GY-30,ph:0});for(let i=0;i<4;i++)coinL.push({x:x-30+i*30,y:GY-14,got:false})}
+  else if(k==='birdHigh'){obs.push({k:'bird',x,w:34,h:20,y:GY-100,ph:0});coinArc(x-20,GY-24,4,0)}
   else{const w=rand(80,110+lvl*70);pits.push([x,x+w]);coinArc(x-20,GY-70,Math.round(w/34)+2,80)}
   nextX=x+gap+(obs.length&&obs[obs.length-1].x===x?obs[obs.length-1].w:0);
 }
-function jump(){if(st!=='play'||fox.dead)return;if(fox.ground||fox.jumps<2&&!fox.ground){const first=fox.ground;snd(first?'jump':'jump2');fox.vy=first?-820:-700;fox.jumps=first?1:2;fox.ground=false;fox.slide=0;fox.hold=true;
+function jump(){if(st!=='play'||fox.dead)return;if(fox.ground||fox.jumps<2&&!fox.ground){const first=fox.ground;snd(first?'jump':'jump2');fox.vy=first?-D.jump.first:-D.jump.second;fox.jumps=first?1:2;fox.ground=false;fox.slide=0;fox.hold=true;
   if(!first){fox.spin=1;for(let i=0;i<8;i++)fx.push({x:FX,y:GY+fox.y-10,vx:rand(-80,80),vy:rand(20,90),t:.4,c:'#fff',r:rand(3,6)})}}}
 function release(){fox.hold=false;if(fox.vy<-320)fox.vy*=.55}
-function slide(){if(st!=='play'||fox.dead)return;if(fox.ground){fox.slide=.65;snd('whoosh')}else fox.vy=Math.max(fox.vy,900)}
+function slide(){if(st!=='play'||fox.dead)return;if(fox.ground){fox.slide=D.slideTime;snd('whoosh')}else fox.vy=Math.max(fox.vy,900)}
 function die(){if(fox.dead)return;fox.dead=true;snd('hurt');fox.vy=-500;shake=.4;setTimeout(end,900)}
 function end(){if(st!=='play')return;st='over';snd('lose');const m=Math.floor(dist/40);if(m>best){best=m;try{localStorage.setItem('foxBest',best)}catch(e){}}
   $('rDist').textContent=m;$('rCoin').textContent=coins;$('rBest').textContent=best;$('oTxt').textContent=m>=best&&m>0?'새 최고 기록이에요!':'조금만 더 가면 최고 기록!';$('overOv').hidden=false;$('againBtn').focus()}
 function update(dt){
   time+=dt;
-  if(!fox.dead){speed=Math.min(720,330+dist/40*.55);dist+=speed*dt}
+  if(!fox.dead){speed=Math.min(D.speed.max,D.speed.base+dist/40*D.speed.perMeter);dist+=speed*dt;const zi=zoneAt(dist/40);if(zi>zoneI){zoneI=zi;zoneT=2.6;snd('level')}}zoneT=Math.max(0,zoneT-dt);
   while(nextX<dist+VW+200)spawnChunk();
-  const g=fox.hold&&fox.vy<0?1900:2700;fox.vy+=g*dt;fox.y+=fox.vy*dt;fox.spin=Math.max(0,fox.spin-dt*2.5);
+  const g=fox.hold&&fox.vy<0?D.jump.holdGravity:D.jump.gravity;fox.vy+=g*dt;fox.y+=fox.vy*dt;fox.spin=Math.max(0,fox.spin-dt*2.5);
   const wx=dist+0; // fox world x == dist
   if(!fox.dead){
     if(fox.y>=0&&!overPit(wx)){if(!fox.ground&&fox.vy>300)for(let i=0;i<6;i++)fx.push({x:FX+rand(-10,10),y:GY,vx:rand(-60,60),vy:rand(-80,-20),t:.35,c:'#f4d6b8',r:rand(2,5)});fox.y=0;fox.vy=0;fox.ground=true;fox.jumps=0}
@@ -123,9 +124,10 @@ const go=()=>{reset();st='play';$('titleOv').hidden=true;$('overOv').hidden=true
 $('startBtn').onclick=go;$('againBtn').onclick=go;
 
 // ---------- draw
-const SKY=[['#ffb36b','#ff7f8a','#8a5aa8'],['#ff9a6b','#c45c8f','#3d2f6b'],['#3a3570','#272452','#141233']];
 const mixc=(a,b,t)=>{const p=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16)),A=p(a),B=p(b);return `rgb(${A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(',')})`};
-function skyCols(){const t=(dist/40%1800)/1800*3,i=Math.floor(t)%3,j=(i+1)%3,f=t-Math.floor(t),e=f<.7?0:(f-.7)/.3;return SKY[i].map((c,k)=>mixc(c,SKY[j][k],e))}
+function zoneAt(m){let i=0;for(let k=0;k<ZN.length;k++)if(m>=ZN[k].from)i=k;return i}
+function zoneCol(key,idx){const m=dist/40,i=zoneAt(m),z=ZN[i],e=i>0?Math.min(1,(m-z.from)/D.zoneBlendMeters):1;const a=idx==null?z[key]:z[key][idx];if(e>=1)return a;const p=idx==null?ZN[i-1][key]:ZN[i-1][key][idx];return mixc(p,a,e)}
+function skyCols(){return [0,1,2].map(k=>zoneCol('sky',k))}
 function foxSprite(x,y){const s=fox.slide>0,run=fox.ground&&!fox.dead,p=fox.phase;ctx.save();ctx.translate(x,y);
   if(fox.dead)ctx.rotate(Math.min(Math.PI,(time%10)*6));else if(fox.spin>0)ctx.rotate(-(1-fox.spin)*TAU);
   if(s)ctx.scale(1.15,.6);
@@ -141,13 +143,13 @@ function foxSprite(x,y){const s=fox.slide>0,run=fox.ground&&!fox.dead,p=fox.phas
 function draw(dt){
   ctx.setTransform(DPR*SC,0,0,DPR*SC,0,0);shake=Math.max(0,shake-dt);if(shake)ctx.translate(rand(-1,1)*shake*12,rand(-1,1)*shake*12);
   const sc=skyCols(),g=ctx.createLinearGradient(0,0,0,GY);g.addColorStop(0,sc[2]);g.addColorStop(.6,sc[1]);g.addColorStop(1,sc[0]);ctx.fillStyle=g;ctx.fillRect(-20,-20,VW+40,VH+40);
-  const night=(dist/40%1800)/1800>.6;
+  const night=ZN[zoneAt(dist/40)].night;
   if(night){ctx.fillStyle='rgba(255,255,255,.8)';for(let i=0;i<40;i++)ctx.fillRect((i*211+dist*.02)%VW,(i*53)%Math.max(1,GY-120),2,2)}
   ctx.fillStyle=night?'#fff3c4':'#ffe08a';ctx.beginPath();ctx.arc(VW*.72,GY-170,night?26:44,0,TAU);ctx.fill();
-  const HC=[['#c46a8a',.08,120,.9],['#8a4d86',.25,85,.7],['#5c3570',.5,55,.5]];
+  const HC=[[zoneCol('hills',0),.08,120,.9],[zoneCol('hills',1),.25,85,.7],[zoneCol('hills',2),.5,55,.5]];
   HC.forEach(([c,par,amp,],li)=>{ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(0,GY+10);const seg=VW/6,off=(dist*par)%seg,base=Math.floor(dist*par/seg);
     for(let i=-1;i<9;i++){const h=hills[li][(base+i+140)%14]*amp,x=i*seg-off;ctx.quadraticCurveTo(x+seg/2,GY-h-30*li,x+seg,GY-hills[li][(base+i+141)%14]*amp*.4)}ctx.lineTo(VW,GY+10);ctx.fill()});
-  ctx.fillStyle='#4a2a55';ctx.fillRect(0,GY,VW,VH-GY);ctx.fillStyle='#6fb85a';ctx.fillRect(0,GY,VW,8);ctx.fillStyle='#5a9d48';
+  ctx.fillStyle=zoneCol('ground');ctx.fillRect(0,GY,VW,VH-GY);ctx.fillStyle=zoneCol('grass');ctx.fillRect(0,GY,VW,8);ctx.fillStyle=zoneCol('grass2');
   for(let x=-(dist%24);x<VW;x+=24)ctx.fillRect(x,GY+8,12,3);
   for(const [a,b] of pits){const x0=a-dist+FX,x1=b-dist+FX;ctx.fillStyle='#24122e';ctx.fillRect(x0,GY,x1-x0,VH-GY);ctx.fillStyle='#3a1f45';ctx.fillRect(x0,GY,4,VH-GY);ctx.fillRect(x1-4,GY,4,VH-GY)}
   for(const c of coinL){const sx=c.x-dist+FX,w=Math.abs(Math.cos(time*5+c.x*.05))*7+1.5;ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.ellipse(sx,c.y,w,9,0,0,TAU);ctx.fill();ctx.fillStyle='#fff3a8';ctx.fillRect(sx-1,c.y-5,2,5)}
@@ -164,12 +166,14 @@ function draw(dt){
   const m=Math.floor(dist/40)+' m';ctx.strokeText(m,16,14);ctx.fillStyle='#fff';ctx.fillText(m,16,14);
   ctx.font='18px Jua,sans-serif';const ctext='코인 '+coins;ctx.strokeText(ctext,16,46);ctx.fillStyle='#ffe066';ctx.fillText(ctext,16,46);
   if(best){ctx.textAlign='center';const b='최고 '+best+' m';ctx.strokeText(b,W/2,16);ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText(b,W/2,16)}
+  if(zoneT>0){ctx.globalAlpha=Math.min(1,zoneT*2,(2.6-zoneT)*4);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='30px Jua,sans-serif';ctx.lineWidth=6;const zt=`구역 ${zoneI+1} · ${ZN[zoneI].name}`;ctx.strokeText(zt,W/2,H*.3);ctx.fillStyle='#ffe066';ctx.fillText(zt,W/2,H*.3);ctx.globalAlpha=1}
+  if(window.Arcade&&st==='play'&&zoneI)Arcade.record('foxZone',zoneI+1);
   ctx.textBaseline='alphabetic';
 }
 if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
 let last=performance.now();
 function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play'){pendingTap();update(dt)}else if(st==='title'){dist+=120*dt;time+=dt;fox.phase+=dt*6}draw(st==='pause'?0:dt);requestAnimationFrame(frame)}
 fox.ground=true;requestAnimationFrame(frame);
-}
+});
 </script>
 </body></html>

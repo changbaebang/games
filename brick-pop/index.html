@@ -43,20 +43,14 @@ canvas{display:block;border-radius:14px;box-shadow:0 0 0 3px #3a1f4a,0 20px 60px
 </div></div>
 <div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">게임 오버</h1><div class="big" id="eScore">0</div><p id="eTxt"></p><button class="btn" id="againBtn">다시 하기</button></div></div>
 <script>
-{
+Arcade.boot(D=>{
 const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d'),TAU=Math.PI*2;
 const GW=480,GH=760;let S=1,DPR=1;
 function resize(){DPR=Math.min(devicePixelRatio||1,2);S=Math.min(innerWidth/GW,innerHeight/GH);cv.style.width=GW*S+'px';cv.style.height=GH*S+'px';cv.width=Math.round(GW*S*DPR);cv.height=Math.round(GH*S*DPR)}
 addEventListener('resize',resize);resize();
-const LV=[
- ["..........","aaaaaaaaaa","bbbbbbbbbb","cccccccccc","dddddddddd","eeeeeeeeee"],
- ["....aa....","...bbbb...","..cccccc..",".dddddddd.","eeeeeeeeee","SSSSSSSSSS"],
- ["SaSaSaSaSa","aSaSaSaSaS","bbbbbbbbbb","..........","cScScScScS","dddddddddd"],
- ["X........X","XaaaaaaaaX","XbbSbbSbbX","XccccccccX","X..dddd..X","XeeeeeeeeX"],
- [".TT....TT.","TaaT..TbbT","TaaaTTbbbT",".TccccccT.","..TddddT..","...TeeT...","....TT...."],
- ["abcdeabcde","S.S.S.S.S.","TTTTTTTTTT","..........","XX..XX..XX","edcbaedcba","SSSSSSSSSS"]];
-const COL={a:'#ff5a8a',b:'#ff9a3d',c:'#ffd23f',d:'#3fbf8a',e:'#4a9dff',S:'#c9c9e0',T:'#9a8cff',X:'#8a6f3a'};
+const LV=D.levels.map(l=>l.rows),LVN=D.levels.map(l=>l.name);
+const COL=D.colors,IT=D.items,SC=D.score;
 const PW={W:'#3fbf8a',M:'#4a7dff',S:'#ff9a3d',L:'#ff5a8a'};
 const BW=44.8,BH=22,BX=16,BY=96;
 let st='title',level,score,lives,bricks,balls,pad,caps,fx,pops,slowT,wideT,shake=0,best=0,flash=0;
@@ -65,22 +59,22 @@ function loadLevel(n){const L=n<LV.length?LV[n]:randomLevel(n);bricks=[];
   L.forEach((row,y)=>[...row].forEach((ch,x)=>{if(ch==='.')return;const hp=ch==='S'?2:ch==='T'?3:ch==='X'?Infinity:1;bricks.push({x:BX+x*BW,y:BY+y*BH,w:BW,h:BH,ch,hp,max:hp,hit:0})}));
   resetBall();caps=[];slowT=0;wideT=0}
 function randomLevel(n){const keys='abcdeSST',rows=[];for(let y=0;y<Math.min(9,6+(n>>2));y++){let r='';for(let x=0;x<5;x++){const c=Math.random()<.15?'.':Math.random()<.1+n*.01?'X':keys[Math.random()*keys.length|0];r+=c}rows.push(r+[...r].reverse().join(''))}return rows}
-function resetBall(){pad={x:GW/2,w:90,y:GH-70};balls=[{x:GW/2,y:pad.y-12,vx:0,vy:0,r:8,stuck:true,sp:speedFor()}]}
-const speedFor=()=>Math.min(720,430+level*28);
-function newGame(){level=0;score=0;lives=3;fx=[];pops=[];loadLevel(0)}
+function resetBall(){pad={x:GW/2,w:D.paddleWidth,y:GH-70};balls=[{x:GW/2,y:pad.y-12,vx:0,vy:0,r:8,stuck:true,sp:speedFor()}]}
+const speedFor=()=>Math.min(D.ballSpeed.max,D.ballSpeed.base+level*D.ballSpeed.perLevel);
+function newGame(){level=0;score=0;lives=D.lives;fx=[];pops=[];loadLevel(0)}
 function launch(){for(const b of balls)if(b.stuck){b.stuck=false;snd('jump');const a=-Math.PI/2+(Math.random()-.5)*.5;b.vx=Math.cos(a)*b.sp;b.vy=Math.sin(a)*b.sp}}
 function pop(x,y,t,c='#fff'){pops.push({x,y,t,c,life:.9})}
 function burst(x,y,c,n=8){for(let i=0;i<n;i++){const a=Math.random()*TAU,v=60+Math.random()*180;fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:.5,c,r:2+Math.random()*4})}}
 function hitBrick(br){if(br.hp===Infinity){br.hit=.12;snd('thud');return}br.hp--;br.hit=.12;snd(br.hp<=0?'pop':'bounce',1.6);
-  if(br.hp<=0){br.dead=true;score+=br.max*50+level*10;burst(br.x+br.w/2,br.y+br.h/2,COL[br.ch],10);shake=Math.max(shake,.08);
-    if(Math.random()<.14){const k=Math.random()<.08?'L':['W','M','S'][Math.random()*3|0];caps.push({x:br.x+br.w/2,y:br.y+br.h/2,k})}}
-  else score+=10}
+  if(br.hp<=0){br.dead=true;score+=br.max*SC.brick+level*SC.perLevel;burst(br.x+br.w/2,br.y+br.h/2,COL[br.ch],10);shake=Math.max(shake,.08);
+    if(Math.random()<IT.dropChance){const k=Math.random()<IT.lifeChance?'L':['W','M','S'][Math.random()*3|0];caps.push({x:br.x+br.w/2,y:br.y+br.h/2,k})}}
+  else score+=SC.hit}
 function collideBall(b,dt){
   b.x+=b.vx*dt;b.y+=b.vy*dt;
   if(b.x<b.r){b.x=b.r;b.vx=Math.abs(b.vx);snd('bounce',.8)}if(b.x>GW-b.r){b.x=GW-b.r;b.vx=-Math.abs(b.vx);snd('bounce',.8)}if(b.y<b.r+52){b.y=b.r+52;b.vy=Math.abs(b.vy);snd('bounce',.8)}
-  const pw=pad.w*(wideT>0?1.5:1);
+  const pw=pad.w*(wideT>0?IT.wideScale:1);
   if(b.vy>0&&b.y+b.r>=pad.y&&b.y-b.r<pad.y+14&&b.x>pad.x-pw/2-b.r&&b.x<pad.x+pw/2+b.r){
-    const off=Math.max(-1,Math.min(1,(b.x-pad.x)/(pw/2))),a=-Math.PI/2+off*1.05;const sp=b.sp*(slowT>0?.65:1);b.vx=Math.cos(a)*sp;b.vy=Math.sin(a)*sp;b.y=pad.y-b.r;pad.squash=.15;snd('bounce',1.2)}
+    const off=Math.max(-1,Math.min(1,(b.x-pad.x)/(pw/2))),a=-Math.PI/2+off*1.05;const sp=b.sp*(slowT>0?IT.slowFactor:1);b.vx=Math.cos(a)*sp;b.vy=Math.sin(a)*sp;b.y=pad.y-b.r;pad.squash=.15;snd('bounce',1.2)}
   for(const br of bricks){if(br.dead)continue;const cx=Math.max(br.x,Math.min(b.x,br.x+br.w)),cy=Math.max(br.y,Math.min(b.y,br.y+br.h)),dx=b.x-cx,dy=b.y-cy;
     if(dx*dx+dy*dy<=b.r*b.r){const ox=Math.min(b.x+b.r-br.x,br.x+br.w-(b.x-b.r)),oy=Math.min(b.y+b.r-br.y,br.y+br.h-(b.y-b.r));
       if(ox<oy){b.vx=b.x<br.x+br.w/2?-Math.abs(b.vx):Math.abs(b.vx)}else{b.vy=b.y<br.y+br.h/2?-Math.abs(b.vy):Math.abs(b.vy)}
@@ -89,9 +83,9 @@ function collideBall(b,dt){
 function update(dt){
   slowT=Math.max(0,slowT-dt);wideT=Math.max(0,wideT-dt);pad.squash=Math.max(0,(pad.squash||0)-dt);
   if(keys.ArrowLeft||keys.KeyA)pad.x-=520*dt;if(keys.ArrowRight||keys.KeyD)pad.x+=520*dt;
-  const pw=pad.w*(wideT>0?1.5:1);pad.x=Math.max(pw/2,Math.min(GW-pw/2,pad.x));
+  const pw=pad.w*(wideT>0?IT.wideScale:1);pad.x=Math.max(pw/2,Math.min(GW-pw/2,pad.x));
   for(const b of balls){if(b.stuck){b.x=pad.x;b.y=pad.y-b.r;continue}
-    const sp=Math.hypot(b.vx,b.vy),target=b.sp*(slowT>0?.65:1);if(Math.abs(sp-target)>1){b.vx*=target/sp;b.vy*=target/sp}
+    const sp=Math.hypot(b.vx,b.vy),target=b.sp*(slowT>0?IT.slowFactor:1);if(Math.abs(sp-target)>1){b.vx*=target/sp;b.vy*=target/sp}
     if(Math.abs(b.vy)<target*.22){b.vy=(b.vy<0?-1:1)*target*.22;const k=Math.sqrt(Math.max(0,target*target-b.vy*b.vy));b.vx=Math.sign(b.vx||1)*k}
     const steps=Math.ceil(target*dt/5);for(let i=0;i<steps;i++)collideBall(b,dt/steps);
     if(b.y>GH+20)b.lost=true}
@@ -99,10 +93,10 @@ function update(dt){
   balls=balls.filter(b=>!b.lost);
   if(!balls.length){lives--;flash=.4;shake=.3;snd('hurt');if(lives<0){lives=0;end(false);return}pop(GW/2,GH/2,'앗! 목숨 -1','#ff8aa8');resetBall();wideT=0;slowT=0}
   for(const c of caps){c.y+=150*dt;if(c.y>pad.y-8&&c.y<pad.y+18&&Math.abs(c.x-pad.x)<pw/2+14){c.got=true;snd('power');
-      if(c.k==='W'){wideT=14;pop(c.x,c.y-20,'넓게!')}else if(c.k==='S'){slowT=10;pop(c.x,c.y-20,'느리게!')}else if(c.k==='L'){lives++;pop(c.x,c.y-20,'목숨 +1','#ff8aa8')}
+      if(c.k==='W'){wideT=IT.wideTime;pop(c.x,c.y-20,'넓게!')}else if(c.k==='S'){slowT=IT.slowTime;pop(c.x,c.y-20,'느리게!')}else if(c.k==='L'){lives++;pop(c.x,c.y-20,'목숨 +1','#ff8aa8')}
       else{const src=balls.find(b=>!b.stuck)||balls[0];for(const da of [-.5,.5]){const a=Math.atan2(src.vy||-1,src.vx||0)+da;balls.push({x:src.x,y:src.y,r:8,sp:src.sp,stuck:false,vx:Math.cos(a)*src.sp,vy:Math.sin(a)*src.sp})}pop(c.x,c.y-20,'멀티볼!')}}}
   caps=caps.filter(c=>!c.got&&c.y<GH+20);
-  if(!bricks.some(b=>b.hp!==Infinity)){level++;score+=1000;snd('level');pop(GW/2,GH/2,`스테이지 ${level+1}!`,'#ffd23f');loadLevel(level)}
+  if(!bricks.some(b=>b.hp!==Infinity)){level++;score+=SC.levelClear;snd('level');pop(GW/2,GH/2,`스테이지 ${level+1}${LVN[level]?' · '+LVN[level]:''}!`,'#ffd23f');loadLevel(level);if(window.Arcade)Arcade.record('brickStage',level+1)}
 }
 function end(win){st='end';snd('lose');if(score>best){best=score;try{localStorage.setItem('brickBest',best)}catch(e){}}$('eScore').textContent=score.toLocaleString();$('eTxt').textContent=`스테이지 ${level+1}까지 · 최고 ${best.toLocaleString()}`;$('endOv').hidden=false;$('againBtn').focus()}
 // ---------- input
@@ -131,7 +125,7 @@ function draw(dt){
     if(br.hp===Infinity){ctx.fillStyle='rgba(255,230,160,.5)';ctx.fillRect(br.x+br.w/2-6,br.y+br.h/2-1,12,2)}
     else if(br.max>1){ctx.fillStyle='rgba(60,40,90,.55)';for(let i=0;i<br.hp;i++){ctx.beginPath();ctx.arc(br.x+br.w/2+(i-(br.hp-1)/2)*8,br.y+br.h/2+1,2.4,0,TAU);ctx.fill()}}}
   for(const c of caps){ctx.fillStyle=PW[c.k];ctx.beginPath();ctx.roundRect(c.x-16,c.y-9,32,18,9);ctx.fill();ctx.fillStyle='#fff';ctx.font='12px "Press Start 2P",monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(c.k==='L'?'♥':c.k,c.x+.5,c.y+1)}
-  const pw=pad.w*(wideT>0?1.5:1),sq=pad.squash>0?3:0;ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.roundRect(pad.x-pw/2+4,pad.y+6,pw,14,7);ctx.fill();
+  const pw=pad.w*(wideT>0?IT.wideScale:1),sq=pad.squash>0?3:0;ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.roundRect(pad.x-pw/2+4,pad.y+6,pw,14,7);ctx.fill();
   const pg=ctx.createLinearGradient(0,pad.y,0,pad.y+14);pg.addColorStop(0,'#9ff5d6');pg.addColorStop(1,'#2fb38a');ctx.fillStyle=pg;ctx.beginPath();ctx.roundRect(pad.x-pw/2-sq,pad.y+sq*.5,pw+sq*2,14-sq,7);ctx.fill();
   ctx.fillStyle='rgba(255,255,255,.6)';ctx.fillRect(pad.x-pw/2+8,pad.y+3,pw-16,2);
   for(const b of balls){ctx.fillStyle='rgba(255,255,255,.18)';ctx.beginPath();ctx.arc(b.x-b.vx*.02,b.y-b.vy*.02,b.r,0,TAU);ctx.fill();ctx.fillStyle=slowT>0?'#ffd2a8':'#fff';ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,TAU);ctx.fill();ctx.fillStyle='rgba(255,90,138,.8)';ctx.beginPath();ctx.arc(b.x-2.5,b.y-2.5,2.5,0,TAU);ctx.fill()}
@@ -149,6 +143,6 @@ level=0;loadLevel(0);
 let last=performance.now();
 function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play')update(dt);draw(dt);requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
-}
+});
 </script>
 </body></html>

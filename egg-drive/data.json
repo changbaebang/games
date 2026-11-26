@@ -1,0 +1,121 @@
+{
+ "_설명": "달걀 싣고 달려라 데이터. terrain은 언덕 모양: 높이 = base - 진폭 x (sin 물결들의 합). 진폭은 ampStart에서 시작해 ampGrowPx 픽셀마다 1씩 커지고 ampMax에서 멈춘다(40픽셀 = 1m). waves는 [빈도, 높이, 위상]. zones는 거리(m)에 따라 바뀌는 풍경. physics의 값을 바꾸면 차와 달걀의 느낌이 달라진다.",
+ "terrain": {
+  "base": 420,
+  "flatUntil": 250,
+  "ramp": 400,
+  "ampStart": 0.3,
+  "ampGrowFrom": 300,
+  "ampGrowPx": 7000,
+  "ampMax": 1.7,
+  "waves": [
+   [
+    0.0035,
+    70,
+    0
+   ],
+   [
+    0.0089,
+    26,
+    1.3
+   ],
+   [
+    0.019,
+    6,
+    2.1
+   ]
+  ]
+ },
+ "physics": {
+  "gravity": 950,
+  "maxWheelSpeed": 5.2,
+  "drive": 0.05,
+  "brake": 0.09,
+  "reverse": 0.03,
+  "reverseMax": 2.2,
+  "airRotate": 0.0016,
+  "wallHeight": 19,
+  "eggRadius": 13,
+  "eggMass": 0.4,
+  "flipSeconds": 2.5
+ },
+ "flagEvery": 100,
+ "zoneBlendMeters": 30,
+ "zones": [
+  {
+   "from": 0,
+   "name": "초록 언덕",
+   "sky": [
+    "#7cc6f0",
+    "#d6f0ff"
+   ],
+   "hills": [
+    "#a8d8a0",
+    "#86c47a"
+   ],
+   "ground": "#8a5a34",
+   "grass": "#5fb84a",
+   "grass2": "#4ea33c"
+  },
+  {
+   "from": 120,
+   "name": "해바라기 밭",
+   "sky": [
+    "#8fd0f5",
+    "#fff3c4"
+   ],
+   "hills": [
+    "#e8d070",
+    "#c8b048"
+   ],
+   "ground": "#7a5230",
+   "grass": "#9cc83a",
+   "grass2": "#ffd23f"
+  },
+  {
+   "from": 250,
+   "name": "붉은 사막",
+   "sky": [
+    "#f5b06a",
+    "#ffe2b8"
+   ],
+   "hills": [
+    "#e8a070",
+    "#d08050"
+   ],
+   "ground": "#b8643a",
+   "grass": "#e0a860",
+   "grass2": "#c88a48"
+  },
+  {
+   "from": 400,
+   "name": "눈 덮인 고개",
+   "sky": [
+    "#b8d4ec",
+    "#eef5fc"
+   ],
+   "hills": [
+    "#e4eef7",
+    "#cddbea"
+   ],
+   "ground": "#7a8aa0",
+   "grass": "#f4f8fc",
+   "grass2": "#d8e4f0"
+  },
+  {
+   "from": 600,
+   "name": "별빛 언덕",
+   "sky": [
+    "#1c2550",
+    "#3a4a80"
+   ],
+   "hills": [
+    "#2c3a68",
+    "#22305a"
+   ],
+   "ground": "#3a2a40",
+   "grass": "#4a7a5a",
+   "grass2": "#3a6a4a"
+  }
+ ]
+}

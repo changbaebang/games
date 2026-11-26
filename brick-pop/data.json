@@ -1,0 +1,276 @@
+{
+ "_설명": "벽돌 팡팡 데이터. levels의 rows는 한 줄에 10칸. 글자 뜻: . 빈칸, a~e 색 벽돌(1번), S 은색(2번), T 보라(3번), X 안 깨지는 벽돌. 마지막 레벨을 깨면 그다음부터는 무작위 레벨이 나온다.",
+ "lives": 3,
+ "paddleWidth": 90,
+ "ballSpeed": {
+  "base": 430,
+  "perLevel": 24,
+  "max": 720
+ },
+ "score": {
+  "brick": 50,
+  "perLevel": 10,
+  "hit": 10,
+  "levelClear": 1000
+ },
+ "items": {
+  "dropChance": 0.14,
+  "lifeChance": 0.08,
+  "wideTime": 14,
+  "wideScale": 1.5,
+  "slowTime": 10,
+  "slowFactor": 0.65
+ },
+ "colors": {
+  "a": "#ff5a8a",
+  "b": "#ff9a3d",
+  "c": "#ffd23f",
+  "d": "#3fbf8a",
+  "e": "#4a9dff",
+  "S": "#c9c9e0",
+  "T": "#9a8cff",
+  "X": "#8a6f3a"
+ },
+ "levels": [
+  {
+   "name": "첫걸음",
+   "rows": [
+    "..........",
+    "aaaaaaaaaa",
+    "bbbbbbbbbb",
+    "cccccccccc",
+    "dddddddddd",
+    "eeeeeeeeee"
+   ]
+  },
+  {
+   "name": "피라미드",
+   "rows": [
+    "....aa....",
+    "...bbbb...",
+    "..cccccc..",
+    ".dddddddd.",
+    "eeeeeeeeee",
+    "SSSSSSSSSS"
+   ]
+  },
+  {
+   "name": "체크무늬",
+   "rows": [
+    "SaSaSaSaSa",
+    "aSaSaSaSaS",
+    "bbbbbbbbbb",
+    "..........",
+    "cScScScScS",
+    "dddddddddd"
+   ]
+  },
+  {
+   "name": "울타리",
+   "rows": [
+    "X........X",
+    "XaaaaaaaaX",
+    "XbbSbbSbbX",
+    "XccccccccX",
+    "X..dddd..X",
+    "XeeeeeeeeX"
+   ]
+  },
+  {
+   "name": "하트",
+   "rows": [
+    ".TT....TT.",
+    "TaaT..TbbT",
+    "TaaaTTbbbT",
+    ".TccccccT.",
+    "..TddddT..",
+    "...TeeT...",
+    "....TT...."
+   ]
+  },
+  {
+   "name": "무지개 성",
+   "rows": [
+    "abcdeabcde",
+    "S.S.S.S.S.",
+    "TTTTTTTTTT",
+    "..........",
+    "XX..XX..XX",
+    "edcbaedcba",
+    "SSSSSSSSSS"
+   ]
+  },
+  {
+   "name": "웃는 얼굴",
+   "rows": [
+    "..aaaaaa..",
+    ".a......a.",
+    "a..b..b..a",
+    "a..b..b..a",
+    "a........a",
+    "a.c....c.a",
+    ".a.cccc.a.",
+    "..aaaaaa.."
+   ]
+  },
+  {
+   "name": "다이아몬드",
+   "rows": [
+    "....SS....",
+    "...SddS...",
+    "..SdeedS..",
+    ".SdeTTedS.",
+    "..SdeedS..",
+    "...SddS...",
+    "....SS...."
+   ]
+  },
+  {
+   "name": "계단",
+   "rows": [
+    "a.........",
+    "ab........",
+    "abc.......",
+    "abcd......",
+    "abcde.....",
+    "abcdeS....",
+    "abcdeST...",
+    "abcdeSTX.."
+   ]
+  },
+  {
+   "name": "성벽",
+   "rows": [
+    "TTTTTTTTTT",
+    "X.X.X.X.X.",
+    "aaaaaaaaaa",
+    "bbbbbbbbbb",
+    "..........",
+    "SSSSSSSSSS",
+    "cccccccccc"
+   ]
+  },
+  {
+   "name": "줄무늬",
+   "rows": [
+    "aaaaaaaaaa",
+    "..........",
+    "bbbbbbbbbb",
+    "..........",
+    "cccccccccc",
+    "..........",
+    "dddddddddd",
+    "..........",
+    "eeeeeeeeee"
+   ]
+  },
+  {
+   "name": "기둥",
+   "rows": [
+    "S.S.S.S.S.",
+    "a.b.c.d.e.",
+    "a.b.c.d.e.",
+    "a.b.c.d.e.",
+    "a.b.c.d.e.",
+    "T.T.T.T.T."
+   ]
+  },
+  {
+   "name": "꽃",
+   "rows": [
+    "...aaaa...",
+    "..aabbaa..",
+    "..abccba..",
+    "..abccba..",
+    "..aabbaa..",
+    "...aaaa...",
+    "....dd....",
+    "..d.dd.d..",
+    "...ddd...."
+   ]
+  },
+  {
+   "name": "엑스",
+   "rows": [
+    "T........T",
+    ".S......S.",
+    "..a....a..",
+    "...b..b...",
+    "....cc....",
+    "...b..b...",
+    "..a....a..",
+    ".S......S.",
+    "T........T"
+   ]
+  },
+  {
+   "name": "요새",
+   "rows": [
+    "XXXX..XXXX",
+    "XaaaaaaaaX",
+    "XbSSSSSSbX",
+    "XbTTTTTTbX",
+    "XbSSSSSSbX",
+    "XaaaaaaaaX",
+    "XXXX..XXXX"
+   ]
+  },
+  {
+   "name": "물결",
+   "rows": [
+    "a....a....",
+    ".b..b.b..b",
+    "..cc...cc.",
+    "...d.....d",
+    "eeeeeeeeee",
+    "SSSSSSSSSS"
+   ]
+  },
+  {
+   "name": "외계인",
+   "rows": [
+    "..a....a..",
+    "...a..a...",
+    "..SSSSSS..",
+    ".SS.SS.SS.",
+    "SSSSSSSSSS",
+    "S.SSSSSS.S",
+    "S.S....S.S",
+    "...SS.SS.."
+   ]
+  },
+  {
+   "name": "벌집",
+   "rows": [
+    "TaTaTaTaTa",
+    "aTaTaTaTaT",
+    "bbbbbbbbbb",
+    "SbSbSbSbSb",
+    "cccccccccc",
+    "TdTdTdTdTd"
+   ]
+  },
+  {
+   "name": "미로",
+   "rows": [
+    "XaXaXaXaXa",
+    "..........",
+    "aXbXcXdXeX",
+    "..........",
+    "XaXaXaXaXa",
+    "SSSSSSSSSS"
+   ]
+  },
+  {
+   "name": "왕관",
+   "rows": [
+    "T..T..T..T",
+    "TT.TT.TT.T",
+    "TTTTTTTTTT",
+    "SaSbScSdSe",
+    "SSSSSSSSSS",
+    "eeeeeeeeee"
+   ]
+  }
+ ]
+}
