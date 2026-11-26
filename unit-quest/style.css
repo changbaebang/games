@@ -1,0 +1,10 @@
+/* VOICE: 탐험 수첩, 몸으로 느끼는 크기 감각
+   IDEA: 물건 크기를 어림하고, 자로 재고, 단위를 바꿔요
+   PICTURE: 초록 탐험 노트 바탕, 큰 그림 하나, 나무 자
+   COLOUR and TYPE: 연두 바탕, 숲 초록 강조 / Jua
+   LAYOUT: 공통 틀 + 큰 그림, 자 */
+:root{--paper:#f1f8ea;--grid:#d8ebc8;--accent:#2f8f4e;--soft:#cfe3bf;--edge:#2f5a34}
+.box{width:100%;display:grid;place-items:center}
+.emo{font-size:clamp(90px,30vw,150px);line-height:1}
+.box svg{width:min(94vw,520px);height:auto}
+.rl{font-size:16px;text-anchor:middle;fill:#3a3a3a;font-family:'Jua',system-ui,sans-serif}

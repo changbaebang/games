@@ -27,6 +27,7 @@
 | 입체 공방 | 직육면체·전개도·쌓기나무 (5~6학년) | [`/solid-lab/`](./solid-lab/) |
 | 분수 피자 | 분수·소수 (3~5학년) | [`/fraction-pizza/`](./fraction-pizza/) |
 | 나눗셈 사탕 | 나눗셈 (3학년) | [`/division-candy/`](./division-candy/) |
+| 단위 탐험대 | 길이·들이·무게·시간 단위 (2~3학년) | [`/unit-quest/`](./unit-quest/) |
 
 ## 플레이
 

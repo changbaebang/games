@@ -381,8 +381,20 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>나눗셈 사탕</h2><p>사탕을 친구들 접시에 똑같이 나눠 담으며 배우는 나눗셈. 나머지, 두 자리 수 나눗셈, 생활 문제까지 6단계.</p>
       <div class="tags"><span>나눗셈</span><span>3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./unit-quest/" style="--c:#7fd38a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#f1f8ea"/><g stroke="#d8ebc8"><path d="M0 25H320M0 50H320M0 75H320M0 100H320M0 125H320M0 150H320M0 175H320M40 0V200M80 0V200M120 0V200M160 0V200M200 0V200M240 0V200M280 0V200"/></g>
+      <rect x="20" y="118" width="280" height="52" rx="6" fill="#fff6d8" stroke="#b89a4a" stroke-width="3"/>
+      <g stroke="#3a3a3a" stroke-width="2"><path d="M34 118v22M62 118v12M90 118v22M118 118v12M146 118v22M174 118v12M202 118v22M230 118v12M258 118v22M286 118v12"/></g>
+      <g font-family="Jua" font-size="16" fill="#3a3a3a" text-anchor="middle"><text x="34" y="160">0</text><text x="90" y="160">1</text><text x="146" y="160">2</text><text x="202" y="160">3</text><text x="258" y="160">4</text></g>
+      <rect x="34" y="82" width="190" height="26" rx="8" fill="#ffcf3f" stroke="#c79400" stroke-width="3"/>
+      <text x="70" y="62" font-size="38">🥛</text><text x="140" y="62" font-size="38">⚖️</text><text x="220" y="62" font-size="38">🦒</text>
+    </svg>
+    <div class="info"><h2>단위 탐험대</h2><p>물건의 길이·들이·무게를 어림하고, 자로 재고, mm·cm·m·km와 mL·L, g·kg·t, 시간 단위를 바꿔요. 6단계.</p>
+      <div class="tags"><span>단위·측정</span><span>2~3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 23개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 24개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -409,7 +421,8 @@ const REC={
   'angle-detective':()=>{const v=B('angleStarTotal');return v?`별 ${v}개 / 18개`:null},
   'solid-lab':()=>{const v=B('solidStarTotal');return v?`별 ${v}개 / 15개`:null},
   'fraction-pizza':()=>{const v=B('fractionStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'division-candy':()=>{const v=B('divisionStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'division-candy':()=>{const v=B('divisionStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'unit-quest':()=>{const v=B('unitStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});
