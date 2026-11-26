@@ -1,0 +1,44 @@
+/* VOICE: 놀이공원 풍선 가게, 밝고 칭찬 많은
+   IDEA: 답이 적힌 풍선들이 하늘로 올라가요. 맞는 풍선만 콕!
+   PICTURE: 파란 하늘과 구름, 위쪽 나무 팻말에 문제, 아래 언덕에서 떠오르는 풍선
+   COLOUR and TYPE: 하늘 파랑, 풍선 원색, 팻말 나무색 / Jua + Press Start 2P(점수)
+   LAYOUT: 세로 무대 중앙 고정, 상단 점수·하트, 문제 팻말과 진행 점, 아래에서 풍선 */
+:root{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#5fb0e8 linear-gradient(#5fb0e8,#a8dcff);font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+#wrap{position:fixed;inset:0;display:grid;place-items:center}
+canvas{display:block;box-shadow:0 0 0 4px #2d6fb0,0 20px 60px rgba(0,30,70,.35)}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(20,60,110,.45);z-index:10;padding:12px}
+.overlay[hidden]{display:none}
+.card{background:#fbfdff;color:#23406a;word-break:keep-all;border-radius:20px;padding:22px;max-width:420px;width:100%;max-height:calc(100dvh - 24px);overflow:auto;text-align:center;box-shadow:0 8px 0 #2f7de1;touch-action:pan-y}
+.card.wide{max-width:480px}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 8px;color:#2f7de1;font-weight:400}
+.card h2{font-size:32px;line-height:1.1;margin:0 0 4px;color:#2f7de1;font-weight:400}
+.card p{margin:4px 0 12px;font-size:17px;color:#4a6488}
+.lbl{display:flex;justify-content:space-between;align-items:center;font-size:16px;color:#4a6488;margin:10px 2px 6px;text-align:left}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.chips.three{grid-template-columns:repeat(3,1fr)}
+.chip{font:inherit;font-size:19px;border:0;border-radius:12px;padding:8px 0;background:#e3effc;color:#6a86aa;box-shadow:0 3px 0 #c2d8f0;cursor:pointer;min-height:44px}
+.chip[aria-pressed="true"]{background:#4a9dff;color:#fff;box-shadow:0 3px 0 #2a6fc0}
+.chip:active{transform:translateY(2px)}
+.link{font:inherit;font-size:15px;background:none;border:0;color:#2f7de1;text-decoration:underline;cursor:pointer;padding:4px}
+.btn{font:inherit;font-size:22px;border:0;border-radius:14px;padding:12px 40px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:52px;margin-top:18px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c79400}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.sub{font:inherit;font-size:17px;border:0;border-radius:12px;padding:9px 16px;background:#e3effc;color:#23406a;box-shadow:0 3px 0 #c2d8f0;cursor:pointer;min-height:44px}
+.sub:active{transform:translateY(2px)}
+button:focus-visible,a:focus-visible{outline:3px solid #ff8a3d;outline-offset:3px}
+.big{font-family:'Press Start 2P',monospace;font-size:24px;color:#2f7de1;margin:8px 0 10px}
+.stars{font-size:46px;line-height:1;color:#ffc21a;letter-spacing:4px;text-shadow:0 3px 0 #d99a00;margin-bottom:6px}
+.miss{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:2px 0}
+.miss span{background:#fff1e8;color:#c0502a;border-radius:10px;padding:4px 10px;font-size:17px}
+.board{display:grid;grid-template-columns:34px repeat(9,1fr);gap:3px;margin:10px 0 8px;font-size:14px}
+.board span{display:grid;place-items:center;aspect-ratio:1;border-radius:8px}
+.board .hd{aspect-ratio:auto;color:#6a86aa;font-size:13px;padding:2px 0}
+.board .cell{background:#eef4fb;color:#9fb4cf}
+.board .part{background:#d6e8ff;color:#3a5a88}
+.board .on{background:#ff5a6e;color:#fff;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7);transform:rotate(-10deg)}
+.small{font-size:15px!important;margin:12px 0 0!important}
+.small a{color:inherit}
+@media(max-height:560px){.card{padding:14px 18px}.card h1{font-size:32px}.btn{margin-top:10px}}
+.loaderr{background:#fff1e8;color:#c0502a;border-radius:14px;padding:12px;font-size:16px;line-height:1.5}

@@ -57,4 +57,4 @@ GitHub Pages: https://changbaebang.github.io/games/
 python3 -m http.server 8000
 ```
 
-동전 가게, 규칙 기차가 이 구조를 따릅니다. 그 전에 만든 게임은 HTML 파일 하나로 되어 있어요. (블록 헌터는 three.js를 CDN에서 불러옵니다.)
+학습 게임(구구단 풍선, 똑딱 시계, 동전 가게, 규칙 기차)이 이 구조를 따릅니다. 그 전에 만든 게임은 HTML 파일 하나로 되어 있어요. (블록 헌터는 three.js를 CDN에서 불러옵니다.)

@@ -1,0 +1,70 @@
+{
+  "questionsPerRound": 20,
+  "lives": 5,
+  "speeds": [
+    {
+      "name": "느리게",
+      "speed": 60
+    },
+    {
+      "name": "보통",
+      "speed": 85
+    },
+    {
+      "name": "빠르게",
+      "speed": 115
+    }
+  ],
+  "stampAfterCorrect": 3,
+  "starThresholds": [
+    14,
+    18
+  ],
+  "endTitles": [
+    "조금만 더 연습해요!",
+    "잘했어요!",
+    "참 잘했어요!"
+  ],
+  "outOfLivesTitle": "하트를 다 썼어요",
+  "praise": [
+    "딩동댕!",
+    "정답!",
+    "멋져요!",
+    "최고!",
+    "좋아요!"
+  ],
+  "balloonColors": [
+    {
+      "fill": "#ff5a6e",
+      "text": "#fff"
+    },
+    {
+      "fill": "#ff9a2e",
+      "text": "#fff"
+    },
+    {
+      "fill": "#2fae5a",
+      "text": "#fff"
+    },
+    {
+      "fill": "#4a9dff",
+      "text": "#fff"
+    },
+    {
+      "fill": "#a46bff",
+      "text": "#fff"
+    },
+    {
+      "fill": "#ff5fae",
+      "text": "#fff"
+    },
+    {
+      "fill": "#3fd6e8",
+      "text": "#0d3a44"
+    },
+    {
+      "fill": "#ffd23f",
+      "text": "#4a3200"
+    }
+  ]
+}
