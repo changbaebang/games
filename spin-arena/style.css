@@ -1,0 +1,67 @@
+/* VOICE: 동네 팽이 대회장, 신나고 뜨겁게
+   IDEA: 내가 조립한 팽이가 회오리치며 부딪히는 경기장
+   PICTURE: 위에서 내려다본 둥근 경기장, 양쪽 점수판
+   COLOUR and TYPE: 밤하늘 남색 배경, 주황 불꽃 강조 / Jua + Press Start 2P
+   LAYOUT: 위 점수판 · 가운데 경기장 · 아래 발사·기술 버튼 */
+:root{--bg:#121633;--panel:#1d2350;--ink:#1d2440;--accent:#ff8a2a;--me:#4fb0ff;--op:#ff5a5a}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 30%,#232a63,var(--bg));font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-touch-callout:none}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;padding:calc(8px + env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom))}
+.hud{display:flex;gap:8px;align-items:flex-start}
+.side{flex:1;min-width:0}
+.who{display:flex;justify-content:space-between;align-items:center;font-size:17px;gap:6px;white-space:nowrap;overflow:hidden}
+.op .who{flex-direction:row}
+.pts{font-size:16px;letter-spacing:2px;color:#ffd84a}
+.bar{height:12px;background:rgba(255,255,255,.12);border-radius:8px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;width:0;border-radius:8px;transition:width .1s linear}
+.bar.thin{height:5px}
+.me .bar i{background:var(--me)}.op .bar i{background:var(--op);margin-left:auto}
+.bar.thin i{background:#ffb02a!important}
+.pill{font:inherit;border:0;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;width:40px;height:40px;flex:none}
+#stage{flex:1;min-height:0;display:grid;place-items:center}
+canvas#c{display:block}
+.ctl{display:flex;justify-content:center;align-items:center;gap:12px;min-height:76px}
+#launchBox{display:flex;align-items:center;gap:12px;width:min(100%,460px)}
+#launchBox[hidden]{display:none}
+.gauge{position:relative;flex:1;height:26px;border-radius:14px;background:linear-gradient(90deg,#3b4380,#6c4fd0 55%,#ff8a2a 80%,#ffd84a);box-shadow:inset 0 0 0 3px rgba(255,255,255,.2)}
+.zone{position:absolute;left:88%;right:2%;top:-4px;bottom:-4px;border:3px solid #fff;border-radius:8px}
+.needle{position:absolute;top:-8px;bottom:-8px;width:6px;margin-left:-3px;background:#fff;border-radius:3px;box-shadow:0 0 8px #fff;left:0}
+.btn{font:inherit;font-size:20px;border:0;border-radius:16px;padding:12px 22px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:52px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c79400}
+.btn.big{font-size:24px;min-width:120px}
+.btn.soft{background:#e3e9f6;color:var(--ink);box-shadow:0 5px 0 #b8c3dc}
+.btn.skill{background:#ff6b3d;color:#fff;box-shadow:0 5px 0 #b8401c;min-width:200px}
+.btn.skill:disabled{opacity:.35}
+.btn[hidden]{display:none}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(8,10,28,.66);z-index:10;padding:14px}
+.overlay[hidden]{display:none}
+.card{background:#f6f8ff;color:var(--ink);border-radius:22px;padding:20px 22px;width:min(100%,400px);max-height:calc(100dvh - 20px);overflow:auto;text-align:center;box-shadow:0 8px 0 #ff8a2a}
+.card.wide{width:min(100%,460px)}
+.card h1{font-size:36px;font-weight:400;margin:4px 0 8px;color:#e0482a;line-height:1.1}
+.card h2{font-size:26px;font-weight:400;margin:0 0 8px;color:#e0482a}
+.card p{font-size:16px;color:#4a5270;margin:6px 0 14px;line-height:1.45}
+.card .small{font-size:14px;margin:8px 0 0}
+.card a{color:inherit}
+.logo canvas{width:120px;height:120px}
+.col{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.sub{font:inherit;font-size:16px;border:0;border-radius:12px;padding:10px;background:#e3e9f6;color:var(--ink);cursor:pointer}
+#prevCv{width:150px;height:150px;display:block;margin:0 auto}
+.tname{font-size:24px;margin:2px 0 8px}
+.parts{display:grid;gap:6px}
+.part{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:6px;background:#fff;border-radius:14px;padding:6px;box-shadow:0 3px 0 #dfe5f3}
+.part button{font:inherit;font-size:20px;border:0;border-radius:10px;background:#eef2fb;height:40px;cursor:pointer;color:var(--ink)}
+.part b{display:block;font-weight:400;font-size:18px}.part small{display:block;color:#7a819c;font-size:13px}
+.part .k{font-size:12px;color:#ff8a2a}
+.swatches{display:flex;justify-content:center;gap:8px;margin:10px 0}
+.swatches button{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #cfd6e8;cursor:pointer}
+.swatches button.on{box-shadow:0 0 0 3px var(--ink)}
+.stats{display:grid;grid-template-columns:auto 1fr;gap:4px 8px;align-items:center;font-size:14px;text-align:left;margin:4px 0 14px}
+.stats .sb{height:10px;background:#e3e9f6;border-radius:6px;overflow:hidden}.stats .sb i{display:block;height:100%;background:#ff8a2a;border-radius:6px}
+.bracket{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:8px;text-align:left}
+.bracket li{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:8px 10px;box-shadow:0 3px 0 #dfe5f3}
+.bracket .e{font-size:30px;text-align:center}.bracket small{display:block;color:#7a819c;font-size:13px}
+.bracket .st{font-size:14px;color:#7a819c}.bracket li.now{outline:3px solid #ff8a2a}.bracket li.done{opacity:.6}
+.big-emoji{font-size:64px}
+@media (max-height:620px){.card h1{font-size:28px}.logo canvas{width:80px;height:80px}#prevCv{width:110px;height:110px}}
+#app.menu .hud,#app.menu .ctl{visibility:hidden}
