@@ -1,0 +1,32 @@
+/* VOICE: 마을 게시판, 조사한 것을 정리해 붙여요
+   IDEA: 직접 세고, 읽고, 막대를 그려 보며 표와 그래프를 익혀요
+   PICTURE: 흰 게시판 위의 표·그래프, 파란 막대, 빨간 꺾은선
+   COLOUR and TYPE: 하늘 종이, 파랑 막대, 주황 강조 / Jua
+   LAYOUT: 공통 틀 + 그래프 그림 */
+:root{--paper:#eef4fb;--grid:#dbe6f3;--accent:#2b6fd0;--soft:#cfdced;--edge:#2b4a78}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.box svg{width:min(96vw,500px);max-height:calc(100% - 30px);height:auto;flex:0 1 auto}
+.cap{font-size:15px;color:var(--mute);background:#fff;border-radius:999px;padding:3px 14px;box-shadow:0 2px 0 var(--soft)}
+svg text{font-family:'Jua',system-ui,sans-serif;dominant-baseline:central}
+.tk{font-size:14px;fill:var(--mute);text-anchor:end}
+.xl{font-size:14px;fill:var(--ink);text-anchor:middle}
+svg .em{font-size:19px;text-anchor:middle}
+.lb{font-size:18px;fill:var(--ink);text-anchor:middle}
+.lg{font-size:16px;fill:var(--ink)}
+.ic{text-anchor:start}.ic.big{font-size:30px}.ic.sm{font-size:16px}
+.tbwrap{display:flex;flex-direction:column;align-items:center;gap:6px;max-width:96vw}
+.tb{border-collapse:collapse;background:#fff;font-size:15px;border-radius:8px;overflow:hidden;box-shadow:0 3px 0 var(--soft)}
+.tb th,.tb td{border:2px solid #c9d6e8;padding:6px 7px;text-align:center;min-width:42px}
+.tb th{font-weight:normal;color:var(--ink);line-height:1.15}
+.tb th .em{display:block;font-size:20px}
+.tb .rh{background:#f3f7fc;color:var(--mute);font-size:13px}
+.tb td{font-size:20px}.tb td.sum{background:#f3f7fc}.tb td.q{color:#d9622b;background:#fff1e6}
+.kids{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;width:min(94vw,440px)}
+.kid{background:#fff;border-radius:10px;padding:6px 2px;text-align:center;font-size:14px;color:var(--mute);box-shadow:0 2px 0 var(--soft);transition:transform .15s}
+.kid span{display:block;font-size:28px;line-height:1.2}
+.kid.on{background:#ffe8b0;transform:scale(1.05);color:var(--ink)}
+.three{display:flex;gap:10px}.three div{background:#fff;border-radius:12px;padding:10px 12px;text-align:center;font-size:14px;box-shadow:0 2px 0 var(--soft)}.three b{display:block;font-size:34px;font-weight:normal}
+.mkbox{touch-action:none;gap:6px}.mkbox .tb{font-size:13px}.mkbox .tb td{font-size:17px;padding:3px 6px}.mkbox .tb th .em{font-size:16px}
+.mkchart{width:100%;display:flex;flex-direction:column;align-items:center;flex:1 1 auto;min-height:0}
+.mkchart .cap{display:none}
+.mk{cursor:pointer}
