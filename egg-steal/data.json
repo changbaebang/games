@@ -1,0 +1,423 @@
+{
+ "_설명": "계란 훔치기 데이터. 세계는 왼쪽 기지(base)에서 오른쪽으로 지역(biomes)이 이어진다. 지역 좌표는 그 지역 왼쪽 끝 기준(너비 width, 높이는 world.height). cost 금화로 문을 연다. nests는 둥지 위치, eggs는 그 지역 둥지에서 나오는 알 등급 비율. guards는 경비 수·속도·추격 속도·시야 거리(vision)·시야각(angle, 도). rarities는 알 등급: 부화 시간(hatch 초), 무게(weight, 들고 가면 느려지는 정도), 펫 목록(이름·색·초당 금화). mutations는 부화할 때 붙는 특별 무늬와 수입 배율. upgrades는 가게 물건: 값은 base x growth^레벨.",
+ "world": {
+  "height": 640,
+  "baseWidth": 440
+ },
+ "player": {
+  "speed": 150,
+  "radius": 14
+ },
+ "rarities": {
+  "common": {
+   "name": "일반",
+   "color": "#f4efe2",
+   "spot": "#c9bfa6",
+   "hatch": 8,
+   "weight": 0.1,
+   "pets": [
+    {
+     "name": "병아리",
+     "c": "#ffe066",
+     "coins": 1
+    },
+    {
+     "name": "토끼",
+     "c": "#f2f2f2",
+     "coins": 2
+    },
+    {
+     "name": "다람쥐",
+     "c": "#c98a4a",
+     "coins": 2
+    }
+   ]
+  },
+  "rare": {
+   "name": "희귀",
+   "color": "#7fd0ff",
+   "spot": "#3a9ad8",
+   "hatch": 15,
+   "weight": 0.2,
+   "pets": [
+    {
+     "name": "여우",
+     "c": "#ff8a3d",
+     "coins": 6
+    },
+    {
+     "name": "펭귄",
+     "c": "#3a4a6a",
+     "coins": 7
+    },
+    {
+     "name": "거북",
+     "c": "#5fb85a",
+     "coins": 8
+    }
+   ]
+  },
+  "epic": {
+   "name": "에픽",
+   "color": "#c79bff",
+   "spot": "#8a4ad8",
+   "hatch": 25,
+   "weight": 0.32,
+   "pets": [
+    {
+     "name": "부엉이",
+     "c": "#9a7a5a",
+     "coins": 25
+    },
+    {
+     "name": "판다",
+     "c": "#ffffff",
+     "coins": 32
+    },
+    {
+     "name": "사슴",
+     "c": "#d9a05a",
+     "coins": 38
+    }
+   ]
+  },
+  "legend": {
+   "name": "전설",
+   "color": "#ffd23f",
+   "spot": "#e09a1a",
+   "hatch": 45,
+   "weight": 0.45,
+   "pets": [
+    {
+     "name": "유니콘",
+     "c": "#ffd6f5",
+     "coins": 110
+    },
+    {
+     "name": "불사조",
+     "c": "#ff6a3a",
+     "coins": 140
+    }
+   ]
+  },
+  "mythic": {
+   "name": "신화",
+   "color": "#ff5a8a",
+   "spot": "#7a2ad8",
+   "hatch": 80,
+   "weight": 0.6,
+   "pets": [
+    {
+     "name": "별고래",
+     "c": "#4a6aff",
+     "coins": 420
+    },
+    {
+     "name": "용",
+     "c": "#3fbf8a",
+     "coins": 560
+    }
+   ]
+  }
+ },
+ "mutations": [
+  {
+   "id": "gold",
+   "name": "황금",
+   "chance": 0.08,
+   "mult": 2,
+   "c": "#ffd23f"
+  },
+  {
+   "id": "rainbow",
+   "name": "무지개",
+   "chance": 0.02,
+   "mult": 3,
+   "c": "rainbow"
+  },
+  {
+   "id": "giant",
+   "name": "거대",
+   "chance": 0.06,
+   "mult": 1.5,
+   "scale": 1.4
+  }
+ ],
+ "biomes": [
+  {
+   "id": "meadow",
+   "name": "초원 둥지",
+   "cost": 0,
+   "width": 900,
+   "ground": "#7cc657",
+   "ground2": "#72bb4f",
+   "deco": "#4f9a3a",
+   "decoKind": "tree",
+   "nests": [
+    [
+     220,
+     150
+    ],
+    [
+     420,
+     470
+    ],
+    [
+     640,
+     200
+    ],
+    [
+     780,
+     500
+    ]
+   ],
+   "eggs": {
+    "common": 80,
+    "rare": 20
+   },
+   "respawn": 6,
+   "guards": {
+    "count": 2,
+    "speed": 55,
+    "chase": 120,
+    "vision": 150,
+    "angle": 70
+   }
+  },
+  {
+   "id": "desert",
+   "name": "모래 사막",
+   "cost": 600,
+   "width": 900,
+   "ground": "#ecc77a",
+   "ground2": "#e3bb6c",
+   "deco": "#6aa84a",
+   "decoKind": "cactus",
+   "nests": [
+    [
+     180,
+     480
+    ],
+    [
+     360,
+     160
+    ],
+    [
+     560,
+     420
+    ],
+    [
+     760,
+     180
+    ],
+    [
+     800,
+     520
+    ]
+   ],
+   "eggs": {
+    "common": 45,
+    "rare": 45,
+    "epic": 10
+   },
+   "respawn": 8,
+   "guards": {
+    "count": 3,
+    "speed": 65,
+    "chase": 135,
+    "vision": 165,
+    "angle": 75
+   }
+  },
+  {
+   "id": "snow",
+   "name": "눈 덮인 숲",
+   "cost": 4000,
+   "width": 900,
+   "ground": "#e8f1f8",
+   "ground2": "#dde9f3",
+   "deco": "#2f6e56",
+   "decoKind": "pine",
+   "nests": [
+    [
+     200,
+     160
+    ],
+    [
+     300,
+     500
+    ],
+    [
+     520,
+     320
+    ],
+    [
+     700,
+     140
+    ],
+    [
+     780,
+     480
+    ]
+   ],
+   "eggs": {
+    "rare": 50,
+    "epic": 40,
+    "legend": 10
+   },
+   "respawn": 10,
+   "guards": {
+    "count": 4,
+    "speed": 70,
+    "chase": 145,
+    "vision": 175,
+    "angle": 80
+   }
+  },
+  {
+   "id": "volcano",
+   "name": "화산 계곡",
+   "cost": 25000,
+   "width": 900,
+   "ground": "#5a3a34",
+   "ground2": "#4e322d",
+   "deco": "#ff6a2a",
+   "decoKind": "rock",
+   "nests": [
+    [
+     160,
+     320
+    ],
+    [
+     340,
+     140
+    ],
+    [
+     420,
+     500
+    ],
+    [
+     640,
+     300
+    ],
+    [
+     800,
+     140
+    ],
+    [
+     800,
+     520
+    ]
+   ],
+   "eggs": {
+    "epic": 55,
+    "legend": 38,
+    "mythic": 7
+   },
+   "respawn": 12,
+   "guards": {
+    "count": 5,
+    "speed": 78,
+    "chase": 158,
+    "vision": 185,
+    "angle": 85
+   }
+  },
+  {
+   "id": "sky",
+   "name": "구름 섬",
+   "cost": 150000,
+   "width": 900,
+   "ground": "#cfe6ff",
+   "ground2": "#c2ddfb",
+   "deco": "#ffffff",
+   "decoKind": "cloud",
+   "nests": [
+    [
+     200,
+     200
+    ],
+    [
+     300,
+     480
+    ],
+    [
+     480,
+     320
+    ],
+    [
+     660,
+     160
+    ],
+    [
+     780,
+     460
+    ]
+   ],
+   "eggs": {
+    "legend": 65,
+    "mythic": 35
+   },
+   "respawn": 15,
+   "guards": {
+    "count": 6,
+    "speed": 85,
+    "chase": 168,
+    "vision": 195,
+    "angle": 90
+   }
+  }
+ ],
+ "upgrades": {
+  "speed": {
+   "name": "빠른 신발",
+   "desc": "이동 속도 +12%",
+   "base": 120,
+   "growth": 1.9,
+   "max": 8,
+   "per": 0.12
+  },
+  "incubator": {
+   "name": "부화기 추가",
+   "desc": "알을 동시에 더 부화",
+   "base": 400,
+   "growth": 5,
+   "max": 3,
+   "per": 1
+  },
+  "pen": {
+   "name": "우리 넓히기",
+   "desc": "펫 자리 +2",
+   "base": 250,
+   "growth": 2.3,
+   "max": 6,
+   "per": 2
+  },
+  "stealth": {
+   "name": "살금살금 망토",
+   "desc": "경비 시야 -12%",
+   "base": 1500,
+   "growth": 3.5,
+   "max": 3,
+   "per": 0.12
+  },
+  "hatch": {
+   "name": "따뜻한 담요",
+   "desc": "부화 시간 -15%",
+   "base": 800,
+   "growth": 3,
+   "max": 4,
+   "per": 0.15
+  }
+ },
+ "start": {
+  "coins": 0,
+  "incubators": 1,
+  "pens": 4
+ },
+ "offline": {
+  "maxHours": 2,
+  "rate": 0.5
+ },
+ "caughtStun": 1.0
+}

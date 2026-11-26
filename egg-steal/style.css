@@ -1,0 +1,51 @@
+/* VOICE: 몰래몰래 두근두근, 그러면서도 귀여운 수집 게임
+   IDEA: 위에서 내려다본 블록 장난감 마을과 둥지들
+   PICTURE: 기지에서 오른쪽으로 이어지는 지역들, 시야 부채꼴을 피해 다니는 도둑
+   COLOUR and TYPE: 지역마다 바뀌는 땅색, 금화 노랑, 경비 빨강 / Jua
+   LAYOUT: 풀스크린 세계, 상단 금화, 하단 가운데 상황 버튼, 가게는 카드 */
+:root{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#7cc657;font-family:'Jua',system-ui,sans-serif;color:#2c2418;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+canvas{display:block;position:fixed;inset:0}
+.hud{position:fixed;left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top));display:flex;flex-direction:column;gap:6px;z-index:5;pointer-events:none}
+.chip{background:rgba(40,30,20,.72);color:#fff;border-radius:14px;padding:6px 12px;font-size:17px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.chip[hidden]{display:none}
+.chip b{font-weight:400;font-size:22px;color:#ffd23f}.chip small{font-size:14px;color:#c8f0a8}
+.coin{display:inline-block;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3a8,#ffc21a 60%,#c88a00);box-shadow:0 1px 0 #8a5a00}
+.tb{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));z-index:5;font:inherit;font-size:17px;border:0;border-radius:14px;min-height:46px;padding:0 18px;background:#ffcf3f;color:#3b2a00;box-shadow:0 4px 0 #c79400;cursor:pointer}
+.act{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom));z-index:6;font:inherit;font-size:20px;border:0;border-radius:18px;min-height:58px;padding:0 26px;background:#ff6b4a;color:#fff;box-shadow:0 5px 0 #b83a22;cursor:pointer;white-space:nowrap}
+.act[disabled]{background:#b9b0a4;box-shadow:0 5px 0 #8a8276}
+.act[hidden]{display:none}
+.tb:active,.act:active{transform:translateY(3px)}.act:active{transform:translate(-50%,3px)}
+.tb:focus-visible,.act:focus-visible,.btn:focus-visible,.buy:focus-visible{outline:3px solid #2f6bd0;outline-offset:3px}
+#toast{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:7;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:6px;width:min(92vw,520px)}
+#toast div{background:rgba(40,30,20,.82);color:#fff;border-radius:14px;padding:8px 16px;font-size:18px;text-align:center;animation:tin 2.6s ease forwards}
+@keyframes tin{0%{opacity:0;transform:translateY(8px)}10%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(40,30,20,.45);z-index:10;padding:14px}
+.overlay[hidden]{display:none}
+.card{background:#fffaf0;border-radius:20px;padding:22px 24px;max-width:420px;width:100%;max-height:calc(100dvh - 28px);overflow:auto;box-shadow:0 8px 0 #c98a3d;text-align:center}
+.card.wide{max-width:560px;text-align:left}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 8px;color:#e0603a;font-weight:400}
+.card p{margin:4px 0 12px;font-size:17px;color:#5a4a36}
+.how{list-style:none;padding:0;margin:0 0 16px;text-align:left;display:grid;gap:6px;font-size:16px;color:#5a4a36}
+.how b{font-weight:400;display:inline-block;min-width:56px;color:#e0603a}
+.btns{display:grid;gap:10px}
+.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 30px;background:#ffcf3f;color:#3b2a00;box-shadow:0 5px 0 #c79400;cursor:pointer;min-height:52px}
+.btn[hidden]{display:none}
+#newBtn:not(:only-child){background:#efe4cf;box-shadow:0 5px 0 #cdbb98}
+.back{font-size:15px}.back a{color:inherit}
+.shopHead{display:flex;align-items:center;justify-content:space-between}
+.shopHead h2{margin:0;font-weight:400;font-size:30px;color:#e0603a}
+.x{font:inherit;font-size:16px;border:0;border-radius:12px;min-height:44px;padding:0 16px;background:#efe4cf;cursor:pointer}
+.money b{font-weight:400;color:#c88a00;font-size:22px}
+.ups{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:8px;margin-bottom:14px}
+.up{background:#f3e8d2;border-radius:14px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.up b{font-weight:400;font-size:18px}.up i{font-style:normal;font-size:14px;color:#6a5a44;grid-column:1}
+.buy{grid-row:1/3;grid-column:2;font:inherit;font-size:16px;border:0;border-radius:12px;min-height:46px;padding:0 12px;background:#ffcf3f;color:#3b2a00;box-shadow:0 3px 0 #c79400;cursor:pointer;white-space:nowrap}
+.buy[disabled]{background:#ddd3c2;box-shadow:none;color:#8a7e6a;cursor:default}
+h3{font-weight:400;margin:4px 0 8px;font-size:20px}h3 small{font-size:14px;color:#6a5a44}
+.pets{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:8px}
+.pet{background:#f3e8d2;border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;font-size:14px;border-left:6px solid var(--c)}
+.pet b{font-weight:400;font-size:17px}.pet .sell{margin-top:4px;font:inherit;font-size:14px;border:0;border-radius:10px;min-height:38px;background:#fff;cursor:pointer}
+.empty{color:#8a7e6a;font-size:15px}
+@media(max-height:520px){.card{padding:14px 18px}.card h1{font-size:32px}.how{font-size:14px}}
