@@ -1,39 +1,51 @@
 {
-  "note": "팽이 부품·상대·규칙. 숫자를 바꾸면 바로 반영돼요. 모든 이름과 디자인은 이 게임만의 창작이에요.",
-  "rules": { "winPoints": 3, "points": { "spin": 1, "out": 2, "burst": 2 }, "timeLimit": 60 },
-  "arena": { "radius": 180, "slope": 1.35, "pockets": [90, 210, 330], "pocketHalfWidth": 17, "outSpeed": 70 },
-  "physics": { "drag": 0.32, "spinDecay": 2.3, "moveDecay": 0.004, "restitution": 0.85, "kick": 70, "hitSpin": 0.9, "hitBurst": 1.6, "mobAccel": 48, "turn": 1.5, "wobbleAt": 22 },
+  "note": "팽이 부품·상대·규칙·물리 숫자. 바꾸면 바로 반영돼요. 이름과 디자인은 모두 이 게임만의 창작이에요.",
+  "rules": { "winPoints": 4, "points": { "spin": 1, "out": 2, "burst": 2, "xout": 3 }, "timeLimit": 60 },
+  "arena": {
+    "radius": 180, "slope": 0.8,
+    "pockets": [ { "a": 210, "w": 18, "type": "out" }, { "a": 330, "w": 18, "type": "out" }, { "a": 90, "w": 28, "type": "xout" } ],
+    "outSpeed": 40,
+    "rail": { "from": 205, "to": 335, "boost": 340, "cool": 1.1 }
+  },
+  "physics": { "drag": 0.32, "spinDecay": 2.3, "moveDecay": 0.0015, "restitution": 0.85, "kick": 120, "hitSpin": 0.6, "hitBurst": 1.2, "mobAccel": 48, "turn": 1.5, "wobbleAt": 22,
+               "steer": 150, "steerCost": 0.8, "gaugeHit": 14, "gaugeDash": 8, "gaugeTime": 3.5 },
 
   "rings": [
-    { "id": "claw", "name": "번개 발톱", "word": "번개", "shape": "claw", "atk": 9, "def": 3, "skill": "dash", "desc": "갈고리 세 개로 세게 쳐요" },
+    { "id": "claw", "name": "번개 발톱", "word": "번개", "shape": "claw", "atk": 9, "def": 4, "skill": "dash", "desc": "갈고리 세 개로 세게 쳐요" },
     { "id": "shell", "name": "거북 방패", "word": "단단한", "shape": "round", "atk": 3, "def": 9, "skill": "shield", "desc": "둥근 방패가 충격을 막아요" },
     { "id": "wing", "name": "회오리 날개", "word": "회오리", "shape": "wing", "atk": 6, "def": 6, "skill": "charge", "desc": "공격도 방어도 골고루" },
-    { "id": "gear", "name": "별 톱니", "word": "별빛", "shape": "gear", "atk": 8, "def": 6, "skill": "dash", "desc": "우승하면 열려요! 톱니 여섯 개", "unlock": 1 }
+    { "id": "fang", "name": "상어 이빨", "word": "상어", "shape": "fang", "atk": 10, "def": 2, "skill": "dash", "desc": "날카로운 이빨 다섯 개", "locked": true },
+    { "id": "flame", "name": "불꽃 원반", "word": "불꽃", "shape": "flame", "atk": 6, "def": 8, "skill": "storm", "desc": "회오리 폭풍으로 밀어내요", "locked": true },
+    { "id": "gear", "name": "별 톱니", "word": "별빛", "shape": "gear", "atk": 8, "def": 6, "skill": "storm", "desc": "톱니 여섯 개, 챔피언의 날", "locked": true }
   ],
   "weights": [
-    { "id": "light", "name": "가벼운 몸통", "mass": 0.8, "sta": 0.85, "spd": 1.25, "def": -1 },
-    { "id": "mid", "name": "보통 몸통", "mass": 1.0, "sta": 1.0, "spd": 1.0, "def": 0 },
-    { "id": "heavy", "name": "묵직한 몸통", "mass": 1.3, "sta": 1.2, "spd": 0.8, "def": 1 }
+    { "id": "light", "name": "가벼운 몸통", "mass": 0.8, "sta": 0.95, "spd": 1.25, "def": -1, "desc": "빠르지만 잘 밀려요" },
+    { "id": "mid", "name": "보통 몸통", "mass": 1.0, "sta": 1.0, "spd": 1.0, "def": 0, "desc": "무난해요" },
+    { "id": "heavy", "name": "묵직한 몸통", "mass": 1.3, "sta": 1.2, "spd": 0.8, "def": 1, "desc": "잘 안 밀리고 오래 돌아요" }
   ],
   "tips": [
-    { "id": "sharp", "name": "뾰족 축", "sta": 1.35, "mob": 0.35, "fric": 0.5, "desc": "한자리에서 오래 돌아요" },
-    { "id": "ball", "name": "공 축", "sta": 1.05, "mob": 0.8, "fric": 1.0, "desc": "적당히 움직이고 적당히 버텨요" },
-    { "id": "flat", "name": "평평 축", "sta": 0.75, "mob": 1.5, "fric": 1.6, "desc": "빠르게 달리며 부딪혀요" }
+    { "id": "sharp", "name": "뾰족 축", "sta": 1.35, "mob": 0.35, "fric": 0.5, "gear": 0, "desc": "가운데서 오래 버텨요 (레일 ✕)" },
+    { "id": "ball", "name": "공 축", "sta": 1.05, "mob": 0.8, "fric": 1.0, "gear": 0.6, "desc": "적당히 움직여요 (레일 △)" },
+    { "id": "flat", "name": "평평 축", "sta": 0.9, "mob": 1.5, "fric": 1.6, "gear": 1.0, "desc": "빠르게 달려요 (레일 ○)" },
+    { "id": "gearflat", "name": "톱니 축", "sta": 0.95, "mob": 1.3, "fric": 1.3, "gear": 1.35, "desc": "레일을 꽉 물고 대시! (레일 ◎)", "locked": true },
+    { "id": "rubber", "name": "고무 축", "sta": 0.85, "mob": 1.75, "fric": 1.9, "gear": 0.9, "atk": 1, "desc": "미끄러지지 않고 세게 박아요", "locked": true }
   ],
-  "emblems": [["호랑이", "🐯"], ["독수리", "🦅"], ["상어", "🦈"], ["늑대", "🐺"], ["사자", "🦁"], ["거북", "🐢"]],
-  "colors": ["#e5533d", "#3d74e5", "#2fa36b", "#9b5de5", "#f0a020", "#20b6c9"],
+  "emblems": [["호랑이", "🐯"], ["독수리", "🦅"], ["상어", "🦈"], ["늑대", "🐺"], ["사자", "🦁"], ["거북", "🐢"], ["용", "🐉"], ["공룡", "🦖"]],
+  "colors": ["#e5533d", "#3d74e5", "#2fa36b", "#9b5de5", "#f0a020", "#20b6c9", "#2b2f45"],
   "skills": {
-    "dash": { "name": "돌진!", "desc": "상대에게 힘껏 달려들어요" },
-    "shield": { "name": "방어막!", "desc": "4초 동안 단단하고 무거워져요" },
-    "charge": { "name": "회전 충전!", "desc": "회전력이 다시 차올라요" }
+    "dash": { "name": "돌진", "desc": "상대에게 힘껏 달려들어 세게 박아요" },
+    "shield": { "name": "방어막", "desc": "4초 동안 단단하고 무거워져요" },
+    "charge": { "name": "회전 충전", "desc": "회전력이 다시 차올라요" },
+    "storm": { "name": "회오리 폭풍", "desc": "주변 상대를 바깥으로 날려 버려요" }
   },
 
   "opponents": [
-    { "title": "1회전", "who": "옆 반 민준", "name": "꼬마 회오리", "emblem": "🐰", "color": "#7cc6ff", "ring": "wing", "weight": "mid", "tip": "ball", "power": [0.55, 0.8], "skillChance": 0.5 },
-    { "title": "2회전", "who": "동네 형 도윤", "name": "바위 거북", "emblem": "🐢", "color": "#6b8f4e", "ring": "shell", "weight": "heavy", "tip": "sharp", "power": [0.65, 0.9], "skillChance": 0.7 },
-    { "title": "준결승", "who": "질풍의 하린", "name": "질풍 매", "emblem": "🦅", "color": "#e5533d", "ring": "claw", "weight": "light", "tip": "flat", "power": [0.7, 0.95], "skillChance": 0.85 },
-    { "title": "결승", "who": "챔피언 서준", "name": "황금 늑대", "emblem": "🐺", "color": "#e3b12a", "ring": "gear", "weight": "heavy", "tip": "flat", "power": [0.82, 1.0], "skillChance": 1 }
+    { "title": "1회전", "who": "옆 반 민준", "name": "꼬마 회오리", "emblem": "🐰", "color": "#7cc6ff", "ring": "wing", "weight": "mid", "tip": "ball", "power": [0.5, 0.75], "aggro": 0.2, "skillDelay": [3, 8] },
+    { "title": "2회전", "who": "동네 형 도윤", "name": "바위 거북", "emblem": "🐢", "color": "#6b8f4e", "ring": "shell", "weight": "heavy", "tip": "sharp", "power": [0.6, 0.85], "aggro": 0, "skillDelay": [1, 5] },
+    { "title": "준결승", "who": "질풍의 하린", "name": "질풍 매", "emblem": "🦅", "color": "#e5533d", "ring": "claw", "weight": "light", "tip": "flat", "power": [0.7, 0.95], "aggro": 0.5, "skillDelay": [0.5, 3] },
+    { "title": "결승", "who": "챔피언 서준", "name": "황금 늑대", "emblem": "🐺", "color": "#e3b12a", "ring": "gear", "weight": "heavy", "tip": "gearflat", "power": [0.8, 1.0], "aggro": 0.7, "skillDelay": [0.3, 2] }
   ],
-  "finishText": { "spin": "스핀 피니시!", "out": "아웃 피니시!", "burst": "버스트 피니시!", "draw": "무승부! 다시!" },
-  "launchWords": ["셋", "둘", "하나", "회오리!"]
+  "finishText": { "spin": "스핀 피니시!", "out": "아웃 피니시!", "burst": "버스트 피니시!", "xout": "슈퍼 아웃 피니시!", "draw": "무승부! 다시!" },
+  "hitWords": ["쾅!", "콰직!", "팡!", "쿵!", "탁!"],
+  "countWords": ["셋", "둘", "하나", "슛!"]
 }

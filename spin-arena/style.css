@@ -65,3 +65,21 @@ canvas#c{display:block}
 .big-emoji{font-size:64px}
 @media (max-height:620px){.card h1{font-size:28px}.logo canvas{width:80px;height:80px}#prevCv{width:110px;height:110px}}
 #app.menu .hud,#app.menu .ctl{visibility:hidden}
+/* v2: 새총 발사·필살기 게이지·둘이서 */
+.hint{font-size:16px;color:#cfd6ff;text-align:center;line-height:1.3}
+.hint:empty{display:none}
+.btn.skill{position:relative;overflow:hidden;background:#3a2a6a;box-shadow:0 5px 0 #20163f;color:#fff;min-width:210px}
+.btn.skill .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#ff6b3d,#ffb02a);transition:width .12s linear}
+.btn.skill .lab{position:relative}
+.btn.skill.ready{animation:glow .6s ease-in-out infinite alternate;box-shadow:0 5px 0 #b8401c}
+@keyframes glow{to{transform:scale(1.06);filter:brightness(1.2)}}
+.ctl2{display:none;justify-content:center;align-items:center;gap:12px;min-height:64px;transform:rotate(180deg)}
+#app.duo .ctl2{display:flex}
+#app.duo .ctl2 .btn.skill{min-width:170px}
+#app.menu .ctl2{visibility:hidden}
+.row0{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reward{background:#fff4d6;border-radius:14px;padding:10px;margin:0 0 14px;font-size:17px}
+.reward b{color:#e0482a}
+.part.locked{opacity:.5}
+.bracket li.pick{cursor:pointer}.bracket li.pick:active{transform:scale(.98)}
+#stage{touch-action:none}

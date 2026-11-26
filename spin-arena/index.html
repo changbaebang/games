@@ -7,7 +7,8 @@
 <script src="../common/arcade.js"></script>
 <link rel="stylesheet" href="style.css">
 </head><body>
-<div id="app">
+<div id="app" class="menu">
+  <div class="ctl2" id="ctl2"><button class="btn skill" id="skill2Btn"><span class="fill"></span><span class="lab">필살기</span></button><div class="hint" id="hint2"></div></div>
   <header class="hud">
     <div class="side me"><div class="who"><span id="meName">내 팽이</span><span class="pts" id="mePts"></span></div><div class="bar"><i id="meSpin"></i></div><div class="bar thin"><i id="meBurst"></i></div></div>
     <button class="pill" id="menuBtn" aria-label="메뉴">II</button>
@@ -15,11 +16,8 @@
   </header>
   <div id="stage"><canvas id="c"></canvas></div>
   <footer class="ctl">
-    <div id="launchBox">
-      <div class="gauge"><div class="zone"></div><div class="needle" id="needle"></div></div>
-      <button class="btn big" id="launchBtn">발사!</button>
-    </div>
-    <button class="btn skill" id="skillBtn" hidden>기술</button>
+    <div class="hint" id="hint"></div>
+    <button class="btn skill" id="skillBtn" hidden><span class="fill"></span><span class="lab">필살기</span></button>
     <button class="btn" id="nextBtn" hidden>다음 라운드</button>
   </footer>
 </div>
@@ -27,24 +25,30 @@
 <div class="overlay" id="titleOv"><div class="card">
   <div class="logo" aria-hidden="true"><canvas id="logoCv" width="200" height="200"></canvas></div>
   <h1>팽이 대전 회오리</h1>
-  <p>내 팽이를 조립해서 대회에 나가요!<br>상대를 <b>경기장 밖</b>으로 날리거나(2점), <b>부숴서</b>(2점), <b>더 오래 돌면</b>(1점) 이겨요. 먼저 <b>3점</b>!</p>
-  <div class="col"><button class="btn" id="goBtn">대회 나가기</button><button class="btn soft" id="garageBtn">팽이 조립하기</button></div>
+  <p>뒤로 <b>당겨서</b> 발사! 끌어서 <b>조종</b>하고, 게이지가 차면 <b>필살기</b>!<br>OUT 2점 · <b>슈퍼 아웃 3점</b> · 버스트 2점 · 스핀 1점, 먼저 <b>4점</b>!</p>
+  <div class="col">
+    <button class="btn" id="goBtn">🏆 대회 나가기</button>
+    <div class="row0"><button class="btn soft" id="freeBtn">친선전</button><button class="btn soft" id="duoBtn">👫 둘이서</button></div>
+    <button class="btn soft" id="garageBtn">🔧 팽이 조립하기</button>
+  </div>
   <p class="small" id="recTxt"></p>
   <p class="small"><a href="../">← 게임 목록으로</a></p>
 </div></div>
 
 <div class="overlay" id="garageOv" hidden><div class="card wide">
-  <h2>팽이 조립소</h2>
+  <h2 id="garageTitle">팽이 조립소</h2>
   <canvas id="prevCv" width="220" height="220" aria-label="팽이 미리보기"></canvas>
   <div class="tname" id="topName"></div>
   <div class="parts" id="parts"></div>
   <div class="swatches" id="swatches"></div>
   <div class="stats" id="stats"></div>
+  <p class="small" id="partCount"></p>
   <button class="btn" id="doneBtn">이 팽이로 결정!</button>
 </div></div>
 
 <div class="overlay" id="bracketOv" hidden><div class="card">
-  <h2>회오리 컵 대회</h2>
+  <h2 id="bTitle">회오리 컵 대회</h2>
+  <p class="small" id="bSub"></p>
   <ol class="bracket" id="bracket"></ol>
   <button class="btn" id="fightBtn">경기 시작</button>
   <div class="row"><button class="sub" id="bGarage">팽이 조립</button><button class="sub" id="bHome">처음으로</button></div>
@@ -54,13 +58,14 @@
   <div class="big-emoji" id="eEmoji">🏆</div>
   <h1 id="eTitle"></h1>
   <p id="eTxt"></p>
+  <div class="reward" id="eReward" hidden></div>
   <button class="btn" id="eMain"></button>
   <div class="row"><button class="sub" id="eGarage">팽이 조립</button><button class="sub" id="eHome">처음으로</button></div>
 </div></div>
 
 <div class="overlay" id="pauseOv" hidden><div class="card">
   <h2>잠깐 멈춤</h2>
-  <div class="col"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">대회 그만하기</button></div>
+  <div class="col"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">그만하기</button></div>
 </div></div>
 
 <script src="game.js"></script>
