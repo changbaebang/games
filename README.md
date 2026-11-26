@@ -26,6 +26,7 @@
 | 각도 탐정 | 각도·각 구하기 (4~5학년) | [`/angle-detective/`](./angle-detective/) |
 | 입체 공방 | 직육면체·전개도·쌓기나무 (5~6학년) | [`/solid-lab/`](./solid-lab/) |
 | 분수 피자 | 분수·소수 (3~5학년) | [`/fraction-pizza/`](./fraction-pizza/) |
+| 나눗셈 사탕 | 나눗셈 (3학년) | [`/division-candy/`](./division-candy/) |
 
 ## 플레이
 

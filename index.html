@@ -369,8 +369,20 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>분수 피자</h2><p>피자를 나누며 배우는 분수·소수. 색칠하기, 크기 비교, 덧셈·뺄셈, 크기가 같은 분수까지 6단계.</p>
       <div class="tags"><span>분수·소수</span><span>3~5학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./division-candy/" style="--c:#ff7fb0">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#fff3f7"/><g stroke="#fbdbe6"><path d="M0 25H320M0 50H320M0 75H320M0 100H320M0 125H320M0 150H320M0 175H320M40 0V200M80 0V200M120 0V200M160 0V200M200 0V200M240 0V200M280 0V200"/></g>
+      <rect x="110" y="18" width="100" height="60" rx="20" fill="#fff" stroke="#f3cfdc" stroke-width="4"/>
+      <g fill="#ff5a8a"><circle cx="135" cy="48" r="9"/><circle cx="160" cy="48" r="9"/><circle cx="185" cy="48" r="9"/></g>
+      <g fill="#fff" stroke="#f3cfdc" stroke-width="4"><ellipse cx="60" cy="145" rx="44" ry="32"/><ellipse cx="160" cy="145" rx="44" ry="32"/><ellipse cx="260" cy="145" rx="44" ry="32"/></g>
+      <g fill="#ffb13d"><circle cx="48" cy="150" r="9"/><circle cx="72" cy="150" r="9"/><circle cx="148" cy="150" r="9"/><circle cx="172" cy="150" r="9"/><circle cx="248" cy="150" r="9"/><circle cx="272" cy="150" r="9"/></g>
+      <text x="160" y="110" font-family="Jua" font-size="22" fill="#d6336c" text-anchor="middle">6 ÷ 3 = 2</text>
+    </svg>
+    <div class="info"><h2>나눗셈 사탕</h2><p>사탕을 친구들 접시에 똑같이 나눠 담으며 배우는 나눗셈. 나머지, 두 자리 수 나눗셈, 생활 문제까지 6단계.</p>
+      <div class="tags"><span>나눗셈</span><span>3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 22개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 23개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -396,7 +408,8 @@ const REC={
   'egg-steal':()=>{const v=B('eggStealIncome'),c=B('eggStealCount');return v?`초당 금화 ${n(v)}`+(c?` · 알 ${n(c)}개`:''):null},
   'angle-detective':()=>{const v=B('angleStarTotal');return v?`별 ${v}개 / 18개`:null},
   'solid-lab':()=>{const v=B('solidStarTotal');return v?`별 ${v}개 / 15개`:null},
-  'fraction-pizza':()=>{const v=B('fractionStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'fraction-pizza':()=>{const v=B('fractionStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'division-candy':()=>{const v=B('divisionStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});
