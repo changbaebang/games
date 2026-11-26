@@ -340,8 +340,25 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>각도 탐정</h2><p>각도기 읽기, 각 그리기부터 삼각형·사각형·다각형의 숨은 각 구하기까지 6단계.</p>
       <div class="tags"><span>각도</span><span>4~5학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./solid-lab/" style="--c:#a5c8ff">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#eef5fb"/><g stroke="#d9e6f2" stroke-width="1"><path d="M0 25H320M0 50H320M0 75H320M0 100H320M0 125H320M0 150H320M0 175H320M25 0V200M50 0V200M75 0V200M100 0V200M125 0V200M150 0V200M175 0V200M200 0V200M225 0V200M250 0V200M275 0V200M300 0V200"/></g>
+      <g stroke="#22324f" stroke-width="2.5" stroke-linejoin="round"><rect x="24" y="64" width="28" height="28" fill="#fff3d0"/><rect x="52" y="64" width="28" height="28" fill="#ffd23f"/><rect x="80" y="64" width="28" height="28" fill="#fff3d0"/><rect x="108" y="64" width="28" height="28" fill="#fff3d0"/><rect x="52" y="36" width="28" height="28" fill="#fff3d0"/><rect x="52" y="92" width="28" height="28" fill="#fff3d0"/></g>
+      <text x="66" y="84" font-family="Jua" font-size="18" fill="#22324f" text-anchor="middle">★</text>
+      <path d="M148 80 q14 -16 28 0" fill="none" stroke="#ef6a3a" stroke-width="3" stroke-linecap="round"/><path d="M172 72 l6 8 -10 2z" fill="#ef6a3a"/>
+      <g stroke="#22324f" stroke-width="2.5" stroke-linejoin="round"><path d="M196 58 L226 44 L256 58 L226 72Z" fill="#ffe9a8"/><path d="M196 58 L226 72 L226 106 L196 92Z" fill="#fff3d0"/><path d="M226 72 L256 58 L256 92 L226 106Z" fill="#ffd23f"/></g>
+      <text x="241" y="88" font-family="Jua" font-size="16" fill="#22324f" text-anchor="middle">★</text>
+      <g stroke="#22324f" stroke-width="2" stroke-linejoin="round">
+        <path d="M150 150 L172 139 L194 150 L172 161Z" fill="#8fc3ff"/><path d="M150 150 L172 161 L172 185 L150 174Z" fill="#7ea9e0"/><path d="M172 161 L194 150 L194 174 L172 185Z" fill="#6c95cc"/>
+        <path d="M194 150 L216 139 L238 150 L216 161Z" fill="#8fc3ff"/><path d="M194 150 L216 161 L216 185 L194 174Z" fill="#7ea9e0"/><path d="M216 161 L238 150 L238 174 L216 185Z" fill="#6c95cc"/>
+        <path d="M172 115 L194 104 L216 115 L194 126Z" fill="#8fc3ff"/><path d="M172 115 L194 126 L194 150 L172 139Z" fill="#7ea9e0"/><path d="M194 126 L216 115 L216 139 L194 150Z" fill="#6c95cc"/></g>
+      <path d="M262 150 a26 10 0 1 0 -6 12" fill="none" stroke="#ef6a3a" stroke-width="3" stroke-linecap="round"/><path d="M252 166 l8 -4 -1 9z" fill="#ef6a3a"/>
+    </svg>
+    <div class="info"><h2>입체 공방</h2><p>손가락으로 돌려 보는 직육면체와 쌓기나무, 접히는 정육면체 전개도. 위·앞·옆에서 본 모양까지 5단계.</p>
+      <div class="tags"><span>입체도형</span><span>5~6학년 수학</span><span>돌려 보기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 20개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 21개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -365,7 +382,8 @@ const REC={
   'coin-shop':()=>{const v=B('coinStarTotal');return v?`별 ${v}개 / 15개`:null},
   'pattern-train':()=>{const v=B('patternStarTotal');return v?`별 ${v}개 / 15개`:null},
   'egg-steal':()=>{const v=B('eggStealIncome'),c=B('eggStealCount');return v?`초당 금화 ${n(v)}`+(c?` · 알 ${n(c)}개`:''):null},
-  'angle-detective':()=>{const v=B('angleStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'angle-detective':()=>{const v=B('angleStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'solid-lab':()=>{const v=B('solidStarTotal');return v?`별 ${v}개 / 15개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});
