@@ -1,0 +1,17 @@
+{
+ "_설명": "하늘 점프맵 데이터. stages는 단계 목록이고 각 단계의 sections가 차례로 이어져 코스가 된다. 구간 종류: steps(계단, n개), gap(틈 점프, n개, gap 틈 길이), narrow(좁은 다리, n개), move(옆으로 움직이는 발판), lift(위아래로 움직이는 발판), vanish(밟으면 사라지는 발판), lava(용암 바닥 위 징검다리), bars(바닥을 가로지르는 용암 막대 넘기), spinner(돌아가는 용암 막대), bounce(트램펄린으로 높이 뛰기), tower(지그재그로 올라가기), check(체크포인트), goal(도착). player: speed 속도, jump 점프 힘, gravity 중력. 점프로 넘을 수 있는 틈은 약 4.5칸, 높이는 약 2칸.",
+ "player": {"speed": 7, "jump": 11.5, "gravity": 30, "bounce": 21},
+ "colors": ["#ff6b6b", "#ffb84d", "#ffd93d", "#6bdc7a", "#4dc9ff", "#7a8cff", "#c77dff", "#ff7ac6"],
+ "stages": [
+  {"name": "첫걸음 언덕", "sky": "#9fd8ff", "sections": [["start"], ["steps", 5], ["check"], ["gap", 4, 2.5], ["steps", 4], ["goal"]]},
+  {"name": "좁은 다리", "sky": "#a8e0ff", "sections": [["start"], ["gap", 4, 3], ["narrow", 3], ["check"], ["steps", 5], ["narrow", 3], ["goal"]]},
+  {"name": "움직이는 발판", "sky": "#b0d0ff", "sections": [["start"], ["steps", 3], ["move", 3], ["check"], ["lift", 2], ["gap", 3, 3.2], ["move", 3], ["goal"]]},
+  {"name": "사라지는 길", "sky": "#c9c0ff", "sections": [["start"], ["vanish", 5], ["check"], ["narrow", 2], ["vanish", 6], ["check"], ["tower", 6], ["goal"]]},
+  {"name": "용암 징검다리", "sky": "#ffc9a8", "sections": [["start"], ["lava", 6], ["check"], ["bars", 4], ["check"], ["gap", 4, 3.5], ["lava", 7], ["goal"]]},
+  {"name": "빙글빙글", "sky": "#ffd6e8", "sections": [["start"], ["spinner"], ["check"], ["move", 3], ["spinner"], ["check"], ["vanish", 5], ["goal"]]},
+  {"name": "트램펄린 탑", "sky": "#b8f0d8", "sections": [["start"], ["bounce"], ["steps", 3], ["bounce"], ["check"], ["tower", 7], ["bounce"], ["narrow", 3], ["goal"]]},
+  {"name": "구름 미로", "sky": "#dfe9f5", "sections": [["start"], ["gap", 5, 3.8], ["check"], ["lift", 3], ["vanish", 6], ["check"], ["move", 4], ["narrow", 3], ["goal"]]},
+  {"name": "불꽃 성", "sky": "#ffb38a", "sections": [["start"], ["bars", 5], ["spinner"], ["check"], ["lava", 8], ["check"], ["tower", 6], ["spinner"], ["check"], ["vanish", 6], ["goal"]]},
+  {"name": "하늘 끝", "sky": "#7fb2ff", "sections": [["start"], ["gap", 5, 4], ["move", 4], ["check"], ["vanish", 7], ["spinner"], ["check"], ["lift", 3], ["bounce"], ["lava", 8], ["check"], ["narrow", 4], ["bars", 5], ["goal"]]}
+ ]
+}
