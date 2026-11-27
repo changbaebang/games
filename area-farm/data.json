@@ -1,22 +1,145 @@
 {
   "questionsPerStage": 10,
-  "starThresholds": [6, 8, 10],
-  "praise": ["딩동댕!", "밭을 잘 일궜어요!", "넓이 척척!", "정확해요!", "멋져요!"],
-  "endTitles": ["한 번 더 해 볼까요?", "잘했어요!", "참 잘했어요!", "넓이 농장 주인이에요!"],
-  "colors": { "field": "#7fc96b", "fieldEdge": "#3f8a3a", "grid": "#d6c9a8", "soil": "#f3e7c9", "mark": "#ef6a3a" },
-
+  "starThresholds": [
+    6,
+    8,
+    10
+  ],
+  "praise": [
+    "딩동댕!",
+    "밭을 잘 일궜어요!",
+    "넓이 척척!",
+    "정확해요!",
+    "멋져요!"
+  ],
+  "endTitles": [
+    "한 번 더 해 볼까요?",
+    "잘했어요!",
+    "참 잘했어요!",
+    "넓이 농장 주인이에요!"
+  ],
+  "colors": {
+    "field": "#7fc96b",
+    "fieldEdge": "#3f8a3a",
+    "grid": "#d6c9a8",
+    "soil": "#f3e7c9",
+    "mark": "#ef6a3a"
+  },
   "stages": [
-    { "name": "모눈 넓이 세기", "short": "넓이 세기", "sub": "1 cm² 가 몇 개?",
-      "kinds": [ { "kind": "countArea", "cells": [4, 12] } ] },
-    { "name": "둘레 세기", "short": "둘레 세기", "sub": "가장자리를 한 바퀴",
-      "kinds": [ { "kind": "countPerim", "cells": [3, 9] } ] },
-    { "name": "직사각형과 정사각형", "short": "공식", "sub": "넓이 = 가로 × 세로, 둘레 = (가로 + 세로) × 2",
-      "kinds": [ { "kind": "rectArea" }, { "kind": "rectPerim" }, { "kind": "squareSide", "weight": 0.6 } ] },
-    { "name": "밭 만들기", "short": "밭 만들기", "sub": "넓이나 둘레가 정해진 직사각형 만들기",
-      "kinds": [ { "kind": "makeArea", "weight": 2 }, { "kind": "makePerim" } ] },
-    { "name": "평행사변형과 삼각형", "short": "평행사변형·삼각형", "sub": "밑변과 높이로 넓이 구하기",
-      "kinds": [ { "kind": "para" }, { "kind": "tri" } ] },
-    { "name": "모양이 복잡한 밭", "short": "복잡한 밭", "sub": "나누거나 빼서 넓이 구하기", "challenge": true,
-      "kinds": [ { "kind": "lShape" } ] }
+    {
+      "name": "모눈 넓이 세기",
+      "short": "넓이 세기",
+      "sub": "1 cm² 가 몇 개?",
+      "kinds": [
+        {
+          "kind": "countArea",
+          "cells": [
+            4,
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "name": "둘레 세기",
+      "short": "둘레 세기",
+      "sub": "가장자리를 한 바퀴",
+      "kinds": [
+        {
+          "kind": "countPerim",
+          "cells": [
+            3,
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "name": "직사각형과 정사각형",
+      "short": "공식",
+      "sub": "넓이 = 가로 × 세로, 둘레 = (가로 + 세로) × 2",
+      "kinds": [
+        {
+          "kind": "rectArea"
+        },
+        {
+          "kind": "rectPerim"
+        },
+        {
+          "kind": "squareSide",
+          "weight": 0.6
+        }
+      ]
+    },
+    {
+      "name": "밭 만들기",
+      "short": "밭 만들기",
+      "sub": "넓이나 둘레가 정해진 직사각형 만들기",
+      "kinds": [
+        {
+          "kind": "makeArea",
+          "weight": 2
+        },
+        {
+          "kind": "makePerim"
+        }
+      ]
+    },
+    {
+      "name": "평행사변형과 삼각형",
+      "short": "평행사변형·삼각형",
+      "sub": "밑변과 높이로 넓이 구하기",
+      "kinds": [
+        {
+          "kind": "para"
+        },
+        {
+          "kind": "tri"
+        }
+      ]
+    },
+    {
+      "name": "모양이 복잡한 밭",
+      "short": "복잡한 밭",
+      "sub": "나누거나 빼서 넓이 구하기",
+      "challenge": true,
+      "kinds": [
+        {
+          "kind": "lShape"
+        }
+      ]
+    },
+    {
+      "name": "마름모와 사다리꼴",
+      "short": "마름모·사다리꼴",
+      "sub": "대각선 × 대각선 ÷ 2, (윗변+아랫변) × 높이 ÷ 2",
+      "kinds": [
+        {
+          "kind": "rhombus"
+        },
+        {
+          "kind": "trapezoid",
+          "weight": 1.2
+        }
+      ]
+    },
+    {
+      "name": "높이를 찾아라",
+      "short": "도전 ②",
+      "sub": "넓이에서 거꾸로 높이 구하기",
+      "challenge": true,
+      "kinds": [
+        {
+          "kind": "findHeight",
+          "weight": 1.3
+        },
+        {
+          "kind": "rhombus"
+        },
+        {
+          "kind": "trapezoid"
+        }
+      ]
+    }
   ]
 }

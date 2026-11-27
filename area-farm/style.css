@@ -10,3 +10,4 @@
 .dim{font-size:var(--fs,20px);fill:var(--ink);text-anchor:middle;font-family:'Jua',system-ui,sans-serif;paint-order:stroke;stroke:var(--paper);stroke-width:calc(var(--fs,20px) / 4)}
 .cn{font-size:16px;fill:#1f4a1a;text-anchor:middle;dominant-baseline:central;font-family:'Jua',system-ui,sans-serif}
 .lg{font-size:13px;fill:var(--mute);text-anchor:middle;font-family:'Jua',system-ui,sans-serif}
+.emo{font-size:clamp(70px,22vw,110px)}

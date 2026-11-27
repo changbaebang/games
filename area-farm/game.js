@@ -119,6 +119,36 @@ const GEN = {
              choices: nums(A, [b * h, b + h, A + h, 2 * A + 2], { fmt: CM2 }), answer: CM2(A),
              rule: ['삼각형의 넓이 = 밑변 × 높이 ÷ 2', `${b} × ${h} ÷ 2 = ${CM2(A)}`], hint: '같은 삼각형 두 개를 붙이면 평행사변형이 돼요. 그래서 ÷ 2!', sig: 't' + b + h + top };
   },
+  rhombus() {
+    let p, q; do { p = ri(4, 14); q = ri(3, 12); } while ((p * q) % 2 || p === q);
+    const k = 300 / Math.max(p, q), A = p * q / 2, cx = p * k / 2, cy = q * k / 2;
+    const pts = [[cx, 0], [p * k, cy], [cx, q * k], [0, cy]];
+    const extra = `<line x1="0" y1="${cy}" x2="${p * k}" y2="${cy}" stroke="${C.mark}" stroke-width="3" stroke-dasharray="7 5"/><line x1="${cx}" y1="0" x2="${cx}" y2="${q * k}" stroke="${C.mark}" stroke-width="3" stroke-dasharray="7 5"/>`;
+    return { ask: '마름모 밭의 넓이는?', scene: wrap(figSVG(pts, [{ x: p * k * .75, y: cy - 16, t: CM(p) }, { x: cx + 34, y: q * k * .75, t: CM(q) }], extra)),
+             choices: nums(A, [p * q, p + q, A + p, 2 * (p + q)], { fmt: CM2 }), answer: CM2(A),
+             onReveal: sc => { sc.innerHTML = wrap(figSVG(pts, [{ x: p * k * .75, y: cy - 16, t: CM(p) }, { x: cx + 34, y: q * k * .75, t: CM(q) }], extra + `<rect x="0" y="0" width="${p * k}" height="${q * k}" fill="none" stroke="${C.mark}" stroke-width="2" stroke-dasharray="4 4"/>`)); },
+             rule: ['마름모의 넓이 = 한 대각선 × 다른 대각선 ÷ 2', `${p} × ${q} ÷ 2 = ${CM2(A)}`, '대각선으로 직사각형을 그리면 마름모는 그 절반!'], hint: '두 대각선을 가로·세로로 하는 직사각형의 절반이에요', sig: 'r' + p + q };
+  },
+  trapezoid() {
+    let a, b, h; do { a = ri(2, 8); b = ri(a + 2, 14); h = ri(3, 8); } while (((a + b) * h) % 2);
+    const off = ri(0, b - a), k = 300 / Math.max(b, h), A = (a + b) * h / 2;
+    const pts = [[off * k, 0], [(off + a) * k, 0], [b * k, h * k], [0, h * k]];
+    const extra = `<line x1="${(off + a / 2) * k}" y1="0" x2="${(off + a / 2) * k}" y2="${h * k}" stroke="${C.mark}" stroke-width="3" stroke-dasharray="7 5"/>`;
+    return { ask: '사다리꼴 밭의 넓이는?', scene: wrap(figSVG(pts, [{ x: (off + a / 2) * k, y: -12, t: CM(a) }, { x: b * k / 2, y: h * k + 28, t: CM(b) }, { x: (off + a / 2) * k + 32, y: h * k / 2 + 6, t: CM(h) }], extra)),
+             choices: nums(A, [(a + b) * h, a * b / 2 | 0, b * h, A + h], { fmt: CM2 }), answer: CM2(A),
+             rule: ['사다리꼴의 넓이 = (윗변 + 아랫변) × 높이 ÷ 2', `(${a} + ${b}) × ${h} ÷ 2 = ${CM2(A)}`, '똑같은 사다리꼴 두 개를 거꾸로 붙이면 평행사변형!'], hint: '윗변과 아랫변을 더한 다음 높이를 곱하고 반으로', sig: 'z' + a + b + h + off };
+  },
+  findHeight() {
+    const kind = pick(['para', 'tri', 'trap']); let b, h, a = 0, A;
+    if (kind === 'para') { b = ri(4, 12); h = ri(3, 9); A = b * h; }
+    else if (kind === 'tri') { do { b = ri(4, 12); h = ri(3, 9); } while ((b * h) % 2); A = b * h / 2; }
+    else { do { a = ri(2, 6); b = ri(a + 2, 12); h = ri(3, 8); } while (((a + b) * h) % 2); A = (a + b) * h / 2; }
+    const name = { para: '평행사변형', tri: '삼각형', trap: '사다리꼴' }[kind];
+    return { ask: `넓이가 <b>${CM2(A)}</b>인 ${name}${kind === 'trap' ? `(윗변 ${CM(a)}, 아랫변 ${CM(b)})` : `(밑변 ${CM(b)})`}의 <b>높이</b>는?`, scene: wrap('<div class="emo">📏</div>'),
+             choices: nums(h, [h * 2, A / b | 0, h + 1, kind === 'tri' ? h / 2 | 0 : h - 1].filter(v => v > 0 && v !== h), { fmt: CM }), answer: CM(h),
+             rule: kind === 'para' ? [`밑변 × 높이 = 넓이 → ${b} × □ = ${A}`, `□ = ${A} ÷ ${b} = ${h}`] : kind === 'tri' ? [`밑변 × 높이 ÷ 2 = 넓이 → ${b} × □ ÷ 2 = ${A}`, `□ = ${A} × 2 ÷ ${b} = ${h}`] : [`(${a} + ${b}) × □ ÷ 2 = ${A}`, `□ = ${A} × 2 ÷ ${a + b} = ${h}`],
+             hint: '넓이 공식에 □를 넣어 거꾸로 계산해요', sig: 'h' + kind + b + h + a };
+  },
   lShape() {
     const W = ri(6, 12), H = ri(5, 9), w = ri(2, W - 3), h = ri(2, H - 3), k = 300 / Math.max(W, H), A = W * H - w * h;
     const pts = [[0, 0], [(W - w) * k, 0], [(W - w) * k, h * k], [W * k, h * k], [W * k, H * k], [0, H * k]];
