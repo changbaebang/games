@@ -3,7 +3,9 @@ Arcade.boot(D=>{
 const snd=(...a)=>window.Arcade&&Arcade.play(...a);
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d');
 const SAVE='monsterPals.save',SP=D.species,MV=D.moves,TY=D.types;
-const setT=(el,v)=>{v=String(v);if(el.textContent!==v)el.textContent=v};
+const josa=s=>s.replace(/(.)(\(Lv\d+\))?(은\(는\)|이\(가\)|을\(를\)|와\(과\)|\(으\)로)/g,(all,ch,lv,j)=>{let c=ch,bat;const src=lv?lv.slice(-2,-1):ch;if(/[가-힣]/.test(src)){const k=(src.charCodeAt(0)-0xac00)%28;bat=k!==0;if(j==='(으)로'&&k===8)bat=false}else if(/\d/.test(src))bat=(j==='(으)로'?'036':'013678').includes(src);else return all;
+  const pairs={'은(는)':['은','는'],'이(가)':['이','가'],'을(를)':['을','를'],'와(과)':['과','와'],'(으)로':['으로','로']};return ch+(lv||'')+pairs[j][bat?0:1]});
+const setT=(el,v)=>{v=josa(String(v));if(el.textContent!==v)el.textContent=v};
 const rand=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)],clamp=(v,a,b)=>v<a?a:v>b?b:v,ri=(a,b)=>Math.floor(rand(a,b+1));
 let Wd=0,Ht=0,DPR=1,T=48;function fit(){DPR=Math.min(devicePixelRatio||1,2);Wd=innerWidth;Ht=innerHeight;cv.width=Wd*DPR;cv.height=Ht*DPR;T=Math.max(30,Math.min(Wd,Ht)/(Wd<Ht?9:10));fitB()}
 const bc=$('bc'),bx=bc.getContext('2d');function fitB(){bc.width=Wd*DPR;bc.height=Ht*DPR}
@@ -82,7 +84,7 @@ for(const [id,[x,y]] of Object.entries(D.trainerPos))tAt[y*MW+x]=id;
 const walkable=c=>c==='.'||c==='"';
 const P={x:0,y:0,fx:0,fy:0,dir:[0,1],moving:0,walk:0};
 let state='title',time=0,tst=0;
-function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');tst=2.2}
+function toast(t){const e=$('toast');e.textContent=josa(t);e.classList.add('on');tst=2.2}
 function hud(){setT($('hBadge'),G.badge);setT($('hCoin'),G.coins);setT($('hBall'),G.balls);setT($('hDex'),Object.keys(G.caught).length+'/'+Object.keys(SP).length)}
 function nearestHome(){let b=homes[0],bd=1e9;for(const h of homes){const d=Math.abs(h.x-P.x)+Math.abs(h.y-P.y);if(d<bd){bd=d;b=h}}return b}
 
@@ -108,7 +110,7 @@ function arrive(){G.x=P.x;G.y=P.y;if(map[P.y][P.x]==='"'&&Math.random()<D.encoun
 function updateWalk(dt){bumpCd-=dt;if(P.moving>0){P.moving-=dt*5.5;P.walk+=dt*10;if(P.moving<=0){P.moving=0;arrive()}return}const d=wantDir();if(d&&state==='walk')tryMove(d)}
 
 // ---------- 말 걸기
-function talk(name,txt,btns){$('tName').textContent=name;$('tTxt').innerHTML=txt;const b=$('tBtns');b.innerHTML='';
+function talk(name,txt,btns){$('tName').textContent=name;$('tTxt').innerHTML=josa(txt);const b=$('tBtns');b.innerHTML='';
   for(const [label,fn,soft] of btns){const e=document.createElement('button');e.className='btn'+(soft?' soft':'');e.textContent=label;e.onclick=()=>{snd('click');$('talkOv').hidden=true;state='walk';fn&&fn()};b.appendChild(e)}
   $('talkOv').hidden=false;state='talk';stick=null;$('stick').style.display='none'}
 function healAll(){for(const m of G.party)m.hp=m.max}
@@ -249,7 +251,7 @@ function person(x,y,col,done,star,me){const s=T;ctx.fillStyle='rgba(0,0,0,.18)';
 // ---------- 그리기: 대결
 function drawBattle(dt){const W=Wd,H=Ht,A=B.anim;bx.setTransform(DPR,0,0,DPR,0,0);
   const g=bx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#bfe6ff');g.addColorStop(.55,'#e8f6d8');g.addColorStop(1,'#a8d890');bx.fillStyle=g;bx.fillRect(0,0,W,H);
-  const portrait=H>W,box=Math.min(H*.36,250),avail=H-box;const s=Math.min(W*.36,avail*.42,220);
+  const portrait=H>W,box=Math.min(H*.42,290),avail=H-box;const s=Math.min(W*.36,avail*.42,220);
   const fxp=W*(portrait?.7:.68),fyp=avail*(portrait?.36:.4),mxp=W*(portrait?.3:.32),myp=avail*(portrait?.8:.82);
   for(const [x,y] of [[fxp,fyp],[mxp,myp]]){bx.fillStyle='#8ac46a';bx.beginPath();bx.ellipse(x,y+s*.45,s*.62,s*.16,0,0,7);bx.fill()}
   for(const k of ['me','foe'])A[k]=Math.max(0,A[k]-dt*4);for(const k of ['hurtM','hurtF'])A[k]=Math.max(0,A[k]-dt);
