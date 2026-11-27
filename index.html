@@ -727,8 +727,18 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>대칭 데칼코마니</h2><p>합동인 도형과 대응변·대응각, 대칭축 개수, 선대칭·점대칭도형을 찾고 칸을 칠해 대칭 무늬를 직접 완성해요. 6단계.</p>
       <div class="tags"><span>합동과 대칭</span><span>5학년 2학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./data-detective/" style="--c:#8fa3d6">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#f2f4f8"/>
+      <g fill="#5b8def"><rect x="30" y="80" width="30" height="90" rx="4"/><rect x="72" y="60" width="30" height="110" rx="4"/><rect x="114" y="110" width="30" height="60" rx="4"/><rect x="156" y="90" width="30" height="80" rx="4"/></g>
+      <line x1="22" y1="92" x2="196" y2="92" stroke="#2fa36b" stroke-width="4" stroke-dasharray="8 6"/>
+      <g font-family="Jua,sans-serif" text-anchor="middle"><text x="258" y="70" font-size="22" fill="#2b2f45">□ × 4 = △</text><text x="258" y="110" font-size="20" fill="#2fa36b">평균</text><text x="258" y="146" font-size="18" fill="#e8642a">0 · ½ · 1</text></g>
+    </svg>
+    <div class="info"><h2>데이터 탐정단</h2><p>표에서 대응 관계를 찾아 □와 △의 식으로, 모양 늘리기 규칙, 평균 구하기·고르게 하기·모르는 값, 가능성을 말과 수로! 6단계.</p>
+      <div class="tags"><span>규칙과 대응·평균과 가능성</span><span>5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 53개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 54개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -785,7 +795,8 @@ const REC={
   'order-blocks':()=>{const v=B('mixcalcStarTotal');return v?`별 ${v}개 / 18개`:null},
   'range-park':()=>{const v=B('rangeStarTotal');return v?`별 ${v}개 / 18개`:null},
   'multiply-garden':()=>{const v=B('mulsStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'symmetry-studio':()=>{const v=B('symmetryStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'symmetry-studio':()=>{const v=B('symmetryStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'data-detective':()=>{const v=B('data5StarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

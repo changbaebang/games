@@ -1,0 +1,27 @@
+/* VOICE: 어린이 탐정 사무소, 단서를 모아 규칙을 밝혀요
+   IDEA: 표·그래프·회전판을 단서 삼아 규칙·평균·가능성을 추리
+   PICTURE: 흰 수첩 카드, 파란 막대, 초록 평균선
+   COLOUR and TYPE: 연회색 종이, 주황 강조 / Jua
+   LAYOUT: 공통 틀 + 단서 카드 */
+:root{--paper:#f2f4f8;--grid:#e2e6ee;--accent:#e8642a;--soft:#d3d9e6;--edge:#2b3f78}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.tb{border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 0 var(--soft);font-size:clamp(18px,5.4vw,24px)}
+.tb th,.tb td{border:2px solid #d8deea;padding:8px 10px;text-align:center;min-width:40px}
+.tb th{background:#eef2fa;font-weight:normal;color:var(--mute)}
+.tb .q{color:var(--accent);background:#fff1e6}
+.bars{width:min(94vw,440px);height:auto;max-height:100%;background:#fff;border-radius:18px;box-shadow:0 5px 0 var(--soft)}
+svg text{font-family:'Jua',system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+.v{font-size:14px;fill:#2b2f45}.n{font-size:13px;fill:#5a6280}
+.steps{display:grid;gap:8px;width:min(94vw,420px)}
+.steps div{background:#fff;border-radius:14px;box-shadow:0 4px 0 var(--soft);display:flex;align-items:center;justify-content:space-between;padding:6px 12px}
+.steps span{font-size:16px;color:var(--mute);white-space:nowrap}
+.st{height:46px;width:auto;max-width:60%}
+.grp{display:grid;gap:10px;width:min(92vw,400px)}
+.grp div{background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 4px 0 var(--soft);font-size:20px}
+.grp b{display:block;font-weight:normal;color:var(--accent);font-size:16px}
+.fact{font-size:clamp(20px,6vw,28px);background:#fff;border-radius:20px;padding:20px 22px;box-shadow:0 5px 0 var(--soft);text-align:center;max-width:92vw;line-height:1.45}
+.spin{width:min(60vw,240px);height:auto}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;font-size:.92em}
+.fr i{font-style:normal;padding:0 .18em}
+.fr i:first-child{border-bottom:.09em solid currentColor}
+.emo{font-size:clamp(70px,22vw,110px)}
