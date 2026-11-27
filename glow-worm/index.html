@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>빛지렁이</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<canvas id="c"></canvas>
+<div class="hud"><span>길이 <b id="len">0</b></span><span>등수 <b id="rank">-</b></span></div>
+<ol class="board" id="board"></ol>
+<button id="pauseBtn" aria-label="일시정지">II</button>
+<button id="boostBtn">달리기</button>
+<div class="help">마우스 쪽으로 움직여요 · 클릭/Space 누르고 있으면 달리기 · P 일시정지</div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>빛지렁이</h1>
+  <p>빛 알갱이를 먹고 길어져요! 다른 지렁이 몸에 머리가 닿으면 끝. 달리기로 앞을 가로막아 보세요.</p>
+  <p class="best">최고 길이 <b id="tBest">0</b></p>
+  <div class="skins" id="skins"></div>
+  <button class="btn" id="startBtn">시작!</button>
+  <p class="small mob">화면을 누른 채 가고 싶은 쪽으로 끌어요. 오른쪽 아래 버튼을 누르고 있으면 달려요.</p>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="pauseOv" hidden><div class="card"><h2>일시정지</h2><div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">처음 화면</button></div></div></div>
+<div class="overlay" id="overOv" hidden><div class="card"><h1>꿈틀 끝!</h1><p class="big">길이 <b id="oLen">0</b></p><p id="oTxt"></p>
+  <div class="btns"><button class="btn" id="againBtn">다시 하기</button><button class="btn soft" id="oMenu">처음 화면</button></div></div></div>
+<script src="game.js"></script>
+</body></html>

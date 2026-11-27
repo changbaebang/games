@@ -1,0 +1,33 @@
+/* VOICE: 반짝반짝 신비로운 밤 놀이
+   IDEA: 어두운 연못에서 빛나는 지렁이들
+   PICTURE: 육각 무늬 어두운 바닥 위 빛나는 지렁이
+   COLOUR and TYPE: 밤 남색 바탕, 네온 지렁이 / Jua
+   LAYOUT: 왼쪽 위 길이·등수, 오른쪽 위 순위표, 휴대폰은 오른쪽 아래 달리기 */
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#0c1024;font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{position:fixed;top:max(10px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));display:flex;gap:8px;z-index:5;pointer-events:none}
+.hud span{background:rgba(0,0,0,.4);padding:6px 12px;border-radius:12px;font-size:17px}.hud b{font-weight:400;color:#ffd23f}
+.board{position:fixed;top:calc(max(10px,env(safe-area-inset-top)) + 52px);right:max(10px,env(safe-area-inset-right));margin:0;padding:6px 10px 6px 28px;background:rgba(0,0,0,.35);border-radius:12px;font-size:13px;z-index:5;pointer-events:none;min-width:120px;color:#c9d0f0}
+.board li.me{color:#ffd23f}
+#pauseBtn{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));width:44px;height:44px;border:0;border-radius:12px;background:rgba(0,0,0,.4);color:#fff;font:inherit;font-size:16px;z-index:6}
+#boostBtn{display:none;position:fixed;right:calc(20px + env(safe-area-inset-right));bottom:calc(30px + env(safe-area-inset-bottom));width:100px;height:100px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#ffe27a,#ff7a1c);color:#4a1a00;font:inherit;font-size:20px;z-index:6;touch-action:none;box-shadow:0 0 20px rgba(255,160,40,.5)}
+#boostBtn.on{transform:scale(.93)}
+.help{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);font-size:13px;background:rgba(0,0,0,.45);padding:6px 14px;border-radius:10px;pointer-events:none;z-index:5;white-space:nowrap}
+@media (pointer:coarse){#boostBtn{display:block}.help{display:none}}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(6,8,26,.55);z-index:10;padding:14px}
+.overlay[hidden]{display:none}
+.card{background:#151a3a;border:2px solid rgba(34,224,255,.4);border-radius:20px;padding:22px 24px;max-width:420px;width:100%;max-height:calc(100dvh - 20px);overflow:auto;text-align:center;box-shadow:0 0 0 4px rgba(255,74,138,.15)}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 6px;font-weight:400;text-shadow:0 0 14px #ff4a8a,0 3px 0 #ff4a8a}
+.card h2{font-size:32px;margin:0 0 12px;font-weight:400;color:#22d3ee}
+.card p{margin:4px 0 12px;font-size:16px;color:#c9d0f0}.card .big{font-size:30px;color:#fff}.card p b{color:#ffd23f;font-weight:400}.card .small{font-size:13px;color:#9aa3cc}
+.skins{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;margin-bottom:14px}
+.sk{height:44px;border-radius:12px;border:3px solid transparent;cursor:pointer;background:linear-gradient(90deg,var(--a) 0 50%,var(--b) 50% 100%)}
+.sk.on{border-color:#fff;box-shadow:0 0 10px #fff}
+.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 22px;background:#ff4a8a;color:#fff;box-shadow:0 5px 0 #a01a55;cursor:pointer;min-height:52px;width:100%}
+.btn.soft{background:#2a3166;box-shadow:0 5px 0 #161b44}
+.btn:active{transform:translateY(3px)}
+.btns{display:grid;gap:10px}
+.btn:focus-visible,.sk:focus-visible{outline:3px solid #22d3ee;outline-offset:3px}
+.mob{display:none}@media(pointer:coarse){.mob{display:block}}
+.back a{color:#9aa3cc}

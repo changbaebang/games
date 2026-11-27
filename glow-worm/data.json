@@ -1,0 +1,8 @@
+{
+ "_설명": "빛지렁이 데이터. arena: 둥근 경기장 반지름. worm: speed 기본 속도, boost 달리기 속도, turn 초당 회전(라디안), startLen 처음 길이, boostCost 달릴 때 초당 줄어드는 길이, seg 마디 간격. orbs: 경기장에 늘 있는 빛 알갱이 수와 하나의 길이 값. bots: 컴퓨터 지렁이 수와 이름. skins: 고를 수 있는 색 무늬.",
+ "arena": 70,
+ "worm": {"speed": 6.5, "boost": 13, "turn": 4.2, "startLen": 12, "boostCost": 2.2, "seg": 0.45, "minBoostLen": 8},
+ "orbs": {"count": 520, "value": 0.35, "deadValue": 1.0},
+ "bots": {"count": 12, "names": ["반짝이", "꿈틀이", "무지개", "슝슝", "콩콩", "번쩍", "몽글", "쫀득", "말랑", "지글", "보들", "통통", "새싹", "별빛"]},
+ "skins": [["#ff4a8a", "#ffd23f"], ["#22d3ee", "#2f8cff"], ["#5ce08a", "#e8ff6a"], ["#b45cff", "#ff7ac6"], ["#ff8a2a", "#ff4a4a"], ["#f4f4f4", "#9aa3cc"], ["#ffd23f", "#33d17a"], ["#2f8cff", "#b45cff"]]
+}
