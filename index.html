@@ -222,6 +222,17 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>별빛 대난투</h2><p>상대의 %를 쌓을수록 멀리 날아가요! 화면 밖으로 날려 보내 목숨을 모두 없애면 승리. 불꽃 꼬마·바위 곰·번개 토끼·별 마법사 중에 골라요.</p>
       <div class="tags"><span>4인 난투</span><span>날려 보내기</span><span>캐릭터 4종</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./acorn-quest/" style="--c:#e0883a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#6ac8ff"/><ellipse cx="70" cy="170" rx="80" ry="50" fill="#8ad87a"/><rect y="160" width="320" height="40" fill="#c8864a"/><rect y="160" width="320" height="10" fill="#5ac85a"/>
+      <rect x="120" y="70" width="26" height="26" rx="3" fill="#ffc23a" stroke="#c8862a" stroke-width="2"/><text x="133" y="90" font-size="18" text-anchor="middle" fill="#fff" font-family="sans-serif">?</text><rect x="146" y="70" width="26" height="26" fill="#c8643a" stroke="#8a3a1a" stroke-width="2"/><rect x="94" y="70" width="26" height="26" fill="#c8643a" stroke="#8a3a1a" stroke-width="2"/>
+      <rect x="230" y="110" width="40" height="50" fill="#3ab84a"/><rect x="225" y="104" width="50" height="16" fill="#2a9a3a"/>
+      <g transform="translate(140,130)"><ellipse cx="-16" cy="-10" rx="9" ry="16" fill="#c8783a" transform="rotate(-20 -16 -10)"/><rect x="-10" y="-16" width="20" height="18" rx="6" fill="#c8783a"/><circle cx="0" cy="-26" r="12" fill="#c8783a"/><path d="M-12 -32 a12 6 0 0 1 24 0z" fill="#7a4a1a"/><rect x="-1.5" y="-41" width="3" height="5" fill="#7a4a1a"/><circle cx="5" cy="-27" r="2.5" fill="#222"/></g>
+      <g transform="translate(190,158)"><circle cx="0" cy="-8" r="8" fill="#8ad83a"/><circle cx="8" cy="-8" r="7" fill="#8ad83a"/><circle cx="15" cy="-8" r="6" fill="#8ad83a"/><circle cx="-3" cy="-10" r="2" fill="#222"/></g>
+    </svg>
+    <div class="info"><h2>도토리 대모험</h2><p>다람쥐 도리와 달리고 뛰어 깃발까지! 상자를 머리로 쳐서 코인과 황금 도토리를 얻고, 적은 위에서 콩 밟아요. 불씨 열매를 먹으면 불씨를 던져요.</p>
+      <div class="tags"><span>옆으로 달리기</span><span>점프·밟기</span><span>3스테이지</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -802,7 +813,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>규칙과 대응·평균과 가능성</span><span>5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 60개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 61개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -822,6 +833,7 @@ const REC={
   'sports-day':()=>{const v=B('sportsBowlBest');const w=B('sportsTennisWins');return v||w?[v?`볼링 ${n(v)}점`:'',w?`테니스 ${n(w)}승`:''].filter(Boolean).join(' · '):null},
   'party-board':()=>{const v=B('partyBoardWins');return v?`${n(v)}번 우승`:null},
   'star-brawl':()=>{const v=B('starBrawlWins');return v?`${n(v)}번 우승`:null},
+  'acorn-quest':()=>{const v=B('acornQuestStage');return v?`${n(v)}단계 클리어`:null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},
