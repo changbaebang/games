@@ -233,6 +233,18 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>도토리 대모험</h2><p>다람쥐 도리와 달리고 뛰어 깃발까지! 상자를 머리로 쳐서 코인과 황금 도토리를 얻고, 적은 위에서 콩 밟아요. 불씨 열매를 먹으면 불씨를 던져요.</p>
       <div class="tags"><span>옆으로 달리기</span><span>점프·밟기</span><span>3스테이지</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./puff-sling/" style="--c:#ff5a4a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#9ad8ff"/><rect y="160" width="320" height="40" fill="#6ac85a"/>
+      <rect x="52" y="110" width="10" height="50" fill="#8a5a2a"/><rect x="42" y="92" width="8" height="24" fill="#8a5a2a"/><rect x="64" y="92" width="8" height="24" fill="#8a5a2a"/>
+      <g transform="translate(130,70)"><circle r="16" fill="#ff5a4a"/><circle cx="-9" cy="-9" r="9" fill="#ff5a4a"/><circle cx="9" cy="-9" r="9" fill="#ff5a4a"/><circle cx="9" cy="9" r="9" fill="#ff5a4a"/><circle cx="-9" cy="9" r="9" fill="#ff5a4a"/><rect x="-16" y="-10" width="32" height="4" fill="#fff"/><circle cx="4" cy="-3" r="5" fill="#fff"/><circle cx="5" cy="-3" r="2.5" fill="#222"/></g>
+      <path d="M70 100 Q100 50 118 66" stroke="#fff" stroke-width="3" stroke-dasharray="4 6" fill="none"/>
+      <rect x="210" y="100" width="10" height="60" fill="#d8a060"/><rect x="270" y="100" width="10" height="60" fill="#d8a060"/><rect x="200" y="90" width="90" height="10" fill="#a8a8b8"/><rect x="230" y="120" width="30" height="40" fill="#aee4ff"/>
+      <g transform="translate(245,74)"><rect x="-6" y="0" width="12" height="14" fill="#f0e8d0"/><path d="M-17 2 a17 15 0 0 1 34 0z" fill="#5ac84a"/><circle cx="-4" cy="7" r="1.8" fill="#222"/><circle cx="4" cy="7" r="1.8" fill="#222"/></g>
+    </svg>
+    <div class="info"><h2>솜뭉치 날리기</h2><p>새총을 뒤로 당겼다 놓아 솜뭉치를 날려요! 나무·얼음·돌 블록을 무너뜨려 투덜 버섯을 모두 터뜨리면 성공. 날아가는 중에 탭하면 특기 발동!</p>
+      <div class="tags"><span>새총</span><span>물리 무너뜨리기</span><span>6단계</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -813,7 +825,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>규칙과 대응·평균과 가능성</span><span>5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 61개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 62개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -834,6 +846,7 @@ const REC={
   'party-board':()=>{const v=B('partyBoardWins');return v?`${n(v)}번 우승`:null},
   'star-brawl':()=>{const v=B('starBrawlWins');return v?`${n(v)}번 우승`:null},
   'acorn-quest':()=>{const v=B('acornQuestStage');return v?`${n(v)}단계 클리어`:null},
+  'puff-sling':()=>{const v=B('puffSlingStars');return v?`⭐ ${n(v)}`:null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},
