@@ -255,6 +255,16 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>과일 쓱싹</h2><p>날아오르는 과일을 손가락으로 쓱 그어 잘라요! 한 번에 여러 개 자르면 콤보, 폭탄은 절대 건드리면 안 돼요. 기본 모드와 60초 모드.</p>
       <div class="tags"><span>손가락으로 긋기</span><span>콤보</span><span>폭탄 조심</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./bomb-maze/" style="--c:#e04a3a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#72c054"/><g fill="#8a8a9a"><rect x="40" y="30" width="30" height="30"/><rect x="110" y="30" width="30" height="30"/><rect x="180" y="30" width="30" height="30"/><rect x="250" y="30" width="30" height="30"/><rect x="40" y="110" width="30" height="30"/><rect x="110" y="110" width="30" height="30"/><rect x="180" y="110" width="30" height="30"/><rect x="250" y="110" width="30" height="30"/></g>
+      <g fill="#c8864a" stroke="#8a5a2a" stroke-width="2"><rect x="145" y="70" width="30" height="30"/><rect x="215" y="150" width="30" height="30"/><rect x="75" y="150" width="30" height="30"/></g>
+      <g fill="#ff8a2a"><rect x="75" y="70" width="100" height="30" opacity=".85"/><rect x="75" y="40" width="30" height="90" opacity=".85"/></g><circle cx="90" cy="85" r="12" fill="#2a2a34"/>
+      <g transform="translate(230,90)"><circle r="13" fill="#fff" stroke="#555" stroke-width="2"/><rect x="-13" y="-6" width="26" height="4" fill="#3a8ae0"/><circle cx="-4" cy="2" r="2" fill="#222"/><circle cx="4" cy="2" r="2" fill="#222"/></g>
+    </svg>
+    <div class="info"><h2>폭탄 미로</h2><p>폭탄을 놓아 상자를 부수고 💣·🔥·👟 아이템을 모아요! 불꽃으로 친구들을 맞혀 마지막까지 남으면 승리. 먼저 3판 이기면 우승.</p>
+      <div class="tags"><span>4인 대결</span><span>폭탄 놓기</span><span>아이템</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -835,7 +845,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>규칙과 대응·평균과 가능성</span><span>5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 63개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 64개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -858,6 +868,7 @@ const REC={
   'acorn-quest':()=>{const v=B('acornQuestStage');return v?`${n(v)}단계 클리어`:null},
   'puff-sling':()=>{const v=B('puffSlingStars');return v?`⭐ ${n(v)}`:null},
   'fruit-slice':()=>{const v=B('fruitSliceBest');return v?`최고 ${n(v)}점`:null},
+  'bomb-maze':()=>{const v=B('bombMazeCups');return v?`${n(v)}번 우승`:null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},

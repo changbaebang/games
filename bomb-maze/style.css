@@ -1,0 +1,33 @@
+/* VOICE: 장난감 상자 속 쿵쾅 폭탄 놀이
+   PICTURE: 위에서 본 잔디 판과 돌기둥, 나무 상자
+   COLOUR and TYPE: 잔디 초록, 회색 돌, 나무 상자, 선명한 선수 색 / Jua */
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#2a4a2a;font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+#top{position:fixed;top:max(8px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:5;pointer-events:none}
+#top div{background:rgba(0,0,0,.45);border-radius:12px;padding:3px 10px;font-size:15px;border-bottom:4px solid;text-align:center}
+#top div.dead{opacity:.35}
+#top .clock{border-color:#fff}
+#pauseBtn{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));width:44px;height:44px;border:0;border-radius:12px;background:rgba(0,0,0,.4);color:#fff;font:inherit;font-size:16px;z-index:6}
+#big{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%) scale(.6);font-size:min(12vw,64px);text-shadow:0 4px 0 #e0602a,0 8px 18px rgba(0,0,0,.4);opacity:0;transition:opacity .2s,transform .25s;z-index:6;pointer-events:none;white-space:nowrap}
+#big.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.help{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.45);padding:5px 12px;border-radius:10px;font-size:13px;z-index:4;pointer-events:none;white-space:nowrap}
+#touch{display:none}
+@media (pointer:coarse){.help{display:none}#touch{display:block}}
+#stickZone{position:fixed;left:0;bottom:0;width:60%;height:45%;z-index:4}
+#stick{position:absolute;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;border:3px solid rgba(255,255,255,.6);background:rgba(255,255,255,.12);display:none;pointer-events:none}
+#stick i{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.8)}
+#bBomb{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:max(22px,env(safe-area-inset-bottom));width:96px;height:96px;border:0;border-radius:50%;background:#ff5a4a;font-size:40px;box-shadow:0 5px 0 #a02a1a;z-index:5}
+#bBomb:active{transform:translateY(3px);box-shadow:0 2px 0 #a02a1a}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,30,10,.55);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fff;color:#2a2a3a;border-radius:22px;padding:22px;max-width:420px;width:100%;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.3)}
+.card h1{margin:0 0 8px;font-weight:400;font-size:36px;color:#e04a3a}
+.card h2{margin:0 0 8px;font-weight:400;font-size:28px;color:#e04a3a}
+.card p{margin:6px 0;font-size:17px;line-height:1.45}
+.small{font-size:14px!important;color:#6a6a7a}
+.mob{display:none}@media (pointer:coarse){.mob{display:block}}
+.back a{color:#7a7a8a;font-size:15px}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.btn{border:0;border-radius:14px;background:#e04a3a;color:#fff;font:inherit;font-size:20px;padding:10px 22px;box-shadow:0 4px 0 #a02a1a;cursor:pointer}
+.btn.soft{background:#e4e8e4;color:#4a4a5a;box-shadow:0 4px 0 #b4b8b4}
