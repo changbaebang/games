@@ -1,0 +1,4 @@
+{"_설명":"스포츠 한 판 설정. bowling: frames 프레임 수, laneLen 레인 길이(m), minSpeed/maxSpeed 공 빠르기, hook 휘는 정도, pinMass/ballMass 무게. tennis: games 이기는 데 필요한 게임 수, ai.speed 상대 발 빠르기, ai.err 상대 실수 확률, ai.reach 상대 팔 길이, me.speed 내 발 빠르기, me.reach 내 팔 길이, faultAI 상대 서브 실수 확률.",
+"bowling":{"frames":10,"laneLen":18.3,"minSpeed":5.5,"maxSpeed":10,"hook":0.7,"pinMass":1.6,"ballMass":7},
+"tennis":{"games":3,"ai":{"speed":6,"err":0.1,"reach":1.25},"me":{"speed":6.5,"reach":1.6},"faultAI":0.1},
+"colors":{"me":"#3a8ae0","ai":"#e04a5a"}}

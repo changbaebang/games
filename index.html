@@ -189,6 +189,17 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>몬스터 친구들</h2><p>풀숲에서 야생 몬스터를 만나 공으로 잡고, 키워서 트레이너 네 명과 관장을 이겨 배지를 따요! 불·물·풀·번개·바위·바람 상성을 잘 따져 봐요.</p>
       <div class="tags"><span>모으기</span><span>턴제 대결</span><span>속성 상성</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./sports-day/" style="--c:#3a8ae0">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#2a3450"/><path d="M110 200 L150 40 L170 40 L210 200z" fill="#e8b878"/>
+      <g fill="#fffaf2" stroke="#c8bca8" stroke-width="1.5"><ellipse cx="160" cy="52" rx="5" ry="11"/><ellipse cx="152" cy="46" rx="4.5" ry="10"/><ellipse cx="168" cy="46" rx="4.5" ry="10"/><ellipse cx="145" cy="40" rx="4" ry="9"/><ellipse cx="160" cy="40" rx="4" ry="9"/><ellipse cx="175" cy="40" rx="4" ry="9"/></g>
+      <circle cx="165" cy="160" r="22" fill="#2a6ad0"/><circle cx="158" cy="152" r="3" fill="#0a1a40"/><circle cx="168" cy="150" r="3" fill="#0a1a40"/>
+      <g transform="translate(262,120) rotate(-30)"><ellipse cx="0" cy="-30" rx="20" ry="26" fill="#fff" fill-opacity=".5" stroke="#e04a5a" stroke-width="5"/><rect x="-3" y="-4" width="6" height="40" fill="#5a5a6a"/></g><circle cx="240" cy="60" r="10" fill="#e8ff4a" stroke="#8aa020" stroke-width="2"/>
+      <path d="M40 70 q20 -40 50 -10" stroke="#fff" stroke-width="4" fill="none" stroke-dasharray="6 6"/>
+    </svg>
+    <div class="info"><h2>스포츠 한 판</h2><p>손가락으로 쓱 밀어서 하는 볼링과 테니스! 볼링은 휘어 밀면 공이 휘고, 테니스는 공이 올 때 밀어서 받아쳐요.</p>
+      <div class="tags"><span>볼링</span><span>테니스</span><span>쓱 밀기</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -769,7 +780,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>규칙과 대응·평균과 가능성</span><span>5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 57개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 58개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -786,6 +797,7 @@ const REC={
   'dig-kong':()=>{const v=B('digKongDepth');return v?`${n(v)}층까지`:null},
   'ink-turf':()=>{const v=B('inkTurfWins');return v?`${n(v)}승`:null},
   'monster-pals':()=>{const v=B('monsterPalsCaught');return v?`도감 ${n(v)}`:null},
+  'sports-day':()=>{const v=B('sportsBowlBest');const w=B('sportsTennisWins');return v||w?[v?`볼링 ${n(v)}점`:'',w?`테니스 ${n(w)}승`:''].filter(Boolean).join(' · '):null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>스포츠 한 판</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<canvas id="c"></canvas>
+<div id="card"></div>
+<div id="tscore"></div>
+<button id="pauseBtn" aria-label="일시정지">II</button>
+<div id="hint"></div>
+<div id="big"></div>
+<div id="moveBtns"><button id="mL">◀</button><button id="mR">▶</button></div>
+
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>스포츠 한 판</h1>
+  <p>손가락을 <b>쓱 밀어서</b> 하는 볼링과 테니스!</p>
+  <div class="modes">
+    <button class="mode" id="goBowl"><span class="ico">🎳</span><b>볼링</b><small>위로 밀어 굴리기<br>휘어 밀면 공이 휘어요</small><em id="rBowl"></em></button>
+    <button class="mode" id="goTen"><span class="ico">🎾</span><b>테니스</b><small>공이 오면 쓱 밀어 치기<br>밀기 방향으로 날아가요</small><em id="rTen"></em></button>
+  </div>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="pauseOv" hidden><div class="card"><h2>일시정지</h2><div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">종목 고르기</button></div></div></div>
+<div class="overlay" id="overOv" hidden><div class="card"><h1 id="oTitle">끝!</h1><p id="oTxt"></p><div class="btns"><button class="btn" id="againBtn">한 판 더</button><button class="btn soft" id="oMenu">종목 고르기</button></div></div></div>
+<script src="game.js"></script>
+</body></html>
