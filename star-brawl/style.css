@@ -1,0 +1,43 @@
+/* VOICE: 별이 쏟아지는 밤하늘 아래 신나는 난투
+   PICTURE: 하늘에 뜬 돌 무대와 발판 세 개
+   COLOUR and TYPE: 남보라 밤하늘, 캐릭터별 선명한 색 / Jua */
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#1a1a40;font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+#cards{position:fixed;left:50%;transform:translateX(-50%);top:max(8px,env(safe-area-inset-top));display:flex;gap:6px;z-index:5;pointer-events:none}
+#cards .cd{min-width:70px;padding:4px 8px;border-radius:12px;background:rgba(0,0,0,.45);text-align:center;border-bottom:4px solid}
+#cards .cd .n{font-size:12px;opacity:.85}
+#cards .cd .d{font-size:24px;line-height:1}
+#cards .cd .s{font-size:11px;letter-spacing:1px}
+#cards .cd.out{opacity:.35}
+#pauseBtn{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));width:44px;height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.18);color:#fff;font:inherit;font-size:16px;z-index:6}
+#big{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%) scale(.6);font-size:min(13vw,72px);color:#fff;text-shadow:0 4px 0 #8a4ae0,0 8px 18px rgba(0,0,0,.5);opacity:0;transition:opacity .2s,transform .25s;z-index:6;pointer-events:none;white-space:nowrap}
+#big.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.help{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.45);padding:5px 12px;border-radius:10px;font-size:13px;z-index:4;pointer-events:none;white-space:nowrap}
+#touch{display:none}
+@media (pointer:coarse){.help{display:none}#touch{display:block}}
+#stickZone{position:fixed;left:0;bottom:0;width:50%;height:55%;z-index:4}
+#stick{position:absolute;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;border:3px solid rgba(255,255,255,.5);background:rgba(255,255,255,.1);display:none;pointer-events:none}
+#stick i{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.75)}
+.tbtns{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));width:190px;height:170px;z-index:5}
+.tbtns button{position:absolute;border:0;border-radius:50%;font:inherit;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.35);text-shadow:0 1px 2px rgba(0,0,0,.4)}
+#bA{right:0;bottom:40px;width:82px;height:82px;background:#ff5a4a;font-size:20px}
+#bB{right:92px;bottom:0;width:72px;height:72px;background:#8a5ae0;font-size:17px}
+#bJ{right:92px;bottom:86px;width:64px;height:64px;background:#3a9aff;font-size:16px}
+.tbtns button.on{transform:translateY(3px);filter:brightness(1.2)}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,10,30,.6);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fff;color:#2a2a3a;border-radius:22px;padding:20px;max-width:460px;width:100%;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.3);max-height:94vh;overflow:auto}
+.card h1{margin:0 0 6px;font-weight:400;font-size:36px;color:#8a4ae0}
+.card h2{margin:0 0 8px;font-weight:400;font-size:28px;color:#8a4ae0}
+.card p{margin:6px 0;font-size:16px;line-height:1.45}
+.small{font-size:14px!important;color:#6a6a7a}
+.mob{display:none}@media (pointer:coarse){.mob{display:block}}
+.back a{color:#7a7a8a;font-size:15px}
+.pick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+.pick button{border:3px solid #e4e4f0;background:#f6f6fc;border-radius:14px;padding:4px 2px;font:inherit;font-size:13px;color:#3a3a4a;cursor:pointer;display:flex;flex-direction:column;align-items:center}
+.pick button.on{border-color:#8a4ae0;background:#f0e8ff}
+.pick canvas{width:56px;height:56px}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.btn{border:0;border-radius:14px;background:#8a4ae0;color:#fff;font:inherit;font-size:20px;padding:10px 22px;box-shadow:0 4px 0 #5a2aa0;cursor:pointer}
+.btn.soft{background:#e4e4f0;color:#4a4a5a;box-shadow:0 4px 0 #b4b4c8}

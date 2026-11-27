@@ -1,0 +1,8 @@
+{"_설명":"별빛 대난투 설정. fighters: 캐릭터(speed 달리기, jump 점프 힘, weight 무게 — 무거울수록 덜 날아감, power 공격력 배율, special 필살기 종류 shot 에너지탄 / dash 돌진 / spin 회전 공격, color 색, shape 모양). match: stocks 목숨 수, bots 컴퓨터 수, cpu 컴퓨터 실력(0~1). stage: 무대 바닥 반폭 half, 발판 platforms [가운데 x, 높이 y, 반폭], blast 화면 밖 한계.",
+"fighters":[
+ {"id":"spark","name":"불꽃 꼬마","color":"#ff6a3a","shape":"flame","speed":8.6,"jump":15,"weight":0.9,"power":1.0,"special":"dash"},
+ {"id":"bear","name":"바위 곰","color":"#9a7a5a","shape":"bear","speed":6.4,"jump":13.5,"weight":1.3,"power":1.2,"special":"spin"},
+ {"id":"bunny","name":"번개 토끼","color":"#ffd23f","shape":"bunny","speed":8.0,"jump":17,"weight":0.85,"power":0.95,"special":"dash"},
+ {"id":"wiz","name":"별 마법사","color":"#8a5ae0","shape":"wiz","speed":7.0,"jump":14.5,"weight":0.95,"power":1.0,"special":"shot"}],
+"match":{"stocks":3,"bots":3,"cpu":0.6},
+"stage":{"half":8,"platforms":[[-4.5,-3.4,2],[4.5,-3.4,2],[0,-6.4,2.2]],"blast":{"x":18,"top":-15,"bottom":12}}}
