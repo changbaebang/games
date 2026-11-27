@@ -1,0 +1,53 @@
+/* VOICE: 시끌벅적 신나는 팀 대결
+   IDEA: 장난감 아레나에서 보석 쟁탈전
+   PICTURE: 위에서 내려다본 미로 아레나
+   COLOUR and TYPE: 우리 팀 파랑, 상대 빨강, 보석 보라 / Jua
+   LAYOUT: 위 가운데 보석 점수와 시간, 휴대폰은 양손 조이스틱 */
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#2a3a2a;font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.top{position:fixed;top:max(8px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;z-index:5;pointer-events:none}
+.team{min-width:58px;padding:4px 12px;border-radius:12px;text-align:center;font-size:24px;box-shadow:0 3px 0 rgba(0,0,0,.3)}
+.team b{font-weight:400}.team::before{content:"◆ ";color:#e8b0ff;font-size:16px}
+.blue{background:#2f7de1}.red{background:#e04a4a}
+.mid{background:rgba(0,0,0,.45);padding:4px 12px;border-radius:12px;text-align:center;font-size:18px;min-width:70px}.mid b{font-weight:400}
+.mid span{display:block;font-size:14px;color:#ffd23f}
+#pauseBtn{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));width:44px;height:44px;border:0;border-radius:12px;background:rgba(0,0,0,.4);color:#fff;font:inherit;font-size:16px;z-index:6}
+#toast{position:fixed;top:24%;left:50%;transform:translateX(-50%);font-size:clamp(24px,6vw,40px);-webkit-text-stroke:2px #222;paint-order:stroke;pointer-events:none;z-index:6;opacity:0;white-space:nowrap}
+#toast.on{animation:tst 1.4s ease-out}
+@keyframes tst{0%{opacity:0;transform:translate(-50%,10px) scale(.7)}15%{opacity:1;transform:translate(-50%,0) scale(1.1)}80%{opacity:1}100%{opacity:0}}
+.help{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);font-size:13px;background:rgba(0,0,0,.45);padding:6px 14px;border-radius:10px;pointer-events:none;z-index:5;white-space:nowrap}
+#touch{display:none}
+@media (pointer:coarse){#touch{display:block}.help{display:none}}
+.stick{position:fixed;bottom:calc(26px + env(safe-area-inset-bottom));width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.45);z-index:6;touch-action:none}
+#moveStick{left:calc(20px + env(safe-area-inset-left))}
+.stick.aim{right:calc(20px + env(safe-area-inset-right));background:rgba(255,90,90,.2);border-color:rgba(255,150,150,.6)}
+.stick i{position:absolute;left:39px;top:39px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.85);pointer-events:none}
+.stick.aim i{background:#ff6a6a}
+#superBtn{position:fixed;right:calc(160px + env(safe-area-inset-right));bottom:calc(30px + env(safe-area-inset-bottom));width:76px;height:76px;border-radius:50%;border:0;background:#555;color:#fff;font:inherit;font-size:15px;z-index:6;touch-action:none;box-shadow:0 4px 0 rgba(0,0,0,.3)}
+#superBtn.ready{background:radial-gradient(circle at 35% 30%,#ffe27a,#ffb020);color:#5a2a00;animation:pulse .8s infinite alternate}
+@keyframes pulse{to{transform:scale(1.08)}}
+@media (orientation:portrait){#superBtn{right:calc(40px + env(safe-area-inset-right));bottom:calc(170px + env(safe-area-inset-bottom))}}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(10,20,40,.55);z-index:10;padding:14px}
+.overlay[hidden]{display:none}
+.card{background:#fff;color:#1d2a3a;border-radius:20px;padding:20px 22px;max-width:460px;width:100%;max-height:calc(100dvh - 20px);overflow:auto;text-align:center;box-shadow:0 8px 0 #5a3a9a}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 6px;color:#7a4ae0;font-weight:400}
+.card h2{font-size:32px;margin:0 0 12px;color:#7a4ae0;font-weight:400}
+.card p{margin:4px 0 12px;font-size:16px;color:#4a5a70}.card p b{color:#7a4ae0;font-weight:400}.card .small{font-size:13px}
+.tro b{color:#e0a000!important}
+.pick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:10px}
+.br{font:inherit;border:3px solid transparent;border-radius:14px;background:#f3f0fc;padding:8px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:#1d2a3a;font-size:14px;min-height:84px}
+.br i{width:34px;height:34px;border-radius:50%;background:var(--c);box-shadow:inset -4px -4px 0 rgba(0,0,0,.15)}
+.br small{font-size:11px;color:#6a6a8a}.br.on{border-color:#7a4ae0}.br[disabled]{opacity:.45;cursor:default}
+.maps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:14px}
+.mp{font:inherit;border:0;border-radius:12px;background:#eef2f8;padding:8px 4px;cursor:pointer;font-size:14px;color:#1d2a3a;min-height:44px}
+.mp.on{background:#7a4ae0;color:#fff}
+.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 22px;background:#ffb020;color:#3a2200;box-shadow:0 5px 0 #c47a00;cursor:pointer;min-height:52px;width:100%}
+.btn.soft{background:#e8eef6;box-shadow:0 5px 0 #b8c4d4;color:#1d2a3a}
+.btn:active,.br:active,.mp:active{transform:translateY(3px)}
+.btns{display:grid;gap:10px}
+.btn:focus-visible,.br:focus-visible,.mp:focus-visible{outline:3px solid #7a4ae0;outline-offset:3px}
+.mob{display:none}@media(pointer:coarse){.mob{display:block}}
+.back a{color:#4a5a70}
+@media(max-height:520px){.card{padding:12px 16px}.card h1{font-size:32px}}
+@media(prefers-reduced-motion:reduce){#toast.on{animation-duration:.01s}}

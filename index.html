@@ -100,6 +100,17 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>폴짝 건너기</h2><p>삐약이와 동물 친구들이 찻길·통나무 강·기찻길을 폴짝폴짝 건너요. 톡 치면 앞으로, 밀면 옆으로! 오래 서 있으면 큰 새가 와요.</p>
       <div class="tags"><span>3D 블록</span><span>톡톡 한 손</span><span>끝없이</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./gem-brawl/" style="--c:#7a4ae0">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#8fcf6a"/><g fill="#c8945a"><rect x="40" y="40" width="60" height="24"/><rect x="220" y="136" width="60" height="24"/></g><g fill="#3aa050"><circle cx="250" cy="50" r="16"/><circle cx="270" cy="60" r="14"/><circle cx="60" cy="150" r="16"/><circle cx="80" cy="158" r="14"/></g>
+      <rect x="145" y="85" width="30" height="30" fill="#3a2266"/><polygon points="160,88 172,100 160,112 148,100" fill="#c070ff"/>
+      <circle cx="110" cy="130" r="18" fill="#2f7de1"/><circle cx="110" cy="130" r="15" fill="#ff6a3a"/><circle cx="116" cy="124" r="4" fill="#fff"/><circle cx="104" cy="124" r="4" fill="#fff"/>
+      <circle cx="210" cy="72" r="18" fill="#e04a4a"/><circle cx="210" cy="72" r="15" fill="#9b6bff"/><circle cx="204" cy="78" r="4" fill="#fff"/><circle cx="216" cy="78" r="4" fill="#fff"/>
+      <g fill="#7fd8ff"><circle cx="135" cy="118" r="4"/><circle cx="150" cy="110" r="4"/></g><g fill="#ff8a6a"><circle cx="190" cy="84" r="4"/></g>
+    </svg>
+    <div class="info"><h2>보석 대작전</h2><p>우리 팀 셋이 힘을 합쳐 가운데 광산의 보석 10개를 모아 15초 버텨요! 불꽃이·새총이·폭탄이·방패곰, 풀숲에 숨어 기습도 해요.</p>
+      <div class="tags"><span>3대3 팀전</span><span>양손 조작</span><span>트로피</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -604,7 +615,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>평면도형</span><span>3학년 1학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 42개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 43개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -613,6 +624,7 @@ const REC={
   'item-kart':()=>{const v=B('itemKartWins');return v?`우승 ${n(v)}번`:null},
   'rail-dash':()=>{const v=B('railDashBest');return v?`최고 ${n(v)}점`:null},
   'hop-road':()=>{const v=B('hopRoadBest');return v?`최고 ${n(v)}칸`:null},
+  'gem-brawl':()=>{const v=B('gemBrawlTrophy'),w=B('gemBrawlWins');return v||w?`트로피 ${n(v||0)}`+(w?` · ${n(w)}승`:''):null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},

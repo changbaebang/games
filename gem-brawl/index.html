@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>보석 대작전</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<canvas id="c"></canvas>
+<div class="top"><div class="team blue"><b id="gBlue">0</b></div><div class="mid"><b id="clock">2:30</b><span id="count"></span></div><div class="team red"><b id="gRed">0</b></div></div>
+<button id="pauseBtn" aria-label="일시정지">II</button>
+<div id="toast"></div>
+<div class="help">WASD 이동 · 마우스로 조준해 클릭 공격 · E/Space 필살기 · P 일시정지</div>
+<div id="touch"><div class="stick" id="moveStick"><i></i></div><div class="stick aim" id="aimStick"><i></i></div><button id="superBtn">필살기</button></div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>보석 대작전</h1>
+  <p>3대3 팀 대결! 가운데에서 나오는 보석을 우리 팀이 <b>10개</b> 모은 채 <b>15초</b> 버티면 승리. 쓰러지면 보석을 떨어뜨려요.</p>
+  <p class="tro">트로피 <b id="tTro">0</b></p>
+  <div class="pick" id="picks"></div>
+  <div class="maps" id="maps"></div>
+  <button class="btn" id="startBtn">대결 시작!</button>
+  <p class="small mob">왼쪽 아래를 끌어 이동, 오른쪽 아래를 끌어 조준하고 놓으면 공격. 톡 치면 가까운 적에게 자동 조준.</p>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="pauseOv" hidden><div class="card"><h2>일시정지</h2><div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">그만하기</button></div></div></div>
+<div class="overlay" id="overOv" hidden><div class="card"><h1 id="oTitle">승리!</h1><p id="oTxt"></p><div class="btns"><button class="btn" id="againBtn">한 판 더</button><button class="btn soft" id="oMenu">처음 화면</button></div></div></div>
+<script src="game.js"></script>
+</body></html>
