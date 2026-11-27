@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>잉크 땅따먹기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<canvas id="c"></canvas>
+<div class="top"><div class="team blue"><b id="gBlue">0%</b></div><div class="mid"><b id="clock">2:00</b><span id="count"></span></div><div class="team red"><b id="gRed">0%</b></div></div><div id="inkBar"><i></i></div>
+<button id="pauseBtn" aria-label="일시정지">II</button>
+<div id="toast"></div>
+<div class="help">WASD 이동 · 마우스 조준, 누르고 있으면 계속 쏘기 · Shift 누르고 있으면 물감 속 수영(잉크 충전) · P 일시정지</div>
+<div id="touch"><div class="stick" id="moveStick"><i></i></div><div class="stick aim" id="aimStick"><i></i></div><button id="superBtn">수영</button></div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>잉크 땅따먹기</h1>
+  <p>4대4 물감 대결! 2분 동안 바닥을 <b>우리 팀 색</b>으로 더 많이 칠하면 이겨요. 우리 물감 속에서는 <b>수영</b>하며 빨리 움직이고 잉크를 채워요.</p>
+  <p class="tro">이긴 판 <b id="tTro">0</b></p>
+  <div class="pick" id="picks"></div>
+  
+  <button class="btn" id="startBtn">대결 시작!</button>
+  <p class="small mob">왼쪽 아래로 이동, 오른쪽 아래를 끌고 있으면 그 방향으로 계속 쏴요. 수영 버튼을 누르고 있으면 물감 속으로 쏙!</p>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="pauseOv" hidden><div class="card"><h2>일시정지</h2><div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">그만하기</button></div></div></div>
+<div class="overlay" id="overOv" hidden><div class="card"><h1 id="oTitle">승리!</h1><p id="oTxt"></p><div class="btns"><button class="btn" id="againBtn">한 판 더</button><button class="btn soft" id="oMenu">처음 화면</button></div></div></div>
+<script src="game.js"></script>
+</body></html>
