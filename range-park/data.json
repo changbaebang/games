@@ -1,0 +1,28 @@
+{
+  "questionsPerStage": 10,
+  "starThresholds": [6, 8, 10],
+  "praise": ["탑승 완료!", "딩동댕!", "범위 척척!", "정확해요!", "어림 박사!"],
+  "endTitles": ["한 번 더 해 볼까요?", "잘했어요!", "참 잘했어요!", "놀이공원 안전 요원!"],
+  "rides": [["롤러코스터", "🎢", "키", "cm"], ["바이킹", "🏴‍☠️", "키", "cm"], ["범퍼카", "🚗", "키", "cm"], ["자이로드롭", "🗼", "키", "cm"]],
+  "kids": ["지우", "서준", "하린", "도윤", "민서", "예준", "수아", "시우"],
+  "roundStories": [
+    { "t": "사탕 {n}개를 한 봉지에 {u}개씩 담아 팔려고 해요. 모두 담으려면 봉지는 적어도 몇 개 필요할까요?", "mode": "up", "unitWord": "봉지" },
+    { "t": "학생 {n}명이 {u}인승 보트를 타려고 해요. 모두 타려면 보트는 적어도 몇 대 필요할까요?", "mode": "up", "unitWord": "대" },
+    { "t": "동전 {n}원을 1000원짜리 지폐로만 바꾸면 최대 얼마까지 바꿀 수 있을까요?", "mode": "down1000", "unitWord": "원" },
+    { "t": "리본 {n} cm 로 한 개에 {u} cm 씩 쓰는 꽃 장식을 만들어요. 꽃은 최대 몇 개 만들 수 있을까요?", "mode": "down", "unitWord": "개" }
+  ],
+  "stages": [
+    { "name": "이상과 이하", "short": "이상·이하", "sub": "그 수를 포함해요",
+      "kinds": [ { "kind": "ride", "types": ["이상", "이하"] }, { "kind": "pickIn", "types": ["이상", "이하"] } ] },
+    { "name": "초과와 미만", "short": "초과·미만", "sub": "그 수는 포함하지 않아요",
+      "kinds": [ { "kind": "ride", "types": ["초과", "미만"] }, { "kind": "pickIn", "types": ["초과", "미만"] }, { "kind": "pickIn", "types": ["이상", "이하", "초과", "미만"], "weight": 0.6 } ] },
+    { "name": "수직선에 나타내기", "short": "수직선", "sub": "● 포함, ○ 포함 안 함",
+      "kinds": [ { "kind": "lineRead" }, { "kind": "count" } ] },
+    { "name": "올림과 버림", "short": "올림·버림", "sub": "구하려는 자리 아래를 올리거나 버려요",
+      "kinds": [ { "kind": "round", "mode": "up" }, { "kind": "round", "mode": "down" } ] },
+    { "name": "반올림", "short": "반올림", "sub": "0~4 는 버리고, 5~9 는 올려요",
+      "kinds": [ { "kind": "round", "mode": "half", "weight": 1.3 }, { "kind": "roundsTo" } ] },
+    { "name": "놀이공원 운영", "short": "도전", "sub": "올림일까, 버림일까? 생활 속 어림", "challenge": true,
+      "kinds": [ { "kind": "story", "weight": 1.4 }, { "kind": "lineRead" }, { "kind": "round", "mode": "half" } ] }
+  ]
+}

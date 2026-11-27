@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>어림 놀이공원</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="../common/learn.css">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div id="app">
+  <div class="top"><button class="pill" id="menuBtn">← 단계</button><div class="stg" id="stgName"></div><span class="sp"></span></div>
+  <div class="dots" id="dots"></div>
+  <h2 class="ask" id="ask"></h2>
+  <div class="scene" id="scene"></div>
+  <div class="tools" id="tools"></div>
+  <div class="choices" id="choices"></div>
+</div>
+<div class="fb" id="fb" hidden><h3 id="fbTitle"></h3><p id="fbText"></p><button class="btn" id="nextBtn">다음 문제</button></div>
+
+<div class="overlay" id="titleOv"><div class="card">
+  <div class="logo" aria-hidden="true">🎢</div>
+  <h1>어림 놀이공원</h1>
+  <p>키가 130 cm <b>이상</b>이어야 탈 수 있어요! <b>이상·이하·초과·미만</b>으로 수의 범위를 알고<br><b>올림·버림·반올림</b>으로 어림해요.</p>
+  <div class="stages" id="stages"></div>
+  <p class="small"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+
+<div class="overlay" id="endOv" hidden><div class="card">
+  <div class="stars" id="eStars"></div>
+  <h1 id="eTitle"></h1>
+  <p id="eTxt" style="white-space:pre-line"></p>
+  <button class="btn" id="nextStageBtn">다음 단계</button>
+  <div class="row"><button class="sub" id="againBtn">다시 하기</button><button class="sub" id="pickBtn">단계 고르기</button></div>
+</div></div>
+
+<script src="../common/learn.js"></script>
+<script src="game.js"></script>
+</body></html>

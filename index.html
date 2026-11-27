@@ -695,8 +695,19 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>계산 순서 블록</h2><p>계산할 기호를 순서대로 눌러 블록을 합쳐요. 괄호 먼저, 곱셈·나눗셈 다음! 이야기를 하나의 식으로 나타내기까지. 6단계.</p>
       <div class="tags"><span>혼합 계산</span><span>5학년 1학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./range-park/" style="--c:#f39ab4">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#fff0f4"/>
+      <line x1="20" y1="130" x2="300" y2="130" stroke="#2b2f45" stroke-width="3"/>
+      <g stroke="#2b2f45" stroke-width="2"><path d="M60 122v16M110 122v16M160 122v16M210 122v16M260 122v16"/></g>
+      <line x1="110" y1="104" x2="292" y2="104" stroke="#e8642a" stroke-width="7" stroke-linecap="round"/><circle cx="110" cy="104" r="10" fill="#e8642a"/>
+      <g font-family="Jua,sans-serif" text-anchor="middle"><text x="110" y="162" font-size="18" fill="#2b2f45">130</text><text x="200" y="70" font-size="26" fill="#8a2b4a">130 cm 이상</text></g><text x="40" y="70" font-size="40">🎢</text>
+    </svg>
+    <div class="info"><h2>어림 놀이공원</h2><p>키 130 cm 이상만 탈 수 있다면? 이상·이하·초과·미만, 수직선 ●/○, 올림·버림·반올림과 생활 속 어림 문제까지. 6단계.</p>
+      <div class="tags"><span>수의 범위와 어림</span><span>5학년 2학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 50개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 51개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -750,7 +761,8 @@ const REC={
   'plane-shapes':()=>{const v=B('planeStarTotal');return v?`별 ${v}개 / 18개`:null},
   'factor-garden':()=>{const v=B('factorStarTotal');return v?`별 ${v}개 / 18개`:null},
   'fraction-juice':()=>{const v=B('fraction5StarTotal');return v?`별 ${v}개 / 18개`:null},
-  'order-blocks':()=>{const v=B('mixcalcStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'order-blocks':()=>{const v=B('mixcalcStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'range-park':()=>{const v=B('rangeStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

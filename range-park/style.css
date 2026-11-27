@@ -1,0 +1,16 @@
+/* VOICE: 신나는 놀이공원 입구, 키 재는 막대 앞에서
+   IDEA: 기준 수를 포함하나 안 하나, 수직선 ●/○ 로 눈에 보이게
+   PICTURE: 흰 카드의 키 표, 주황 수직선
+   COLOUR and TYPE: 솜사탕 분홍 종이, 주황 강조 / Jua
+   LAYOUT: 공통 틀 + 카드 */
+:root{--paper:#fff0f4;--grid:#fbdde6;--accent:#e8642a;--soft:#f3cbd8;--edge:#8a2b4a}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.big{font-size:clamp(40px,12vw,64px);background:#fff;border-radius:22px;padding:6px 26px;box-shadow:0 5px 0 var(--soft);letter-spacing:.04em}
+.big .lowd{color:#3d74e5}
+.kids{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:min(92vw,380px)}
+.kids div{background:#fff;border-radius:14px;padding:8px 12px;box-shadow:0 4px 0 var(--soft);display:flex;justify-content:space-between;font-size:19px}
+.kids b{font-weight:normal;color:var(--accent)}
+.nl{width:min(96vw,480px);height:auto;background:#fff;border-radius:18px;box-shadow:0 5px 0 var(--soft)}
+svg text{font-family:'Jua',system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+.tk{font-size:13px;fill:#2b2f45}
+.emo{font-size:clamp(70px,22vw,110px)}
