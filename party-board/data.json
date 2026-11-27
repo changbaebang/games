@@ -1,0 +1,88 @@
+{
+ "_설명": "파티 보드게임 설정. rounds 라운드 수, starCost 별 값, startCoins 처음 코인, blue/red 파란칸·빨간칸 코인, prize 미니게임 등수별 코인, boardW·boardH 보드 가로세로(둘레 칸 수 = board 글자 수), dice 주사위 최대 눈, board 칸 종류(B 파란 +코인, R 빨간 -코인, ? 이벤트, S 출발) — 보드를 한 바퀴 도는 순서, players 이름과 색, events 이벤트 칸 내용.",
+ "rounds": 10,
+ "starCost": 20,
+ "startCoins": 10,
+ "blue": 3,
+ "red": 3,
+ "prize": [
+  10,
+  5,
+  2,
+  0
+ ],
+ "board": "SBB?BRBB?BBRB?BBRB?BBRBB",
+ "players": [
+  {
+   "name": "나",
+   "color": "#ff7a3a"
+  },
+  {
+   "name": "토리",
+   "color": "#3a9aff"
+  },
+  {
+   "name": "미미",
+   "color": "#ff5ab0"
+  },
+  {
+   "name": "보노",
+   "color": "#4ac45a"
+  }
+ ],
+ "events": [
+  {
+   "t": "coin",
+   "v": 6,
+   "msg": "보물 상자! 코인 6개"
+  },
+  {
+   "t": "coin",
+   "v": -5,
+   "msg": "구멍 난 주머니… 코인 5개 잃음"
+  },
+  {
+   "t": "warp",
+   "msg": "휘리릭! 아무 칸으로 순간이동"
+  },
+  {
+   "t": "steal",
+   "v": 4,
+   "msg": "모두에게서 코인 4개씩 받기"
+  },
+  {
+   "t": "star",
+   "msg": "별 칸으로 바로 이동!"
+  },
+  {
+   "t": "give",
+   "v": 3,
+   "msg": "모두에게 코인 3개씩 선물"
+  }
+ ],
+ "minigames": [
+  {
+   "id": "mash",
+   "name": "연타 달리기",
+   "how": "화면을 마구 두드려 먼저 깃발까지!"
+  },
+  {
+   "id": "stop",
+   "name": "딱 멈춰!",
+   "how": "바늘이 가운데 올 때 탭!"
+  },
+  {
+   "id": "dodge",
+   "name": "돌 피하기",
+   "how": "좌우로 끌어서 떨어지는 돌을 피해요"
+  },
+  {
+   "id": "catch",
+   "name": "코인 받기",
+   "how": "좌우로 끌어서 떨어지는 코인을 모아요"
+  }
+ ],
+ "boardW": 9,
+ "boardH": 5,
+ "dice": 10
+}
