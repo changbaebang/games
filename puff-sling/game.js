@@ -14,7 +14,7 @@ let bigT=0;function big(t){const e=$('big');e.textContent=t;e.classList.add('on'
 function hint(t){setT($('hint'),t)}
 
 // ---------- 월드
-let eng=null,LV=0,L=null,blocks=[],targets=[],queue=[],flying=[],cur=null,state='title',paused=false,score=0,parts=[],pops=[],settleT=0,camX=0,camTarget=0,used=false,aim=null,time=0,wait=0,ended=false;
+let intro=0,eng=null,LV=0,L=null,blocks=[],targets=[],queue=[],flying=[],cur=null,state='title',paused=false,score=0,parts=[],pops=[],settleT=0,camX=0,camTarget=0,used=false,aim=null,time=0,wait=0,ended=false;
 function build(i){LV=i;L=D.levels[i];eng=Engine.create();eng.gravity.y=1;blocks=[];targets=[];flying=[];parts=[];pops=[];score=0;ended=false;
   const ground=Bodies.rectangle(1000,GY+100,6000,200,{isStatic:true,label:'ground',friction:.9});Composite.add(eng.world,ground);
   for(const [hx,hy,hw,hh] of L.hills){const h=Bodies.rectangle(hx,hy,hw,hh,{isStatic:true,label:'hill',chamfer:{radius:30}});h.hill=[hx,hy,hw,hh];Composite.add(eng.world,h)}
@@ -23,7 +23,7 @@ function build(i){LV=i;L=D.levels[i];eng=Engine.create();eng.gravity.y=1;blocks=
   // 처음 잠깐은 다치지 않게 (자리 잡기)
   wait=1;queue=L.birds.slice();Events.on(eng,'collisionStart',onHit);
   for(let k=0;k<30;k++)Engine.update(eng,1000/60);
-  nextBird();camX=0;state='play';hud()}
+  nextBird();camX=0;intro=2.4;state='play';hud()}
 function nextBird(){if(!queue.length){cur=null;return}const k=queue.shift();cur={k,r:BD[k].r,body:null,ready:true,usedSkill:false};used=false;hint('솜뭉치를 뒤로 당겼다 놓아요');hud()}
 function hud(){setT($('hLv'),(LV+1)+'단계');setT($('hScore'),score);const q=$('queue');q.innerHTML='';for(const k of queue){const e=document.createElement('i');e.style.background=BD[k].color;q.appendChild(e)}}
 
@@ -40,7 +40,7 @@ function destroy(b){b.dead=true;Composite.remove(eng.world,b);const isT=b.label=
 const W2S=()=>{const sc=Math.min(Ht/760,Wd/900);return sc};
 let S=1,offY=0;
 function toWorld(px,py){return {x:px/S+camX,y:(py-offY)/S}}
-cv.addEventListener('pointerdown',e=>{if(state!=='play'||paused)return;const w=toWorld(e.clientX,e.clientY);
+cv.addEventListener('pointerdown',e=>{if(state!=='play'||paused)return;if(intro>0)intro=Math.min(intro,.01);const w=toWorld(e.clientX,e.clientY);
   if(cur&&cur.ready){if(Math.hypot(w.x-SX,w.y-SY)<120/Math.min(1,S)||true){aim={x:SX,y:SY,id:e.pointerId,sx:e.clientX,sy:e.clientY};snd('tick')}return}
   if(cur&&cur.body&&!cur.usedSkill)skill()});
 addEventListener('pointermove',e=>{if(!aim||e.pointerId!==aim.id)return;let dx=(e.clientX-aim.sx)/S,dy=(e.clientY-aim.sy)/S;const l=Math.hypot(dx,dy),M=110;if(l>M){dx*=M/l;dy*=M/l}aim.x=SX+dx;aim.y=SY+dy});
@@ -65,7 +65,7 @@ function update(dt){time+=dt;for(let i=timers.length-1;i>=0;i--){timers[i].t-=dt
   for(const p of parts){p.t+=dt;p.vy+=20*dt;p.x+=p.vx;p.y+=p.vy}parts=parts.filter(p=>p.t<1);for(const p of pops)p.t+=dt;pops=pops.filter(p=>p.t<1);shake=Math.max(0,shake-dt);
   // 카메라
   const fb=cur&&cur.body&&!cur.body.gone?cur.body:null;
-  if(aim||cur&&cur.ready)camTarget=0;else if(fb)camTarget=fb.position.x-Wd/S*.4;
+  if(intro>0){intro-=dt;camTarget=intro>1?9999:0}else if(aim||cur&&cur.ready)camTarget=0;else if(fb)camTarget=fb.position.x-Wd/S*.4;
   camX+=(clamp(camTarget,0,Math.max(0,1500-Wd/S))-camX)*Math.min(1,dt*3);
   // 다음 솜뭉치
   if(cur&&!cur.ready){cur.t+=dt;const all=[...blocks,...targets,...flying.filter(f=>!f.gone)];const moving=all.some(b=>b.speed>.35);settleT=moving?0:settleT+dt;
@@ -79,7 +79,7 @@ function win(){if(state!=='play')return;state='over';const left=queue.length+(cu
 function lose(){if(state!=='play')return;state='over';$('oTitle').textContent='아깝다!';setT($('oStars'),'');$('oTxt').innerHTML='투덜 버섯이 <b>'+targets.length+'</b>개 남았어요';$('againBtn').hidden=true;$('overOv').hidden=false;hint('');snd('lose')}
 
 // ---------- 그리기
-function draw(){const W=Wd,H=Ht;S=Math.min(H/720,W/760);offY=H-(GY+60)*S;ctx.setTransform(DPR,0,0,DPR,0,0);
+function draw(){const W=Wd,H=Ht;S=W<H?W/820:Math.min(H/700,W/1350);offY=H-(GY+60)*S;ctx.setTransform(DPR,0,0,DPR,0,0);
   const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#7ac8ff');g.addColorStop(1,'#d8f2ff');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   ctx.fillStyle='rgba(255,255,255,.85)';for(let i=0;i<5;i++){const cx=((i*330-camX*S*.2)%(W+300)+W+300)%(W+300)-150,cy=60+i*37%160;ctx.beginPath();ctx.ellipse(cx,cy,70,22,0,0,7);ctx.ellipse(cx+40,cy-12,40,20,0,0,7);ctx.fill()}
   ctx.fillStyle='#a8e08a';for(let i=0;i<6;i++){const cx=((i*420-camX*S*.5)%(W+600)+W+600)%(W+600)-300;ctx.beginPath();ctx.ellipse(cx,offY+GY*S,260,120*S+60,0,Math.PI,0);ctx.fill()}
