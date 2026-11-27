@@ -21,3 +21,7 @@
 .ldiv{display:inline-flex;align-items:flex-end;font-size:clamp(44px,13vw,72px);line-height:1}
 .ldiv .bk{font-size:1.15em;transform:scaleX(.7);margin:0 -.05em}
 .ldiv .dd{border-top:4px solid var(--ink);padding:0 .15em;margin-top:.1em}
+/* 세 자리 ÷ 한 자리 · 검산 */
+.chk{font-size:clamp(28px,8vw,40px);background:#fff;border-radius:20px;padding:14px 22px;box-shadow:0 5px 0 var(--soft)}
+.chk .q{color:var(--accent)}
+.emo{font-size:clamp(70px,22vw,110px)}

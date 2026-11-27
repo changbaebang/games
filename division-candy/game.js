@@ -93,6 +93,35 @@ const GEN = {
              choices: shuffle([...new Set([f(q, r), f(q + 1, r), f(q, r + 1 < b ? r + 1 : r - 1 || b - 1), f(q - 1, r + b)])].slice(0, 4)), answer: f(q, r),
              rule: [`${b} × ${q} = ${b * q}, ${a} − ${b * q} = ${r}`, `${qa(a, b)} = ${q} … ${r}`], hint: '몫을 어림한 뒤, 나누는 수 × 몫 이 나누어지는 수를 넘지 않는지 봐요', sig: 'u' + a + b };
   },
+  longDiv(g) {
+    let a, b;
+    for (;;) { b = ri(2, 9); a = g.two ? ri(40, 99) : ri(100, 999); const q = Math.floor(a / b), qs = String(q);
+      if (q < 10) continue; if (g.zero ? !qs.slice(1).includes('0') : qs.slice(1).includes('0')) continue; if (Math.random() < .3 && a % b === 0) break; if (a % b) break; }
+    const v = LDiv.make({ a, b }), q = v.q, r = v.r;
+    return { ask: `나눗셈을 세로셈으로 해요<small>${qa(a, b)}</small>`, render: sc => v.render(sc), _v: v, custom: { mount: (el, api) => v.mount(el, api) },
+             rule: [`${qa(a, b)} = ${q}${r ? ` … ${r}` : ''}`, `확인: ${b} × ${q}${r ? ` + ${r}` : ''} = ${a}`, g.zero ? '나눌 수 없는 자리는 몫에 0 을 쓰고 다음 자리를 내려요' : '높은 자리부터: 나누고 → 곱하고 → 빼고 → 내려 써요'],
+             hint: '높은 자리부터 나누어요. 나누는 수보다 작으면 다음 자리와 함께 나눠요', sig: 'L' + a + b };
+  },
+  verify() {
+    const b = ri(3, 9), q = ri(12, 99), r = ri(0, b - 1), a = b * q + r, ok = Math.random() < .45, w = ri(0, 2);
+    const [fq, fr] = ok ? [q, r] : w === 0 ? [q + 1, r] : w === 1 ? [q, (r + 1) % b] : [q - 1, r + b];   // 마지막은 나머지가 너무 큰 실수
+    const right = b * fq + fr === a && fr < b;
+    return { ask: `<b>${qa(a, b)} = ${fq} … ${fr}</b><br>바르게 계산했을까요?`, scene: `<div class="box"><div class="chk">${b} × ${fq} + ${fr} = <span class="q">?</span></div></div>`,
+             choices: ['⭕ 맞아요', '❌ 틀렸어요'], answer: right ? '⭕ 맞아요' : '❌ 틀렸어요', once: true,
+             rule: [`${b} × ${fq} + ${fr} = ${b * fq + fr}`, right ? `${a} 와 같아요 → 맞아요` : fr >= b ? `나머지 ${fr} 은(는) 나누는 수 ${b} 보다 작아야 해요` : `${a} 가 아니에요 → 바른 답: ${q} … ${r}`], hint: '나누는 수 × 몫 + 나머지 가 나누어지는 수와 같은지 계산해요', sig: 'V' + a + b + fq + fr };
+  },
+  findDividend() {
+    const b = ri(3, 9), q = ri(12, 99), r = ri(1, b - 1), a = b * q + r;
+    return { ask: `어떤 수를 <b>${b}</b>로 나누었더니 몫이 <b>${q}</b>, 나머지가 <b>${r}</b>였어요. 어떤 수는?`, scene: `<div class="box"><div class="chk">? ÷ ${b} = ${q} … ${r}</div></div>`,
+             choices: nums(a, [b * q, b * q - r, b * (q + r), a + b], { ok: v => v > 0 }), answer: String(a),
+             rule: ['검산식: 나누는 수 × 몫 + 나머지 = 나누어지는 수', `${b} × ${q} + ${r} = ${a}`], hint: '검산식을 거꾸로 써 봐요', sig: 'F' + b + q + r };
+  },
+  bigStory() {
+    const s = pick(D.bigStories), b = ri(3, 8), q = ri(11, 60), r = ri(1, b - 1), a = b * q + r, f = (x, y) => `${x}${s.qu}, ${y}${s.ru} 남음`;
+    return { ask: s.t.replace('{a}', a).replace('{b}', b), scene: `<div class="box"><div class="emo">${s.e}</div></div>`,
+             choices: shuffle([...new Set([f(q, r), f(q + 1, r), f(q, r + 1 < b ? r + 1 : 0), f(q - 1, r + b)])]), answer: f(q, r), small: true, cols: 1,
+             rule: [`${qa(a, b)} = ${q} … ${r}`, `확인: ${b} × ${q} + ${r} = ${a}`], hint: '나눗셈식을 세우고 세로셈으로 계산해 봐요', sig: 'S' + a + b };
+  },
   story() {
     const s = pick(D.stories), m = ri(3, 8), q = ri(3, 9), r = ri(1, m - 1), n = m * q + r;
     const ans = s.mode === 'ceil' ? q + 1 : s.mode === 'floor' ? q : r;

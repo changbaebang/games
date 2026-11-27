@@ -27,7 +27,7 @@
 | 각도 탐정 | 각도·각 구하기 (4~5학년) | [`/angle-detective/`](./angle-detective/) |
 | 입체 공방 | 직육면체·전개도·쌓기나무 (5~6학년) | [`/solid-lab/`](./solid-lab/) |
 | 분수 피자 | 분수·소수 (3~5학년) | [`/fraction-pizza/`](./fraction-pizza/) |
-| 나눗셈 사탕 | 나눗셈 (3학년) | [`/division-candy/`](./division-candy/) |
+| 나눗셈 사탕 | 나눗셈: 두 자리·세 자리 ÷ 한 자리 세로셈, 검산 (3학년) | [`/division-candy/`](./division-candy/) |
 | 단위 탐험대 | 길이·들이·무게·시간 단위 (2~3학년) | [`/unit-quest/`](./unit-quest/) |
 | 넓이 농장 | 모눈 세기, 둘레·넓이, 밭 만들기, 평행사변형·삼각형, ㄴ자 도형 (3~5학년 수학) | [`/area-farm/`](./area-farm/) |
 | 그래프 마을 | 표 만들기, 그림그래프, 막대그래프 읽기·그리기, 꺾은선그래프 (2~4학년 수학) | [`/graph-town/`](./graph-town/) |

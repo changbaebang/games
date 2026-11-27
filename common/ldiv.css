@@ -1,0 +1,14 @@
+/* 나눗셈 세로셈 (common/ldiv.js) — 키패드는 vcalc.css 를 함께 씀 */
+.lbox{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;overflow:auto}
+.lgrid{display:flex;flex-direction:column;background:#fff;border-radius:18px;padding:8px 18px 12px;box-shadow:0 5px 0 var(--soft);font-size:clamp(21px,6.2vw,32px);line-height:1}
+.lrow{display:grid;grid-template-columns:repeat(var(--w),1.25em)}
+.lrow.ul{margin-bottom:4px}
+.lrow.ul .lc:not(:first-child){border-bottom:3px solid var(--ink)}
+.lc{height:1.3em;display:grid;place-items:center;color:var(--ink)}
+.lc.dv{color:var(--accent);border-right:3px solid var(--ink);border-radius:0 0 12px 0}
+.lc.dd{border-top:3px solid var(--ink)}
+.lc .p{color:#7a5fd0}.lc .m{color:var(--ink)}
+.lq{width:1.05em;height:1.15em;border:3px dashed var(--soft);border-radius:8px;display:grid;place-items:center}
+.lq.on{border:3px solid var(--accent);background:#fff8e8}
+.lq.bad{border-color:#e5533d;background:#ffe9e6;color:#e5533d}
+.lq.rr{border-color:#9fc3a0}
