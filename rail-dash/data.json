@@ -1,0 +1,37 @@
+{
+ "_설명": "철길 질주 데이터. speed: 시작 속도·최고 속도(m/s)·초당 빨라지는 양. lanes: 세 줄의 x 위치. player: jump 점프 힘, gravity 중력, slide 구르기 시간(초). chunks: 앞쪽에 차례로 붙는 40m짜리 구간. items는 [종류, 줄(0 왼쪽·1 가운데·2 오른쪽), 구간 안 z 위치, 추가값]. 종류: train(멈춘 기차, 추가값=길이), ramp(앞에 오르막이 달린 기차, 위로 달릴 수 있음), move(마주 오는 기차, 길이), low(낮은 울타리: 점프), high(높은 막대: 구르기), coins(동전 줄, 추가값=개수), arc(점프 높이에 동전 아치), power(아이템 상자). tier가 클수록 빨라진 뒤에 나온다. powers: 자석·제트팩·점프 신발·두 배 점수, time은 1레벨 시간, perLevel은 레벨마다 늘어나는 시간. missions: 세 개를 다 하면 점수 배수가 1 오른다.",
+ "speed": {"start": 15, "max": 32, "accel": 0.14},
+ "lanes": [-2.6, 0, 2.6],
+ "player": {"jump": 13, "gravity": 40, "slide": 0.75, "sneakerJump": 17},
+ "trainTop": 3.4,
+ "chunks": [
+  {"tier": 0, "items": [["coins", 1, 6, 8], ["low", 0, 20], ["train", 2, 12, 18]]},
+  {"tier": 0, "items": [["high", 1, 14], ["coins", 0, 4, 6], ["arc", 1, 10], ["low", 2, 30]]},
+  {"tier": 0, "items": [["train", 0, 4, 20], ["train", 1, 16, 14], ["coins", 2, 6, 10], ["power", 2, 32]]},
+  {"tier": 0, "items": [["ramp", 1, 4, 24], ["coins", 1, 12, 8], ["train", 0, 10, 18], ["low", 2, 24]]},
+  {"tier": 1, "items": [["low", 0, 8], ["low", 1, 8], ["high", 2, 8], ["coins", 1, 20, 8], ["train", 2, 26, 12]]},
+  {"tier": 1, "items": [["move", 1, 30, 16], ["train", 0, 6, 26], ["coins", 2, 4, 12], ["high", 2, 30]]},
+  {"tier": 1, "items": [["ramp", 0, 2, 30], ["train", 1, 8, 24], ["coins", 0, 10, 10], ["low", 2, 14], ["arc", 2, 14], ["power", 1, 36]]},
+  {"tier": 1, "items": [["high", 0, 10], ["low", 1, 10], ["high", 2, 10], ["coins", 1, 22, 8], ["low", 0, 32], ["high", 2, 32]]},
+  {"tier": 2, "items": [["move", 0, 34, 18], ["move", 2, 24, 14], ["coins", 1, 4, 10], ["high", 1, 20], ["arc", 1, 32]]},
+  {"tier": 2, "items": [["train", 0, 2, 36], ["ramp", 1, 6, 30], ["train", 2, 2, 36], ["coins", 1, 16, 12]]},
+  {"tier": 2, "items": [["low", 0, 6], ["high", 1, 6], ["train", 2, 0, 20], ["high", 0, 20], ["low", 1, 20], ["move", 2, 38, 12], ["coins", 0, 26, 6], ["power", 0, 36]]}
+ ],
+ "powers": [
+  {"id": "magnet", "name": "자석", "color": "#ff4a6a", "time": 8, "perLevel": 2, "cost": [0, 150, 300, 600, 1000]},
+  {"id": "jet", "name": "제트팩", "color": "#ffb020", "time": 6, "perLevel": 1.5, "cost": [0, 200, 400, 800, 1200]},
+  {"id": "shoes", "name": "점프 신발", "color": "#33d17a", "time": 9, "perLevel": 2, "cost": [0, 150, 300, 600, 1000]},
+  {"id": "double", "name": "두 배 점수", "color": "#2f8cff", "time": 10, "perLevel": 2, "cost": [0, 200, 400, 800, 1200]}
+ ],
+ "missions": [
+  {"type": "coins", "n": 100, "text": "한 판에 동전 100개"},
+  {"type": "jump", "n": 20, "text": "점프 20번"},
+  {"type": "slide", "n": 12, "text": "구르기 12번"},
+  {"type": "dist", "n": 1000, "text": "한 판에 1000m 달리기"},
+  {"type": "power", "n": 3, "text": "아이템 3개 쓰기"},
+  {"type": "train", "n": 3, "text": "기차 위 달리기 3번"},
+  {"type": "coins", "n": 250, "text": "한 판에 동전 250개"},
+  {"type": "dist", "n": 2500, "text": "한 판에 2500m 달리기"},
+  {"type": "jump", "n": 50, "text": "점프 50번"}
+ ]
+}
