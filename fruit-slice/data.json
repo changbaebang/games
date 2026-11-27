@@ -1,0 +1,12 @@
+{"_설명":"과일 쓱싹 설정. fruits: 과일(겉 색 skin, 속 색 flesh, 씨 seed, 크기 r, 점수 pts). bomb: 폭탄이 나올 확률(처음 → 최대). classic: 놓쳐도 되는 과일 수. timeAttack: 시간(초). waves: 처음 한 번에 나오는 과일 수와 간격(초) — 시간이 갈수록 빨라져요.",
+"fruits":[
+ {"id":"water","name":"수박","skin":"#3a9a3a","stripe":"#2a6a2a","flesh":"#ff4a5a","seed":"#222","r":46,"pts":1},
+ {"id":"orange","name":"귤","skin":"#ff9a2a","flesh":"#ffc85a","seed":"#fff2c8","r":30,"pts":1},
+ {"id":"apple","name":"사과","skin":"#e8303a","flesh":"#fff2c8","seed":"#5a3a1a","r":30,"pts":1},
+ {"id":"kiwi","name":"키위","skin":"#8a6a3a","flesh":"#8ad83a","seed":"#222","r":26,"pts":1},
+ {"id":"lemon","name":"레몬","skin":"#ffe03a","flesh":"#fff6a0","seed":"#fff","r":27,"pts":1},
+ {"id":"plum","name":"자두","skin":"#8a3aa0","flesh":"#ffd06a","seed":"#a06a2a","r":25,"pts":1},
+ {"id":"peach","name":"복숭아","skin":"#ffa8a0","flesh":"#ffe0a0","seed":"#c86a3a","r":31,"pts":1},
+ {"id":"star","name":"별사탕 과일","skin":"#ffd23f","flesh":"#fff8c8","seed":"#ff8a3a","r":24,"pts":5,"rare":0.04}],
+"bomb":{"start":0.06,"max":0.2},"classic":{"lives":3},"timeAttack":{"time":60,"bombPenalty":10},
+"waves":{"count":[1,4],"gap":[1.6,0.7],"ramp":90}}
