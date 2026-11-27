@@ -1,0 +1,18 @@
+/* VOICE: 씩씩한 장난감 공장, 컨베이어가 돌아가요
+   IDEA: 묶음으로 나눠 곱하고, 조각을 모아 큰 곱을 만들어요
+   PICTURE: 수 모형 줄, 색 조각으로 나뉜 넓이 모형
+   COLOUR and TYPE: 연노랑 종이, 초록 강조 / Jua
+   LAYOUT: 공통 틀 + 그림 카드 */
+:root{--paper:#fbf6e6;--grid:#efe5c6;--accent:#2f8f5e;--soft:#e2d6ae;--edge:#4a3f1c}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.blk{width:min(94vw,480px);height:auto;max-height:100%}
+.area{width:min(94vw,440px);height:auto;max-height:100%}
+svg text{font-family:'Jua',system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+.cv{font-size:26px;fill:var(--ink)}.cl{font-size:14px;fill:var(--mute)}.cs{font-size:17px;fill:var(--ink)}.ax{font-size:20px;fill:var(--accent)}.lb{font-size:20px;fill:var(--ink);text-anchor:start}
+.eq{font-size:clamp(30px,9vw,44px);background:#fff;border-radius:20px;padding:14px 22px;box-shadow:0 5px 0 var(--soft);text-align:center;line-height:1.35}
+.eq.sm{font-size:clamp(24px,7vw,34px)}
+.eq.big{font-size:clamp(32px,9vw,48px)}
+.mini{font-size:18px;color:var(--mute)}
+.q{color:#e8642a}
+.story{font-size:clamp(70px,22vw,110px)}
+.ask small{display:block;font-size:.8em;color:var(--mute)}
