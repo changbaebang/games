@@ -8,7 +8,7 @@ const rand=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.len
 const save=Object.assign({tro:0,pick:'fire',map:0,wins:0},(()=>{try{return JSON.parse(localStorage.getItem(SAVE))||{}}catch(_){return {}}})());
 const store=()=>{try{localStorage.setItem(SAVE,JSON.stringify(save))}catch(_){}};
 let Wd=0,Ht=0,DPR=1,S=40;
-function fit(){DPR=Math.min(devicePixelRatio||1,2);Wd=innerWidth;Ht=innerHeight;cv.width=Wd*DPR;cv.height=Ht*DPR;S=Math.min(Wd,Ht)/(Wd<Ht?10.5:10.5)}
+function fit(){DPR=Math.min(devicePixelRatio||1,2);Wd=innerWidth;Ht=innerHeight;cv.width=Wd*DPR;cv.height=Ht*DPR;S=Math.min(Wd,Ht)/(Wd<Ht?10.5:13)}
 addEventListener('resize',fit);fit();
 
 // ---------- 맵
@@ -172,6 +172,7 @@ function draw(){
     if(A.kind==='lob'){const L=(MOBILE?clamp(aim.len,.2,1):clamp(Math.hypot(me.ax,me.ay)/A.range,.2,1))*A.range;ctx.beginPath();ctx.arc((me.x+Math.cos(a)*L)*S,(me.y+Math.sin(a)*L)*S,A.radius*S,0,7);ctx.fill()}
     else{const sp=(A.angle||6)*Math.PI/360,r=(A.range||2)*S;ctx.beginPath();ctx.moveTo(me.x*S,me.y*S);ctx.arc(me.x*S,me.y*S,r,a-sp,a+sp);ctx.closePath();ctx.fill()}}}
   // 유닛
+  const labels=[];
   for(const u of units){if(u.dead)continue;const hid=u.team!==0&&!visibleTo(0,u);if(hid)continue;
     const x=u.x*S,y=u.y*S,rr=R*S*1.15;ctx.globalAlpha=inBush(u)?.6:1;
     ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(x,y+rr*.8,rr,rr*.4,0,0,7);ctx.fill();
@@ -181,10 +182,10 @@ function draw(){
     ctx.fillStyle='#111';for(const s of [-.45,.45]){ctx.beginPath();ctx.arc(x+Math.cos(a+s)*rr*.58,y+Math.sin(a+s)*rr*.58,rr*.11,0,7);ctx.fill()}
     if(u.b.id==='bear'){ctx.fillStyle=u.b.color;for(const s of [-.9,.9]){ctx.beginPath();ctx.arc(x+Math.cos(-Math.PI/2+s)*rr*.95,y+Math.sin(-Math.PI/2+s)*rr*.95,rr*.3,0,7);ctx.fill()}}
     ctx.globalAlpha=1;
-    const bw=S*.95;ctx.fillStyle='#222';ctx.fillRect(x-bw/2,y-rr-14,bw,6);ctx.fillStyle=u.team?'#ff5a5a':u===me?'#5fe07a':'#5ab8ff';ctx.fillRect(x-bw/2,y-rr-14,bw*u.hp/u.max,6);
+    labels.push(()=>{const bw=S*.95;ctx.fillStyle='#222';ctx.fillRect(x-bw/2,y-rr-14,bw,6);ctx.fillStyle=u.team?'#ff5a5a':u===me?'#5fe07a':'#5ab8ff';ctx.fillRect(x-bw/2,y-rr-14,bw*u.hp/u.max,6);
     if(u===me){for(let i=0;i<u.b.attack.ammo;i++){ctx.fillStyle='#333';ctx.fillRect(x-bw/2+i*(bw/3),y-rr-7,bw/3-2,4);ctx.fillStyle='#ffb020';ctx.fillRect(x-bw/2+i*(bw/3),y-rr-7,(bw/3-2)*clamp(u.ammo-i,0,1),4)}}
     ctx.font=`${Math.max(11,S*.3)}px Jua, sans-serif`;ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText(u.name,x,y-rr-18);
-    if(u.gems>0){drawGem(u.x+.35,u.y-.95,.17);ctx.fillStyle='#fff';ctx.fillText(u.gems,x+S*.62,y-S*.82)}}
+    if(u.gems>0){drawGem(u.x+.35,u.y-.95,.17);ctx.fillStyle='#fff';ctx.fillText(u.gems,x+S*.62,y-S*.82)}})}
   // 풀숲
   for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){if(map[y][x]==='B'){ctx.fillStyle='rgba(40,140,60,.88)';ctx.fillRect(x*S,y*S,S+.5,S+.5);ctx.fillStyle='rgba(70,180,80,.9)';
     for(const [ox,oy] of [[.25,.3],[.7,.25],[.5,.7],[.2,.75],[.8,.7]]){ctx.beginPath();ctx.arc((x+ox)*S,(y+oy)*S,S*.22,0,7);ctx.fill()}}}
@@ -197,6 +198,7 @@ function draw(){
   for(const e of fx){if(e.kind==='boom'){ctx.fillStyle=`rgba(255,180,60,${e.t*1.8})`;ctx.beginPath();ctx.arc(e.x*S,e.y*S,e.r*S*(1.2-e.t),0,7);ctx.fill()}
     else if(e.kind==='swing'){ctx.strokeStyle=e.col;ctx.lineWidth=6;ctx.globalAlpha=e.t*4;ctx.beginPath();ctx.arc(e.x*S,e.y*S,e.r*S,e.a-1,e.a+1);ctx.stroke();ctx.globalAlpha=1}
     else if(e.kind==='num'){ctx.globalAlpha=Math.min(1,e.t*2);ctx.font=`${S*.4}px Jua, sans-serif`;ctx.fillStyle=e.col;ctx.strokeStyle='#000';ctx.lineWidth=3;ctx.strokeText(e.txt,e.x*S,(e.y-(.7-e.t))*S);ctx.fillText(e.txt,e.x*S,(e.y-(.7-e.t))*S);ctx.globalAlpha=1}}
+  for(const f of labels)f();
   if(me&&me.dead&&state==='play'){ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(0,0,Wd,Ht);ctx.fillStyle='#fff';ctx.font='28px Jua, sans-serif';ctx.textAlign='center';ctx.fillText(Math.ceil(me.rt)+'초 뒤에 다시 나와요',Wd/2,Ht/2)}
 }
 function drawGem(x,y,r){ctx.fillStyle='#c070ff';ctx.beginPath();ctx.moveTo(x*S,(y-r)*S);ctx.lineTo((x+r)*S,y*S);ctx.lineTo(x*S,(y+r)*S);ctx.lineTo((x-r)*S,y*S);ctx.closePath();ctx.fill();ctx.fillStyle='rgba(255,255,255,.6)';ctx.fillRect((x-r*.3)*S,(y-r*.5)*S,r*.3*S,r*.3*S)}
