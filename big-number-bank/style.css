@@ -1,0 +1,21 @@
+/* VOICE: 동네 은행 창구, 또박또박 세어 줘요
+   IDEA: 네 자리씩 끊어 만·억·조를 붙여 읽어요
+   PICTURE: 흰 통장 카드 위 큰 숫자, 지폐와 동전
+   COLOUR and TYPE: 연두 종이, 초록 강조 / Jua
+   LAYOUT: 공통 틀 + 숫자 카드 */
+:root{--paper:#eef7ec;--grid:#dcebd7;--accent:#2f8f4e;--soft:#cfe2c8;--edge:#2c5a36}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.num{font-size:clamp(34px,10.5vw,60px);letter-spacing:.04em;background:#fff;border-radius:20px;padding:10px 20px;box-shadow:0 5px 0 var(--soft);max-width:96vw;word-break:break-all;text-align:center}
+.num i{display:inline-block;width:.32em}
+.num u{text-decoration:none;color:#e8642a;border-bottom:5px solid #e8642a}
+.num .z{color:#e8642a}
+.mini{font-size:17px;color:var(--mute)}
+.eq{font-size:clamp(24px,7vw,34px);background:#fff;border-radius:20px;padding:16px 20px;box-shadow:0 5px 0 var(--soft);text-align:center;max-width:94vw}
+.q{color:#e8642a}
+.emoji{font-size:clamp(70px,22vw,110px)}
+.money{width:min(94vw,440px);height:auto;max-height:100%}
+svg text{font-family:'Jua',system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+.bill{font-size:17px;fill:#1d3a1d}.coin{font-size:13px;fill:#333}
+.seq{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;font-size:clamp(18px,5.4vw,26px);background:#fff;border-radius:18px;padding:14px;box-shadow:0 5px 0 var(--soft);max-width:96vw}
+.seq b{color:var(--mute);font-weight:normal}
+.cards{display:flex;gap:10px}.cards span{width:58px;height:76px;display:grid;place-items:center;font-size:40px;background:#fff;border-radius:12px;box-shadow:0 5px 0 var(--soft);border:3px solid var(--accent)}

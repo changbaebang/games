@@ -515,8 +515,18 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>컴퍼스 공방</h2><p>원의 중심·반지름·지름을 알고, 자에 맞춰 컴퍼스를 벌려 직접 원을 그려요. 원 이어 붙이기, O/X, 원 무늬 규칙까지. 6단계.</p>
       <div class="tags"><span>원</span><span>3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./big-number-bank/" style="--c:#7cc48a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#eef7ec"/>
+      <rect x="24" y="40" width="272" height="66" rx="14" fill="#fff" stroke="#cfe2c8" stroke-width="3"/>
+      <g font-family="Jua,sans-serif" text-anchor="middle"><text x="160" y="86" font-size="38" fill="#2b2f45">3 2500 0000</text><text x="160" y="140" font-size="24" fill="#2f8f4e">삼억 이천오백만</text></g>
+      <rect x="40" y="158" width="76" height="34" rx="4" fill="#9fd49a" stroke="#2b2f45"/><rect x="124" y="158" width="76" height="34" rx="4" fill="#9cc3f0" stroke="#2b2f45"/><circle cx="226" cy="175" r="16" fill="#d8d8d8" stroke="#2b2f45"/><text x="262" y="186" font-size="30">🏦</text>
+    </svg>
+    <div class="info"><h2>큰 수 은행</h2><p>만, 다섯 자리 수, 십만·백만·천만, 억과 조! 네 자리씩 끊어 읽고 쓰고, 자릿값·뛰어 세기·크기 비교·숫자 카드까지. 6단계.</p>
+      <div class="tags"><span>큰 수</span><span>4학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 34개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 35개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -554,7 +564,8 @@ const REC={
   'spin-arena':()=>{const c=B('spinChamp'),v=B('spinBest');return c?`우승 ${n(c)}번 🏆`:v?`최고 ${n(v)}승`:null},
   'add-sub-rocket':()=>{const v=B('addsubStarTotal');return v?`별 ${v}개 / 18개`:null},
   'multiply-factory':()=>{const v=B('multiplyStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'circle-studio':()=>{const v=B('circleStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'circle-studio':()=>{const v=B('circleStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'big-number-bank':()=>{const v=B('bignumStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

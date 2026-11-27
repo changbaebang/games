@@ -1,0 +1,126 @@
+{
+  "questionsPerStage": 10,
+  "starThresholds": [
+    6,
+    8,
+    10
+  ],
+  "praise": [
+    "입금 완료!",
+    "딩동댕!",
+    "큰 수 척척!",
+    "정확해요!",
+    "부자 되겠어요!"
+  ],
+  "endTitles": [
+    "한 번 더 해 볼까요?",
+    "잘했어요!",
+    "참 잘했어요!",
+    "큰 수 은행장이에요!"
+  ],
+  "stages": [
+    {
+      "name": "만 알아보기",
+      "short": "만",
+      "sub": "9999 다음은? 만 원은 천 원 몇 장?",
+      "kinds": [
+        {
+          "kind": "makeMan"
+        },
+        {
+          "kind": "money",
+          "weight": 1.3
+        }
+      ]
+    },
+    {
+      "name": "다섯 자리 수",
+      "short": "읽기",
+      "sub": "32507 → 삼만 이천오백칠",
+      "kinds": [
+        {
+          "kind": "readNum",
+          "digits": 5
+        },
+        {
+          "kind": "writeNum",
+          "digits": 5
+        }
+      ]
+    },
+    {
+      "name": "자릿값",
+      "short": "자릿값",
+      "sub": "십만·백만·천만의 자리",
+      "kinds": [
+        {
+          "kind": "placeDigit"
+        },
+        {
+          "kind": "placeValue"
+        }
+      ]
+    },
+    {
+      "name": "억과 조",
+      "short": "억·조",
+      "sub": "네 자리씩 끊어 읽어요",
+      "kinds": [
+        {
+          "kind": "readNum",
+          "digits": 9
+        },
+        {
+          "kind": "writeNum",
+          "digits": 10
+        },
+        {
+          "kind": "zeros",
+          "weight": 0.7
+        },
+        {
+          "kind": "readNum",
+          "digits": 13,
+          "weight": 0.6
+        }
+      ]
+    },
+    {
+      "name": "뛰어 세기",
+      "short": "뛰어 세기",
+      "sub": "만씩, 십만씩, 억씩!",
+      "kinds": [
+        {
+          "kind": "skip"
+        },
+        {
+          "kind": "skipStep",
+          "weight": 0.8
+        }
+      ]
+    },
+    {
+      "name": "크기 비교",
+      "short": "도전",
+      "sub": "더 큰 수, 가장 큰 수 만들기",
+      "challenge": true,
+      "kinds": [
+        {
+          "kind": "compare"
+        },
+        {
+          "kind": "cards",
+          "weight": 1.2
+        },
+        {
+          "kind": "readNum",
+          "digits": 12
+        },
+        {
+          "kind": "skip",
+          "big": true
+        }
+      ]
+    }
+  ]
+}
