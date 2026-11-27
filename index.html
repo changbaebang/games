@@ -468,8 +468,20 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>팽이 대전 회오리</h2><p>뒤로 당겨 발사하고 “슛!” 타이밍 보너스! 레일 대시, OUT 2점·슈퍼 아웃 3점, 끌어서 조종, 필살기 게이지. 대회·친선전·둘이서, 이기면 새 부품.</p>
       <div class="tags"><span>팽이 배틀</span><span>조립·대회 모드</span><span>둘이서도</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./add-sub-rocket/" style="--c:#7aa0f0">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#eef3ff"/>
+      <rect x="120" y="22" width="180" height="156" rx="16" fill="#fff" stroke="#cdd8f2" stroke-width="3"/>
+      <g font-family="Jua,sans-serif" font-size="34" fill="#2b2f45" text-anchor="middle">
+        <text x="210" y="44" font-size="16" fill="#e8642a">1   1</text><text x="190" y="80">3 5 7</text><text x="140" y="118" fill="#e8642a">+</text><text x="190" y="118">2 8 6</text>
+        <rect x="138" y="128" width="148" height="4" fill="#2b2f45"/><text x="190" y="166" fill="#e8642a">6 4 3</text></g>
+      <text x="22" y="140" font-size="76">🚀</text>
+    </svg>
+    <div class="info"><h2>셈셈 로켓</h2><p>세 자리 수의 덧셈·뺄셈을 세로셈으로! 일의 자리부터 키패드로 채우고, 받아올림·받아내림은 직접 표시해요. 어림과 문장제까지. 6단계.</p>
+      <div class="tags"><span>덧셈·뺄셈</span><span>3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 30개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 31개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -503,7 +515,8 @@ const REC={
   'phonics-pop':()=>{const v=B('phonicsStarTotal');return v?`별 ${v}개 / 18개`:null},
   'science-lab':()=>{const v=B('scienceStarTotal');return v?`별 ${v}개 / 18개`:null},
   'hanja-seodang':()=>{const v=B('hanjaStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'spin-arena':()=>{const c=B('spinChamp'),v=B('spinBest');return c?`우승 ${n(c)}번 🏆`:v?`최고 ${n(v)}승`:null}};
+  'spin-arena':()=>{const c=B('spinChamp'),v=B('spinBest');return c?`우승 ${n(c)}번 🏆`:v?`최고 ${n(v)}승`:null},
+  'add-sub-rocket':()=>{const v=B('addsubStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

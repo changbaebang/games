@@ -1,0 +1,33 @@
+{
+  "questionsPerStage": 10,
+  "starThresholds": [6, 8, 10],
+  "praise": ["발사 성공!", "딩동댕!", "계산 척척!", "정확해요!", "우주 최고!"],
+  "endTitles": ["한 번 더 해 볼까요?", "잘했어요!", "참 잘했어요!", "셈셈 우주 비행사!"],
+  "colors": { "hundred": "#4f8fe0", "ten": "#2fa36b", "one": "#f0a020", "edge": "#2b2f45" },
+
+  "stories": [
+    { "t": "도서관에 동화책이 {a}권, 과학책이 {b}권 있어요. 책은 모두 몇 권일까요?", "op": "+", "unit": "권", "e": "📚" },
+    { "t": "줄넘기를 어제 {a}번, 오늘 {b}번 했어요. 이틀 동안 모두 몇 번 했을까요?", "op": "+", "unit": "번", "e": "🪢" },
+    { "t": "과수원에서 사과를 오전에 {a}개, 오후에 {b}개 땄어요. 모두 몇 개일까요?", "op": "+", "unit": "개", "e": "🍎" },
+    { "t": "우주 정거장까지 {a} km 를 날고, {b} km 를 더 날았어요. 모두 몇 km 일까요?", "op": "+", "unit": " km", "e": "🚀" },
+    { "t": "우리 학교 학생은 {a}명이에요. 그중 {b}명이 현장 체험 학습을 갔어요. 학교에 남은 학생은 몇 명일까요?", "op": "-", "unit": "명", "e": "🏫" },
+    { "t": "색종이가 {a}장 있었는데 {b}장을 썼어요. 남은 색종이는 몇 장일까요?", "op": "-", "unit": "장", "e": "🟥" },
+    { "t": "구슬을 형은 {a}개, 나는 {b}개 가지고 있어요. 형은 나보다 몇 개 더 많을까요?", "op": "-", "unit": "개", "e": "🔮" },
+    { "t": "로켓 연료가 {a} L 있었는데 {b} L 를 썼어요. 남은 연료는 몇 L 일까요?", "op": "-", "unit": " L", "e": "⛽" }
+  ],
+
+  "stages": [
+    { "name": "자릿값", "short": "자릿값", "sub": "백·십·일 모형으로 수 읽기",
+      "kinds": [ { "kind": "blocks", "weight": 1.2 }, { "kind": "digitValue" }, { "kind": "split", "weight": 0.8 } ] },
+    { "name": "받아올림 없는 계산", "short": "기본", "sub": "세로셈, 일의 자리부터!",
+      "kinds": [ { "kind": "addPlain" }, { "kind": "subPlain" } ] },
+    { "name": "받아올림 덧셈", "short": "받아올림", "sub": "10이 되면 윗자리로 1 올려요",
+      "kinds": [ { "kind": "addCarry", "carry": 1 }, { "kind": "addCarry", "carry": 2, "weight": 1.3 } ] },
+    { "name": "받아내림 뺄셈", "short": "받아내림", "sub": "모자라면 윗자리에서 10 빌려 와요",
+      "kinds": [ { "kind": "subBorrow", "borrow": 1 }, { "kind": "subBorrow", "borrow": 2, "weight": 1.2 }, { "kind": "subBorrow", "zero": true, "weight": 0.7 } ] },
+    { "name": "어림하기와 문장제", "short": "문장제", "sub": "약 몇백일까? 이야기 문제",
+      "kinds": [ { "kind": "estimate" }, { "kind": "story", "weight": 1.5 } ] },
+    { "name": "빈칸 탐정", "short": "도전", "sub": "□ 안의 숫자, 더 큰 식 찾기", "challenge": true,
+      "kinds": [ { "kind": "missingDigit", "weight": 1.3 }, { "kind": "compare" }, { "kind": "subBorrow", "zero": true }, { "kind": "story" } ] }
+  ]
+}

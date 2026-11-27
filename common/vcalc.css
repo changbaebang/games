@@ -1,0 +1,20 @@
+/* 세로셈 칸 (common/vcalc.js) */
+.vbox{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.vgrid{display:grid;grid-template-columns:repeat(var(--w),minmax(38px,52px));background:#fff;border-radius:18px;padding:8px 14px 12px;box-shadow:0 5px 0 var(--soft);font-size:clamp(30px,9vw,42px);line-height:1}
+.vc{height:1.3em;display:grid;place-items:center;position:relative;color:var(--ink)}
+.vc.memo{height:.85em;font-size:.48em;color:var(--accent);border-radius:6px;cursor:pointer}
+.vc.memo:not(.msub):hover{background:var(--grid)}
+.vc.memo .cy{font-weight:700}
+.vc.top.tap{cursor:pointer}
+.vc s{color:var(--mute);text-decoration-thickness:3px}
+.vc .bw{position:absolute;top:-.62em;font-size:.48em;color:#d9622b;font-weight:700}
+.vc.op{color:var(--accent)}
+.vline{height:4px;background:var(--ink);border-radius:2px;margin:4px 0 8px}
+.vc.ans{border:3px dashed var(--soft);border-radius:10px;margin:0 3px;height:1.25em}
+.vc.ans.on{border:3px solid var(--accent);background:#fff8e8}
+.vc.ans.bad{border-color:#e5533d;background:#ffe9e6;color:#e5533d}
+.vhint{font-size:15px;color:var(--mute);min-height:1.2em}
+.choices.custom .vpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(92vw,330px);margin:0 auto}
+.vk{font:inherit;font-size:26px;border:0;border-radius:14px;background:#fff;color:var(--ink);height:50px;box-shadow:0 4px 0 var(--soft);cursor:pointer}
+.vk:active{transform:translateY(3px);box-shadow:0 1px 0 var(--soft)}
+.vk.del{background:var(--grid)}

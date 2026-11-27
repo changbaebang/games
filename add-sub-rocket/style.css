@@ -1,0 +1,17 @@
+/* VOICE: 우주 기지 관제실, 차근차근 카운트다운
+   IDEA: 자리마다 계산해 로켓 연료를 채우듯 세로셈 칸을 채워요
+   PICTURE: 밝은 하늘색 종이 위 흰 세로셈 카드
+   COLOUR and TYPE: 하늘 종이, 남색 글자, 주황 강조 / Jua
+   LAYOUT: 공통 틀 + 세로셈 카드와 키패드 */
+:root{--paper:#eef3ff;--grid:#dde6fb;--accent:#e8642a;--soft:#cdd8f2;--edge:#2b3f78}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.blk{width:min(94vw,460px);height:auto;max-height:70%}
+.legend{display:flex;gap:10px;font-size:13px;color:var(--mute);flex-wrap:wrap;justify-content:center}
+.legend span::before{content:'';display:inline-block;width:10px;height:10px;background:var(--c);border-radius:2px;margin-right:4px}
+.bignum{font-size:clamp(64px,20vw,100px);letter-spacing:.08em;background:#fff;border-radius:22px;padding:4px 26px;box-shadow:0 5px 0 var(--soft)}
+.bignum u{text-decoration:none;color:var(--accent);border-bottom:6px solid var(--accent)}
+.eq{font-size:clamp(30px,9vw,44px);background:#fff;border-radius:20px;padding:14px 22px;box-shadow:0 5px 0 var(--soft);text-align:center}
+.eq.big{font-size:clamp(28px,8vw,46px);letter-spacing:.04em}
+.q{color:var(--accent)}
+.story{font-size:clamp(70px,22vw,110px)}
+.ask small{display:block;font-size:.8em;color:var(--mute)}
