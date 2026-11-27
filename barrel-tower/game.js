@@ -131,9 +131,9 @@ function draw(){
   for(const f of fires){const x=X(f.x),y=Y(f.y);ctx.fillStyle=Math.floor(time*10)%2?'#ffd23f':'#ff7a1c';ctx.beginPath();ctx.moveTo(x-S*.4,y);ctx.quadraticCurveTo(x,y-S*1.6,x+S*.4,y);ctx.fill();ctx.fillStyle='#111';ctx.fillRect(x-S*.2,y-S*.6,S*.1,S*.12);ctx.fillRect(x+.1*S,y-S*.6,S*.1,S*.12)}
   // 주인공
   if(!(pl.dead&&Math.floor(time*10)%2)){const x=X(pl.x),y=Y(pl.y),f=pl.face,w=Math.sin(pl.anim)*S*.15;
-    ctx.fillStyle='#2f5ad0';ctx.fillRect(x-S*.35,y-S*.6,S*.3,S*.6+w*0);ctx.fillRect(x+S*.05,y-S*.6,S*.3,S*.6);
-    ctx.fillStyle='#e0302a';ctx.fillRect(x-S*.4,y-S*1.2,S*.8,S*.65);ctx.fillStyle='#2f5ad0';ctx.fillRect(x-S*.3,y-S*1.0,S*.6,S*.45);
-    ctx.fillStyle='#ffd0a0';ctx.fillRect(x-S*.32,y-S*1.68,S*.64,S*.5);ctx.fillStyle='#e0302a';ctx.fillRect(x-S*.38,y-S*1.8,S*.76,S*.2);ctx.fillRect(x+f*S*.1,y-S*1.68,S*.36*f,S*.1);
+    ctx.fillStyle='#6a4a2a';ctx.fillRect(x-S*.35,y-S*.6,S*.3,S*.6);ctx.fillRect(x+S*.05,y-S*.6,S*.3,S*.6);
+    ctx.fillStyle='#ff9a1c';ctx.fillRect(x-S*.4,y-S*1.2,S*.8,S*.65);ctx.fillStyle='#ffd23f';ctx.fillRect(x-S*.1,y-S*1.15,S*.2,S*.5);
+    ctx.fillStyle='#ffd0a0';ctx.fillRect(x-S*.32,y-S*1.68,S*.64,S*.5);ctx.fillStyle='#33b86a';ctx.fillRect(x-S*.38,y-S*1.8,S*.76,S*.2);ctx.fillRect(x+f*S*.1,y-S*1.68,S*.36*f,S*.1);
     ctx.fillStyle='#111';ctx.fillRect(x+f*S*.12,y-S*1.5,S*.08,S*.1);
     if(pl.hammer>0){const up=Math.floor(time*8)%2;ctx.fillStyle='#c88a4a';ctx.fillRect(x+f*S*.5,y-S*(up?2.2:1.3),S*.14,S*.8);ctx.fillStyle=pl.hammer<2&&Math.floor(time*10)%2?'#ff6a6a':'#d0d6e0';ctx.fillRect(x+f*S*.5-S*.25,y-S*(up?2.4:1.4),S*.64,S*.32)}}
 }
