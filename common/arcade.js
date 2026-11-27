@@ -91,6 +91,7 @@
     level: function () { arp([659, 784, 988, 1319], 0.07, { type: 'triangle', v: 0.1, d: 0.15 }); },
     tick: function () { tone({ f: 1500, d: 0.02, v: 0.04, type: 'square' }); },
     whoosh: function () { noise({ d: 0.18, v: 0.12, f: 400, f2: 2400, type: 'bandpass', q: 0.7 }); },
+    siren: function () { tone({ f: 640, f2: 980, d: 0.32, v: 0.045, type: 'triangle' }); tone({ f: 980, f2: 640, d: 0.32, v: 0.045, type: 'triangle', delay: 0.34 }); },
     cluck: function () { tone({ f: 700, f2: 500, d: 0.05, v: 0.06, type: 'square' }); tone({ f: 900, f2: 600, d: 0.05, v: 0.05, type: 'square', delay: 0.06 }); }
   };
 
@@ -162,6 +163,15 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load); else load();
   }
 
+  function showUpdate() {
+    if (document.getElementById('arcade-update') || !document.body) return;
+    var b = document.createElement('button');
+    b.id = 'arcade-update'; b.type = 'button'; b.textContent = '새 버전이 있어요 · 업데이트';
+    b.style.cssText = 'position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:100;font:16px Jua,system-ui,sans-serif;border:0;border-radius:24px;padding:10px 20px;min-height:44px;background:#ffcf3f;color:#3b2a00;box-shadow:0 4px 14px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap';
+    b.onclick = function () { location.reload(); };
+    document.body.appendChild(b);
+  }
+
   function installLinks() {
     var head = document.head;
     if (!head.querySelector('link[rel="manifest"]')) {
@@ -174,7 +184,13 @@
       var m = document.createElement('meta'); m.name = 'theme-color'; m.content = '#141a2e'; head.appendChild(m);
     }
     if ('serviceWorker' in navigator && location.protocol === 'https:') {
-      navigator.serviceWorker.register(new URL('sw.js', base).href, { scope: base.pathname }).catch(function () {});
+      var hadCtrl = !!navigator.serviceWorker.controller;
+      navigator.serviceWorker.register(new URL('sw.js', base).href, { scope: base.pathname }).then(function (reg) {
+        // 앱을 다시 볼 때마다 새 버전이 있는지 확인
+        document.addEventListener('visibilitychange', function () { if (!document.hidden) reg.update().catch(function () {}); });
+      }).catch(function () {});
+      // 새 버전이 설치되면 화면 위쪽에 업데이트 버튼을 띄운다 (처음 설치 때는 띄우지 않음)
+      navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadCtrl) showUpdate(); hadCtrl = true; });
     }
   }
 
