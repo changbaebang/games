@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>통 굴리기 탑</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<canvas id="c"></canvas>
+<div class="hud"><span>점수 <b id="score">0</b></span><span>단계 <b id="lvl">1</b></span><span id="lives">♥♥♥♥</span><span>보너스 <b id="bonus">5000</b></span></div>
+<button id="pauseBtn" aria-label="일시정지">II</button>
+<div id="toast"></div>
+<div class="help">← → 걷기 · ↑ ↓ 사다리 · Space 점프 · P 일시정지</div>
+<div id="touch"><button class="tb" id="tL">◀</button><button class="tb" id="tR">▶</button><button class="tb" id="tU">▲</button><button class="tb" id="tD">▼</button><button class="tb big" id="tJ">점프</button></div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>통 굴리기 탑</h1>
+  <p>장난꾸러기 고릴라 <b>쿵쿵이</b>가 토끼 <b>토리</b>를 데리고 탑 꼭대기로 올라갔어요! 굴러오는 통을 점프로 넘고 사다리를 올라 토리를 구해요. 망치를 잡으면 통을 부술 수 있어요.</p>
+  <p class="best">최고 점수 <b id="tBest">0</b></p>
+  <button class="btn" id="startBtn">출발!</button>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="pauseOv" hidden><div class="card"><h2>일시정지</h2><div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">처음 화면</button></div></div></div>
+<div class="overlay" id="overOv" hidden><div class="card"><h1>게임 끝</h1><p class="big"><b id="oScore">0</b>점</p><p id="oTxt"></p><div class="btns"><button class="btn" id="againBtn">다시 하기</button><button class="btn soft" id="oMenu">처음 화면</button></div></div></div>
+<script src="game.js"></script>
+</body></html>
