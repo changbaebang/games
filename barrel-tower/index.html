@@ -12,7 +12,8 @@
 <button id="pauseBtn" aria-label="일시정지">II</button>
 <div id="toast"></div>
 <div class="help">← → 걷기 · ↑ ↓ 사다리 · Space 점프 · P 일시정지</div>
-<div id="touch"><button class="tb" id="tL">◀</button><button class="tb" id="tR">▶</button><button class="tb" id="tU">▲</button><button class="tb" id="tD">▼</button><button class="tb big" id="tJ">점프</button></div>
+<div id="dragRing" hidden><i></i></div>
+<div id="touch"><button class="tb" id="tL" hidden>◀</button><button class="tb" id="tR" hidden>▶</button><button class="tb" id="tU" hidden>▲</button><button class="tb" id="tD" hidden>▼</button><button class="tb big" id="tJ">점프</button><p class="dragHint">화면을 누른 채 끌면 걷기·사다리, 톡 치면 점프</p></div>
 <div class="overlay" id="titleOv"><div class="card">
   <h1>통 굴리기 탑</h1>
   <p>장난꾸러기 고릴라 <b>쿵쿵이</b>가 토끼 <b>토리</b>를 데리고 탑 꼭대기로 올라갔어요! 굴러오는 통을 점프로 넘고 사다리를 올라 토리를 구해요. 망치를 잡으면 통을 부술 수 있어요.</p>

@@ -6,6 +6,14 @@
  * - manifest·아이콘 링크를 넣고 서비스워커를 등록해 앱처럼 설치/오프라인 실행 */
 (function () {
   'use strict';
+  // roundRect polyfill: 예전 휴대폰 브라우저에는 없어서 그림이 멈추는 걸 막는다
+  if (window.CanvasRenderingContext2D && !CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+      r = Math.max(0, Math.min(typeof r === 'number' ? r : (r && r[0]) || 0, Math.abs(w) / 2, Math.abs(h) / 2));
+      this.moveTo(x + r, y); this.arcTo(x + w, y, x + w, y + h, r); this.arcTo(x + w, y + h, x, y + h, r);
+      this.arcTo(x, y + h, x, y, r); this.arcTo(x, y, x + w, y, r); this.closePath(); return this;
+    };
+  }
   var script = document.currentScript;
   var base = new URL('../', script ? script.src : location.href);
   var store = {

@@ -105,12 +105,15 @@ addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowLeft','ArrowR
 addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
 let tp=null;
 const toField=x=>(x-cv.getBoundingClientRect().left)/S;
-addEventListener('pointerdown',e=>{if(st!=='play'||e.target.closest('.overlay'))return;tp={id:e.pointerId,x:e.clientX,sx:e.clientX,t:performance.now(),moved:false}});
+// 휴대폰: 손가락 아래로 패들이 따라오고(손가락보다 조금 위를 보지 않도록 x만), 짧게 톡 치면 발사
+addEventListener('pointerdown',e=>{if(st!=='play'||(e.target.closest&&e.target.closest('.overlay,button')))return;if(e.pointerType!=='mouse'){e.preventDefault();if(!tp){tp={id:e.pointerId,sx:e.clientX,sy:e.clientY,t:performance.now(),moved:false};pad.x=toField(e.clientX)}}},{passive:false});
 addEventListener('pointermove',e=>{if(st!=='play')return;
   if(e.pointerType==='mouse'){pad.x=toField(e.clientX);return}
-  if(!tp||tp.id!==e.pointerId)return;const dx=(e.clientX-tp.x)/S*1.25;tp.x=e.clientX;pad.x+=dx;if(Math.abs(e.clientX-tp.sx)>8)tp.moved=true});
-addEventListener('pointerup',e=>{if(!tp||tp.id!==e.pointerId)return;if(!tp.moved||e.pointerType==='mouse')launch();tp=null});
-addEventListener('pointercancel',()=>tp=null);
+  if(!tp||tp.id!==e.pointerId)return;e.preventDefault();pad.x=toField(e.clientX);if(Math.hypot(e.clientX-tp.sx,e.clientY-tp.sy)>10)tp.moved=true},{passive:false});
+addEventListener('pointerup',e=>{if(e.pointerType==='mouse'){if(st==='play'&&!(e.target.closest&&e.target.closest('.overlay,button')))launch();return}
+  if(!tp||tp.id!==e.pointerId)return;if(!tp.moved||performance.now()-tp.t<220)launch();tp=null});
+addEventListener('pointercancel',e=>{if(tp&&tp.id===e.pointerId)tp=null});
+addEventListener('touchmove',e=>{if(st==='play')e.preventDefault()},{passive:false});
 const go=()=>{newGame();st='play';$('titleOv').hidden=true;$('endOv').hidden=true};
 $('startBtn').onclick=go;$('againBtn').onclick=go;
 // ---------- draw

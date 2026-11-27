@@ -34,6 +34,20 @@ addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for
 function hold(id,k){const el=$(id);el.addEventListener('pointerdown',e=>{e.preventDefault();btn[k]=true;if(k==='j')jumpQ=true;el.classList.add('on');try{el.setPointerCapture(e.pointerId)}catch(_){}});
   for(const ev of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(ev,()=>{btn[k]=false;el.classList.remove('on')});el.addEventListener('contextmenu',e=>e.preventDefault())}
 hold('tL','l');hold('tR','r');hold('tU','u');hold('tD','d');hold('tJ','j');
+// 휴대폰: 화면을 누른 채 끌면 그 방향으로 걷기·사다리, 짧게 톡 치면 점프
+const ring=document.getElementById('dragRing');let drag=null;
+cv.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'||state!=='play')return;e.preventDefault();
+  if(drag){jumpQ=true;return}
+  drag={id:e.pointerId,x:e.clientX,y:e.clientY,t:performance.now(),moved:false};try{cv.setPointerCapture(e.pointerId)}catch(_){}
+  ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';ring.hidden=false});
+cv.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;let dx=e.clientX-drag.x,dy=e.clientY-drag.y;const l=Math.hypot(dx,dy);
+  if(l>70){drag.x=e.clientX-dx/l*70;drag.y=e.clientY-dy/l*70;dx=e.clientX-drag.x;dy=e.clientY-drag.y;ring.style.left=drag.x+'px';ring.style.top=drag.y+'px'}
+  if(l>14)drag.moved=true;
+  const ax=Math.abs(dx),ay=Math.abs(dy);
+  btn.l=dx<-16&&ax>=ay*.6;btn.r=dx>16&&ax>=ay*.6;btn.u=dy<-22&&ay>ax*.7;btn.d=dy>22&&ay>ax*.7;
+  ring.firstElementChild.style.transform=`translate(${Math.max(-40,Math.min(40,dx))}px,${Math.max(-40,Math.min(40,dy))}px)`});
+const dragEnd=e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved&&performance.now()-drag.t<260)jumpQ=true;drag=null;btn.l=btn.r=btn.u=btn.d=false;ring.hidden=true;ring.firstElementChild.style.transform=''};
+cv.addEventListener('pointerup',dragEnd);cv.addEventListener('pointercancel',dragEnd);
 
 // ---------- 진행
 function die(){if(pl.dead)return;pl.dead=1.6;snd('lose');lives--;flash=.3}
