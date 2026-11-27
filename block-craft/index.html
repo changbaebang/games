@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>블록 쌓기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div id="view"></div>
+<div id="cross">+</div>
+<div class="topbar"><button id="modeBtn" class="place">🧱 놓기</button><button id="flyBtn">🕊 날기</button><button id="menuBtn" aria-label="메뉴">≡</button></div>
+<div id="toast"></div>
+<div id="palette"></div>
+<div class="help">WASD 이동 · 마우스 끌기로 둘러보기 · 클릭 = 놓기/부수기 (오른쪽 클릭 = 부수기) · Space 점프/위로 · Shift 아래로 · F 날기 · 1~9 블록 고르기 · Q 모드 바꾸기</div>
+<div id="touch"><div id="stickZone"><div id="stick"><i></i></div></div><div class="tb"><button id="upBtn">⬆</button><button id="downBtn">⬇</button></div></div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>블록 쌓기</h1>
+  <p>나만의 세계에 블록을 <b>놓고</b>, <b>부수고</b>, 마음껏 지어요! 날기를 켜면 하늘 높이 올라갈 수 있어요.</p>
+  <p class="small">화면을 탭한 곳에 블록이 놓여요. 위 버튼으로 놓기 ↔ 부수기를 바꿔요. 지은 세계는 자동으로 저장돼요.</p>
+  <div class="btns"><button class="btn" id="playBtn">들어가기</button><button class="btn soft" id="newBtn">새 세계 만들기</button></div>
+  <p class="small" id="tRec"></p>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="newOv" hidden><div class="card"><h2>새 세계를 만들까요?</h2><p>지금 세계는 사라져요.</p><div class="btns"><button class="btn" id="newYes">새 세계</button><button class="btn soft" id="newNo">취소</button></div></div></div>
+<script src="game.js"></script>
+</body></html>
