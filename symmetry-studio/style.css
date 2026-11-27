@@ -1,0 +1,21 @@
+/* VOICE: 미술 시간 데칼코마니, 접고 돌려 봐요
+   IDEA: 포개고(합동), 접고(선대칭), 돌려서(점대칭) 겹치는지 확인
+   PICTURE: 분홍 도형, 보라 칸 무늬, 주황 대칭축
+   COLOUR and TYPE: 연보라 종이, 주황 강조 / Jua
+   LAYOUT: 공통 틀 + 도형·칸 카드 */
+:root{--paper:#f6f0fb;--grid:#e9def5;--accent:#e8642a;--soft:#dccdee;--edge:#5a2b7a}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.cell{width:100%;height:auto;max-height:22vh}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:min(92vw,380px)}
+.grid4 div,.orig{background:#fff;border-radius:14px;box-shadow:0 4px 0 var(--soft);display:flex;flex-direction:column;align-items:center;padding:4px 4px 6px}
+.grid4 span,.orig span{font-size:16px;color:var(--ink)}
+.row{display:flex;justify-content:center;width:min(92vw,380px)}.orig{width:48%}
+.pair{width:min(94vw,440px);height:auto;background:#fff;border-radius:18px;box-shadow:0 5px 0 var(--soft)}
+svg text{font-family:'Jua',system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+.pl{font-size:17px;fill:var(--ink)}.ln{font-size:15px;fill:#e8642a;paint-order:stroke;stroke:#fff;stroke-width:4px}
+.ax{stroke:#e8642a;stroke-width:3;stroke-dasharray:6 5}
+.pbox{display:flex;justify-content:center;align-items:center;width:100%;height:100%;min-height:0}
+.pgrid{width:min(82vw,44vh,340px);height:auto;background:#fff;border-radius:16px;box-shadow:0 5px 0 var(--soft);touch-action:manipulation}
+.pgrid rect.ed{cursor:pointer}
+.axl{stroke:#e8642a;stroke-width:4;stroke-dasharray:8 6}
+.choices.custom{display:flex;justify-content:center}

@@ -716,8 +716,19 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>곱셈 텃밭</h2><p>텃밭을 가로세로로 나눠 칠하며 분수 × 분수를 보고, 소수점 아래 자리 수를 세어 소수의 곱셈을 해요. 곱의 크기 어림과 10배·0.1배까지. 6단계.</p>
       <div class="tags"><span>분수·소수의 곱셈</span><span>5학년 2학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./symmetry-studio/" style="--c:#b48be0">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#f6f0fb"/>
+      <g stroke="#e9def5" stroke-width="1.5" fill="#fff"><rect x="40" y="30" width="140" height="140"/></g>
+      <g fill="#9b5de5"><rect x="58" y="48" width="35" height="35"/><rect x="75" y="100" width="35" height="35"/><rect x="127" y="48" width="35" height="35"/><rect x="110" y="100" width="35" height="35" fill="#c9a7f5"/></g>
+      <line x1="110" y1="22" x2="110" y2="178" stroke="#e8642a" stroke-width="4" stroke-dasharray="8 6"/>
+      <text x="252" y="120" font-size="64" text-anchor="middle">🦋</text>
+    </svg>
+    <div class="info"><h2>대칭 데칼코마니</h2><p>합동인 도형과 대응변·대응각, 대칭축 개수, 선대칭·점대칭도형을 찾고 칸을 칠해 대칭 무늬를 직접 완성해요. 6단계.</p>
+      <div class="tags"><span>합동과 대칭</span><span>5학년 2학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 52개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 53개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -773,7 +784,8 @@ const REC={
   'fraction-juice':()=>{const v=B('fraction5StarTotal');return v?`별 ${v}개 / 18개`:null},
   'order-blocks':()=>{const v=B('mixcalcStarTotal');return v?`별 ${v}개 / 18개`:null},
   'range-park':()=>{const v=B('rangeStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'multiply-garden':()=>{const v=B('mulsStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'multiply-garden':()=>{const v=B('mulsStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'symmetry-studio':()=>{const v=B('symmetryStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});
