@@ -1,0 +1,26 @@
+/* VOICE: 밤의 놀이공원 미로에서 쫓고 쫓기기
+   PICTURE: 위에서 본 네온 미로
+   COLOUR and TYPE: 남색 밤, 보라 네온 벽, 노란 씨앗 / Jua */
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#12122a;font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{position:fixed;left:max(8px,env(safe-area-inset-left));top:max(8px,env(safe-area-inset-top));display:flex;gap:6px;z-index:5;pointer-events:none;flex-wrap:wrap;max-width:calc(100% - 64px)}
+.hud span{background:rgba(255,255,255,.12);padding:4px 12px;border-radius:12px;font-size:18px}
+.hud b{font-weight:400;color:#ffd23f}
+#pauseBtn{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));width:44px;height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.15);color:#fff;font:inherit;font-size:16px;z-index:6}
+#big{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%) scale(.6);font-size:min(11vw,56px);color:#ffd23f;text-shadow:0 4px 0 #8a4ae0,0 8px 18px rgba(0,0,0,.5);opacity:0;transition:opacity .2s,transform .25s;z-index:6;pointer-events:none;white-space:nowrap}
+#big.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.help{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.1);padding:5px 12px;border-radius:10px;font-size:13px;z-index:4;pointer-events:none;white-space:nowrap}
+@media (pointer:coarse){.help{display:none}}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,8,24,.65);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fff;color:#2a2a3a;border-radius:22px;padding:22px;max-width:420px;width:100%;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.35)}
+.card h1{margin:0 0 8px;font-weight:400;font-size:36px;color:#8a4ae0}
+.card h2{margin:0 0 8px;font-weight:400;font-size:28px;color:#8a4ae0}
+.card p{margin:6px 0;font-size:17px;line-height:1.45}
+.small{font-size:14px!important;color:#6a6a7a}
+.mob{display:none}@media (pointer:coarse){.mob{display:block}}
+.back a{color:#7a7a8a;font-size:15px}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.btn{border:0;border-radius:14px;background:#8a4ae0;color:#fff;font:inherit;font-size:20px;padding:10px 22px;box-shadow:0 4px 0 #5a2aa0;cursor:pointer}
+.btn.soft{background:#e8e4f0;color:#4a4a5a;box-shadow:0 4px 0 #b8b4c8}

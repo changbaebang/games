@@ -265,6 +265,16 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>폭탄 미로</h2><p>폭탄을 놓아 상자를 부수고 💣·🔥·👟 아이템을 모아요! 불꽃으로 친구들을 맞혀 마지막까지 남으면 승리. 먼저 3판 이기면 우승.</p>
       <div class="tags"><span>4인 대결</span><span>폭탄 놓기</span><span>아이템</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./ghost-maze/" style="--c:#8a4ae0">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#12122a"/><g fill="none" stroke="#a07aff" stroke-width="6"><rect x="14" y="14" width="292" height="172" rx="8"/><path d="M60 60 H130 M190 60 H260 M60 140 H130 M190 140 H260 M160 30 V80 M160 120 V170"/></g>
+      <g fill="#ffe08a"><circle cx="40" cy="100" r="4"/><circle cx="70" cy="100" r="4"/><circle cx="100" cy="100" r="4"/><circle cx="200" cy="100" r="4"/><circle cx="230" cy="100" r="4"/></g><circle cx="280" cy="100" r="9" fill="#ff8ad8"/>
+      <g transform="translate(140,100)"><circle r="18" fill="#7ae0a0"/><circle cx="-6" cy="-5" r="5" fill="#fff"/><circle cx="7" cy="-5" r="5" fill="#fff"/><circle cx="-5" cy="-4" r="2.5" fill="#222"/><circle cx="8" cy="-4" r="2.5" fill="#222"/><ellipse cx="1" cy="7" rx="5" ry="3" fill="#a02a4a"/></g>
+      <g transform="translate(240,40)"><path d="M-16 4 a16 16 0 0 1 32 0 v14 l-6 -4 -5 4 -5 -4 -5 4 -5 -4 -6 4z" fill="#ff4a5a"/><circle cx="-6" cy="2" r="4" fill="#fff"/><circle cx="6" cy="2" r="4" fill="#fff"/></g><g transform="translate(70,165)"><path d="M-16 4 a16 16 0 0 1 32 0 v14 l-6 -4 -5 4 -5 -4 -5 4 -5 -4 -6 4z" fill="#4ae0ff"/><circle cx="-6" cy="2" r="4" fill="#fff"/><circle cx="6" cy="2" r="4" fill="#fff"/></g>
+    </svg>
+    <div class="info"><h2>유령 미로</h2><p>냠냠이가 미로의 씨앗을 모두 먹으면 다음 단계! 유령 넷은 저마다 쫓는 방법이 달라요. 힘 열매를 먹으면 거꾸로 유령을 잡을 수 있어요.</p>
+      <div class="tags"><span>미로</span><span>쫓고 쫓기기</span><span>쓱 밀어 방향</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -845,7 +855,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>규칙과 대응·평균과 가능성</span><span>5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 64개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 65개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -869,6 +879,7 @@ const REC={
   'puff-sling':()=>{const v=B('puffSlingStars');return v?`⭐ ${n(v)}`:null},
   'fruit-slice':()=>{const v=B('fruitSliceBest');return v?`최고 ${n(v)}점`:null},
   'bomb-maze':()=>{const v=B('bombMazeCups');return v?`${n(v)}번 우승`:null},
+  'ghost-maze':()=>{const v=B('ghostMazeBest');return v?`최고 ${n(v)}점`:null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},
