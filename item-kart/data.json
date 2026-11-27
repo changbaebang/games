@@ -1,0 +1,537 @@
+{
+ "_설명": "아이템 카트 데이터. 속도 단위 m/s. drivers: 고를 수 있는 동물 드라이버(top 최고속도, accel 가속, grip 접지력, price 금화). items: 아이템 상자에서 나오는 아이템과 등수별 확률(weights: [1등, 중간, 꼴찌]). itemBoxes 줄 수, spinTime 맞으면 빙글 도는 시간. tracks: points 조절점, laps, aiTop 라이벌 최고속도, missions 별 3개(type: place 등수, hit 아이템 맞히기, boost 부스트 판, jump 점프). 나머지는 나이트 러시와 같다.",
+ "road": {
+  "half": 8,
+  "shoulder": 2.2,
+  "lanes": [
+   -6,
+   -2,
+   2,
+   6
+  ]
+ },
+ "physics": {
+  "brake": 22,
+  "offroadTop": 0.6,
+  "wallSlow": 0.35,
+  "steerRate": 14,
+  "slide": 0.3,
+  "assist": 0.6,
+  "driftSteer": 1.5,
+  "driftSlide": 0.55,
+  "driftDrag": 0.1,
+  "driftNitro": 24,
+  "nitroUse": 28,
+  "nitroStart": 0,
+  "nearMissNitro": 14,
+  "nearMissCoins": 5,
+  "bumpLoss": 7
+ },
+ "cars": [
+  {
+   "id": "bunny",
+   "name": "토끼 토토",
+   "desc": "가볍고 가속이 빨라요",
+   "price": 0,
+   "top": 36,
+   "accel": 13,
+   "grip": 1.05,
+   "nitro": 1.0,
+   "shape": "kart",
+   "animal": "bunny",
+   "fur": "#ffffff"
+  },
+  {
+   "id": "bear",
+   "name": "곰 곰돌",
+   "desc": "묵직하고 최고 속도가 빨라요",
+   "price": 600,
+   "top": 39,
+   "accel": 10.5,
+   "grip": 0.95,
+   "nitro": 1.0,
+   "shape": "kart",
+   "animal": "bear",
+   "fur": "#a0703a"
+  },
+  {
+   "id": "cat",
+   "name": "고양이 냥냥",
+   "desc": "코너를 잘 돌아요",
+   "price": 1200,
+   "top": 37.5,
+   "accel": 12,
+   "grip": 1.25,
+   "nitro": 1.0,
+   "shape": "kart",
+   "animal": "cat",
+   "fur": "#ffb347"
+  },
+  {
+   "id": "frog",
+   "name": "개구리 개굴",
+   "desc": "모든 게 고르게 좋아요",
+   "price": 2500,
+   "top": 39.5,
+   "accel": 13,
+   "grip": 1.15,
+   "nitro": 1.0,
+   "shape": "kart",
+   "animal": "frog",
+   "fur": "#5ccf5c"
+  }
+ ],
+ "colors": [
+  "#ff3b5c",
+  "#2f8cff",
+  "#ffd23f",
+  "#33d17a",
+  "#b45cff",
+  "#ff8a2a",
+  "#ff7ac6",
+  "#22d3ee"
+ ],
+ "rewards": {
+  "place": [
+   200,
+   150,
+   110,
+   80,
+   60,
+   40
+  ]
+ },
+ "rivals": {
+  "names": [
+   "펭펭",
+   "폭스",
+   "부엉",
+   "돼지",
+   "판다"
+  ],
+  "animals": [
+   "penguin",
+   "fox",
+   "owl",
+   "pig",
+   "panda"
+  ],
+  "furs": [
+   "#2a2f3a",
+   "#ff7a2a",
+   "#a07850",
+   "#ffb0c0",
+   "#f4f4f4"
+  ],
+  "colors": [
+   "#2f8cff",
+   "#ff5a2a",
+   "#a0e04a",
+   "#ff7ac6",
+   "#22d3ee"
+  ],
+  "skill": [
+   1.0,
+   0.97,
+   0.95,
+   0.93,
+   0.91
+  ],
+  "latMax": 22,
+  "accel": 10,
+  "rubberBehind": 1.1,
+  "rubberAhead": 0.95
+ },
+ "traffic": {
+  "race": 0,
+  "chase": 0,
+  "speed": [
+   10,
+   14
+  ],
+  "colors": [
+   "#888"
+  ]
+ },
+ "themes": {
+  "candy": {
+   "sky": "#ffd6ec",
+   "fog": "#ffe6f4",
+   "fogFar": 420,
+   "ground": "#ffb3d9",
+   "shoulder": "#fff0a0",
+   "barrier": "#ffffff",
+   "skirt": "#e890c0",
+   "hemi": 0.95,
+   "sun": 0.6,
+   "scenery": "candy"
+  },
+  "jungle": {
+   "sky": "#a8e6c8",
+   "fog": "#c8f0dc",
+   "fogFar": 360,
+   "ground": "#3f9a4a",
+   "shoulder": "#c9a86a",
+   "barrier": "#8a5a2a",
+   "skirt": "#6a4a2a",
+   "hemi": 0.9,
+   "sun": 0.7,
+   "scenery": "forest"
+  },
+  "rainbow": {
+   "sky": "#120a3a",
+   "fog": "#22135a",
+   "fogFar": 400,
+   "ground": "#0a0626",
+   "shoulder": "#2a1a6a",
+   "barrier": "#ffffff",
+   "skirt": "#3a2a8a",
+   "hemi": 0.8,
+   "sun": 0.4,
+   "scenery": "stars",
+   "rainbow": true
+  }
+ },
+ "tracks": [
+  {
+   "id": "candy",
+   "name": "사탕 마을",
+   "desc": "알록달록 사탕 나라의 첫 레이스",
+   "theme": "candy",
+   "laps": 3,
+   "aiTop": 34,
+   "points": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     220
+    ],
+    [
+     60,
+     300
+    ],
+    [
+     160,
+     300
+    ],
+    [
+     200,
+     220
+    ],
+    [
+     160,
+     140
+    ],
+    [
+     220,
+     80
+    ],
+    [
+     220,
+     -60
+    ],
+    [
+     140,
+     -130
+    ],
+    [
+     40,
+     -110
+    ]
+   ],
+   "missions": [
+    {
+     "type": "place",
+     "n": 3,
+     "text": "3등 안에 들기"
+    },
+    {
+     "type": "hit",
+     "n": 2,
+     "text": "아이템 2번 맞히기"
+    },
+    {
+     "type": "boost",
+     "n": 4,
+     "text": "부스트 판 4번 밟기"
+    }
+   ]
+  },
+  {
+   "id": "jungle",
+   "name": "정글 계곡",
+   "desc": "오르락내리락 정글 길. 바나나 조심!",
+   "theme": "jungle",
+   "laps": 3,
+   "aiTop": 35.5,
+   "points": [
+    [
+     0,
+     0,
+     0
+    ],
+    [
+     30,
+     200,
+     6
+    ],
+    [
+     -40,
+     320,
+     10
+    ],
+    [
+     -160,
+     330,
+     6
+    ],
+    [
+     -200,
+     220,
+     0
+    ],
+    [
+     -120,
+     140,
+     -2
+    ],
+    [
+     -200,
+     40,
+     0
+    ],
+    [
+     -180,
+     -110,
+     4
+    ],
+    [
+     -60,
+     -150,
+     2
+    ]
+   ],
+   "missions": [
+    {
+     "type": "place",
+     "n": 2,
+     "text": "2등 안에 들기"
+    },
+    {
+     "type": "hit",
+     "n": 4,
+     "text": "아이템 4번 맞히기"
+    },
+    {
+     "type": "jump",
+     "n": 3,
+     "text": "점프대 3번 날기"
+    }
+   ]
+  },
+  {
+   "id": "rainbow",
+   "name": "무지개 하늘길",
+   "desc": "별빛 속 무지개 도로. 마지막 도전!",
+   "theme": "rainbow",
+   "laps": 3,
+   "aiTop": 37,
+   "points": [
+    [
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     260,
+     8
+    ],
+    [
+     90,
+     360,
+     16
+    ],
+    [
+     220,
+     330,
+     20
+    ],
+    [
+     260,
+     200,
+     14
+    ],
+    [
+     190,
+     110,
+     8
+    ],
+    [
+     260,
+     10,
+     12
+    ],
+    [
+     230,
+     -120,
+     6
+    ],
+    [
+     100,
+     -140,
+     2
+    ],
+    [
+     40,
+     -90,
+     0
+    ]
+   ],
+   "missions": [
+    {
+     "type": "place",
+     "n": 1,
+     "text": "우승하기"
+    },
+    {
+     "type": "hit",
+     "n": 5,
+     "text": "아이템 5번 맞히기"
+    },
+    {
+     "type": "boost",
+     "n": 6,
+     "text": "부스트 판 6번 밟기"
+    }
+   ]
+  }
+ ],
+ "features": {
+  "boostPads": 4,
+  "ramps": 1,
+  "padTime": 1.4,
+  "padMult": 1.3,
+  "padAccel": 20,
+  "rampLen": 9,
+  "rampHeight": 1.4,
+  "jumpMin": 16,
+  "jumpLift": 0.3,
+  "airNitro": 35,
+  "jumpCoins": 5,
+  "takedownCoins": 30,
+  "takedownNitro": 25,
+  "takedownSpeed": 5,
+  "wreckTime": 2.5
+ },
+ "neon": [
+  {
+   "name": "없음",
+   "color": null,
+   "stars": 0
+  },
+  {
+   "name": "청록",
+   "color": "#22e0ff",
+   "stars": 1
+  },
+  {
+   "name": "핑크",
+   "color": "#ff3b8a",
+   "stars": 3
+  },
+  {
+   "name": "초록",
+   "color": "#33ff8a",
+   "stars": 6
+  },
+  {
+   "name": "보라",
+   "color": "#b45cff",
+   "stars": 9
+  },
+  {
+   "name": "무지개",
+   "color": "rainbow",
+   "stars": 13
+  }
+ ],
+ "items": {
+  "spinTime": 1.3,
+  "boxRows": 3,
+  "respawn": 3,
+  "list": [
+   {
+    "id": "peel",
+    "name": "바나나 껍질",
+    "weights": [
+     5,
+     2,
+     0
+    ]
+   },
+   {
+    "id": "ball",
+    "name": "통통 볼",
+    "weights": [
+     3,
+     4,
+     2
+    ]
+   },
+   {
+    "id": "rocket",
+    "name": "추적 로켓",
+    "weights": [
+     0,
+     3,
+     4
+    ]
+   },
+   {
+    "id": "candy",
+    "name": "부스트 사탕",
+    "weights": [
+     1,
+     3,
+     3
+    ]
+   },
+   {
+    "id": "shield",
+    "name": "버블 방패",
+    "weights": [
+     3,
+     1,
+     0
+    ]
+   },
+   {
+    "id": "star",
+    "name": "무적 별",
+    "weights": [
+     0,
+     1,
+     3
+    ]
+   },
+   {
+    "id": "zap",
+    "name": "번개 구름",
+    "weights": [
+     0,
+     0,
+     2
+    ]
+   }
+  ],
+  "ballSpeed": 22,
+  "rocketSpeed": 20,
+  "starTime": 6,
+  "shieldTime": 10,
+  "candyTime": 1.3
+ }
+}
