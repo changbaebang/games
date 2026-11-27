@@ -1,0 +1,19 @@
+/* VOICE: 블록 쌓기 놀이, 차례를 지켜 합쳐요
+   IDEA: 기호 블록을 순서대로 누르면 두 수가 하나로 합쳐져요
+   PICTURE: 흰 판 위 수 블록과 주황 기호 버튼
+   COLOUR and TYPE: 라벤더 종이, 주황 강조 / Jua
+   LAYOUT: 공통 틀 + 식 판 */
+:root{--paper:#f3efff;--grid:#e6e0fa;--accent:#e8642a;--soft:#d8cff2;--edge:#4b3a86}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.board{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+.expr{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 5px 0 var(--soft);font-size:clamp(26px,7.5vw,38px);max-width:96vw}
+.expr.big{font-size:clamp(28px,8vw,42px)}
+.nb{background:#efeaff;border-radius:10px;padding:2px 10px;min-width:1.2em;text-align:center;transition:transform .2s}
+.par{color:#9b5de5;font-size:1.15em}
+.op{font:inherit;font-size:1em;width:1.6em;height:1.6em;border:0;border-radius:12px;background:#ffe2cf;color:var(--accent);box-shadow:0 4px 0 #f2b48c;cursor:pointer}
+.op:active{transform:translateY(3px);box-shadow:0 1px 0 #f2b48c}
+.op.bad{background:#ffd0d0;color:#d33}
+.trail{font-size:18px;color:var(--mute);text-align:center;line-height:1.6;min-height:1.6em}
+.trail b{color:var(--accent);font-weight:normal}
+.tip{font-size:16px;color:var(--mute);text-align:center}
+.emo{font-size:clamp(70px,22vw,110px)}

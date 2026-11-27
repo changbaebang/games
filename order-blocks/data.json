@@ -1,0 +1,34 @@
+{
+  "questionsPerStage": 10,
+  "starThresholds": [6, 8, 10],
+  "praise": ["블록 합체!", "딩동댕!", "순서 척척!", "정확해요!", "계산 마스터!"],
+  "endTitles": ["한 번 더 해 볼까요?", "잘했어요!", "참 잘했어요!", "계산 순서 대장!"],
+  "templates": {
+    "addsub": ["a + b - c", "a - b + c", "a - b - c", "a - (b + c)", "a - (b - c)", "a + (b - c)"],
+    "muldiv": ["a × b ÷ c", "a ÷ b × c", "a ÷ (b × c)", "a × (b ÷ c)"],
+    "asm": ["a + b × c", "a × b - c", "a - b × c", "(a + b) × c", "a × (b - c)", "a + b × c - d"],
+    "asd": ["a + b ÷ c", "a ÷ b - c", "a - b ÷ c", "(a + b) ÷ c", "a ÷ (b - c)", "a - b ÷ c + d"],
+    "all": ["a + b × c ÷ d - e", "(a + b) × c - d ÷ e", "a × (b - c) + d ÷ e", "a - b ÷ c × d + e", "(a - b) ÷ c + d × e", "a + (b × c - d) ÷ e"]
+  },
+  "stories": [
+    { "t": "사과가 한 봉지에 {b}개씩 {a}봉지 있어요. 그중 {c}개를 먹었어요. 남은 사과는?", "right": "a × b - c", "wrong": ["a × (b - c)", "a + b - c"] },
+    { "t": "{a}원으로 {b}원짜리 지우개 {c}개를 샀어요. 남은 돈은?", "right": "a - b × c", "wrong": ["(a - b) × c", "a - b - c"] },
+    { "t": "구슬 {a}개와 {b}개를 합쳐서 {c}명이 똑같이 나누면 한 명에 몇 개?", "right": "(a + b) ÷ c", "wrong": ["a + b ÷ c", "a ÷ c + b"] },
+    { "t": "연필 {a}자루를 {b}명이 똑같이 나눈 뒤, 한 명이 {c}자루를 더 받았어요. 그 사람의 연필은?", "right": "a ÷ b + c", "wrong": ["a ÷ (b + c)", "(a + c) ÷ b"] },
+    { "t": "한 상자에 {a}개씩 든 쿠키 {b}상자와 낱개 {c}개가 있어요. 쿠키는 모두?", "right": "a × b + c", "wrong": ["a × (b + c)", "a + b + c"] }
+  ],
+  "stages": [
+    { "name": "덧셈·뺄셈", "short": "+ −", "sub": "앞에서부터, 괄호는 먼저",
+      "kinds": [ { "kind": "order", "set": "addsub" }, { "kind": "value", "set": "addsub" } ] },
+    { "name": "곱셈·나눗셈", "short": "× ÷", "sub": "앞에서부터, 괄호는 먼저",
+      "kinds": [ { "kind": "order", "set": "muldiv" }, { "kind": "value", "set": "muldiv" } ] },
+    { "name": "덧셈·뺄셈·곱셈", "short": "+ − ×", "sub": "곱셈을 먼저!",
+      "kinds": [ { "kind": "order", "set": "asm" }, { "kind": "value", "set": "asm" }, { "kind": "first", "set": "asm", "weight": 0.7 } ] },
+    { "name": "덧셈·뺄셈·나눗셈", "short": "+ − ÷", "sub": "나눗셈을 먼저!",
+      "kinds": [ { "kind": "order", "set": "asd" }, { "kind": "value", "set": "asd" }, { "kind": "first", "set": "asd", "weight": 0.7 } ] },
+    { "name": "모두 섞인 식", "short": "모두", "sub": "( ) → × ÷ → + −",
+      "kinds": [ { "kind": "order", "set": "all", "weight": 1.3 }, { "kind": "value", "set": "all" } ] },
+    { "name": "하나의 식으로", "short": "도전", "sub": "이야기를 식으로, 괄호가 바꾸는 값", "challenge": true,
+      "kinds": [ { "kind": "story" }, { "kind": "paren" }, { "kind": "value", "set": "all" } ] }
+  ]
+}
