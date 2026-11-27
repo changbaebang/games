@@ -1,0 +1,16 @@
+/* VOICE: 시원한 주스 가게, 컵에 눈금을 맞춰 섞어요
+   IDEA: 분모가 다르면 눈금이 달라 바로 못 섞어요 → 통분으로 눈금 맞추기
+   PICTURE: 눈금 있는 투명 컵에 담긴 주스
+   COLOUR and TYPE: 레몬 종이, 주황 강조 / Jua
+   LAYOUT: 공통 틀 + 컵·식 카드 */
+:root{--paper:#fffbe8;--grid:#f7efc9;--accent:#e8642a;--soft:#efe1aa;--edge:#5a3a1a}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.cups{width:min(80vw,360px);height:auto;max-height:100%}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 .12em;font-size:.92em}
+.fr i{font-style:normal;padding:0 .18em}
+.fr i:first-child{border-bottom:.09em solid currentColor}
+.mx{display:inline-flex;align-items:center;white-space:nowrap}
+.ch .fr{font-size:1.05em}.ask .fr{font-size:.9em}.fb .fr{font-size:.85em}
+.eq{font-size:clamp(40px,12vw,62px);background:#fff;border-radius:22px;padding:8px 24px;box-shadow:0 5px 0 var(--soft);display:flex;align-items:center;gap:.2em}
+.vs{font-size:.4em;color:var(--mute);margin:0 .3em}
+.emo{font-size:clamp(70px,22vw,110px)}

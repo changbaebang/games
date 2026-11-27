@@ -671,8 +671,18 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>약수 배수 정원</h2><p>점 배열과 수 판으로 약수와 배수를 찾고, 최대공약수·최소공배수로 나누기·만나기 문제를 풀어요. 6단계.</p>
       <div class="tags"><span>약수와 배수</span><span>5학년 1학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./fraction-juice/" style="--c:#ffb35c">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#fffbe8"/>
+      <rect x="40" y="90" width="60" height="70" fill="#ff9f43"/><path d="M40 40V160H100V40" fill="none" stroke="#5a3a1a" stroke-width="4"/><path d="M40 70h10M40 100h10M40 130h10" stroke="#5a3a1a" stroke-width="2"/>
+      <rect x="130" y="110" width="60" height="50" fill="#ee5a6f"/><path d="M130 40V160H190V40" fill="none" stroke="#5a3a1a" stroke-width="4"/><path d="M130 64h10M130 88h10M130 112h10M130 136h10" stroke="#5a3a1a" stroke-width="2"/>
+      <g font-family="Jua,sans-serif" text-anchor="middle" fill="#2b2f45"><text x="255" y="80" font-size="26">통분</text><text x="255" y="120" font-size="22">약분</text></g><text x="255" y="176" font-size="36" text-anchor="middle">🧃</text>
+    </svg>
+    <div class="info"><h2>분수 주스 가게</h2><p>눈금이 다른 주스 컵! 크기가 같은 분수, 약분과 기약분수, 통분과 크기 비교, 분모가 다른 분수의 덧셈·뺄셈과 대분수 계산까지. 6단계.</p>
+      <div class="tags"><span>약분과 통분</span><span>5학년 1학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 48개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 49개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -724,7 +734,8 @@ const REC={
   'shape-sorter':()=>{const v=B('shapesStarTotal');return v?`별 ${v}개 / 18개`:null},
   'fraction-bakery':()=>{const v=B('fraction2StarTotal');return v?`별 ${v}개 / 18개`:null},
   'plane-shapes':()=>{const v=B('planeStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'factor-garden':()=>{const v=B('factorStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'factor-garden':()=>{const v=B('factorStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'fraction-juice':()=>{const v=B('fraction5StarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

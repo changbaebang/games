@@ -1,0 +1,28 @@
+{
+  "questionsPerStage": 10,
+  "starThresholds": [6, 8, 10],
+  "praise": ["시원하게 완성!", "딩동댕!", "분수 척척!", "정확해요!", "주스 장인!"],
+  "endTitles": ["한 번 더 해 볼까요?", "잘했어요!", "참 잘했어요!", "분수 주스 사장님!"],
+  "colors": { "juice": ["#ff9f43", "#ee5a6f", "#7ed957", "#9b5de5"], "empty": "#fff", "edge": "#5a3a1a" },
+  "juices": [["오렌지", "🍊"], ["딸기", "🍓"], ["사과", "🍏"], ["포도", "🍇"], ["망고", "🥭"]],
+  "stories": [
+    { "t": "{j1} 주스 {a} L 와 {j2} 주스 {b} L 를 섞었어요. 모두 몇 L 일까요?", "op": "+" },
+    { "t": "{j1} 주스가 {a} L 있었는데 {b} L 를 마셨어요. 남은 주스는 몇 L 일까요?", "op": "-" },
+    { "t": "어제 {a} 시간, 오늘 {b} 시간 동안 줄넘기를 했어요. 모두 몇 시간일까요?", "op": "+" },
+    { "t": "리본 {a} m 중에서 {b} m 를 썼어요. 남은 리본은 몇 m 일까요?", "op": "-" }
+  ],
+  "stages": [
+    { "name": "크기가 같은 분수", "short": "같은 분수", "sub": "분모와 분자에 같은 수를 곱하거나 나눠요",
+      "kinds": [ { "kind": "equivPick" }, { "kind": "equivFill" } ] },
+    { "name": "약분과 기약분수", "short": "약분", "sub": "최대공약수로 나누면 한 번에!",
+      "kinds": [ { "kind": "reduce", "weight": 1.3 }, { "kind": "isLowest" } ] },
+    { "name": "통분과 크기 비교", "short": "통분", "sub": "분모를 같게 맞춰요",
+      "kinds": [ { "kind": "common" }, { "kind": "compare", "weight": 1.2 } ] },
+    { "name": "분수의 덧셈", "short": "덧셈", "sub": "통분하고 더해요",
+      "kinds": [ { "kind": "add" }, { "kind": "add", "mixed": true, "weight": 0.7 } ] },
+    { "name": "분수의 뺄셈", "short": "뺄셈", "sub": "통분하고 빼요",
+      "kinds": [ { "kind": "sub" }, { "kind": "sub", "mixed": true, "weight": 0.8 } ] },
+    { "name": "주스 가게 사장님", "short": "도전", "sub": "대분수 계산과 이야기 문제", "challenge": true,
+      "kinds": [ { "kind": "story", "weight": 1.3 }, { "kind": "sub", "mixed": true, "borrow": true }, { "kind": "add", "mixed": true }, { "kind": "compare" } ] }
+  ]
+}
