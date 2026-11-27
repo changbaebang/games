@@ -64,10 +64,10 @@ function bowlUpdate(dt){const B=ball;
       for(let i=0;i<pins.length;i++)for(let j=i+1;j<pins.length;j++){const a=pins[i],b=pins[j];if(a.gone||b.gone)continue;const ra=a.down&&a.tilt>.3?.12:PR,rb2=b.down&&b.tilt>.3?.12:PR;const imp=collide(a,b,ra,rb2,BW.pinMass,BW.pinMass);if(imp>.35){a.down=true;b.down=true}}
       for(const p of pins){if(p.gone)continue;p.x+=p.vx*h;p.z+=p.vz*h;const f=Math.exp(-(p.down?2.2:4)*h);p.vx*=f;p.vz*=f;if(p.down){p.tilt=Math.min(1,p.tilt+h*5);if(Math.hypot(p.vx,p.vz)>.1)p.ang=Math.atan2(p.vx,p.vz)}
         if(Math.hypot(p.x-p.hx,p.z-p.hz)>.05)p.down=true;if(Math.abs(p.x)>GW||p.z>PIT+.3){p.gone=true;p.down=true}}}
-    cam.z+=((Math.min(B.z,LL-4.5)-2.5)-cam.z)*Math.min(1,dt*3);
+    cam.z+=((Math.min(B.z,LL-2.6)-2.5)-cam.z)*Math.min(1,dt*3);
     const moving=pins.some(p=>!p.gone&&Math.hypot(p.vx,p.vz)>.05);
     if((!B.rolling&&!moving&&bowl.t>1)||bowl.t>9)endRoll()}
-  else if(bowl.phase==='show'){bowl.t+=dt;if(bowl.t>1.6)nextRoll()}
+  else if(bowl.phase==='show'){bowl.t+=dt;if(bowl.t>2)nextRoll()}
   else if(bowl.phase==='aim'){cam.z+=(-2.5-cam.z)*Math.min(1,dt*4)}}
 function endRoll(){const last=bowl.fi===BW.frames-1;const standing=pinsUp();const knocked=Math.max(0,bowl.upBefore-standing);
   bowl.cur.push(knocked);bowl.phase='show';bowl.t=0;const c=bowl.cur;let msg,mark;
@@ -110,7 +110,7 @@ function bowlDraw(){const W=Wd,H=Ht;cam.F=Math.min(W*1.45,H*1.3);cam.HY=H*.2;cam
   // 조준 안내
   if(bowl.phase==='aim'){ctx.setLineDash([6,8]);ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=2;const a=P(ball.x,0,.3),b=P(ball.x,0,LL);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();ctx.setLineDash([])}
   // 프레임 표시
-  ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='16px Jua';ctx.textAlign='left';ctx.fillText((bowl.fi+1)+'프레임 · '+(bowl.cur.length+1)+'구',12,H-(bowl.phase==='aim'?70:16))}
+  ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='16px Jua';ctx.textAlign='left';ctx.textAlign='center';ctx.fillText((bowl.fi+1)+'프레임 · '+(bowl.cur.length+1)+'구',W/2,64);$('moveBtns').hidden=bowl.phase!=='aim'}
 function drawBall(){const B=ball;if(B.z>PIT+.2)return;const p=P(B.x,BR,B.z),r=BR*p[2];if(p[1]>Ht+r)return;
   ctx.fillStyle='rgba(0,0,0,.3)';const s=P(B.x,0,B.z);ctx.beginPath();ctx.ellipse(s[0],s[1],r,r*.3,0,0,7);ctx.fill();
   const g=ctx.createRadialGradient(p[0]-r*.35,p[1]-r*.35,r*.1,p[0],p[1],r);g.addColorStop(0,'#7ab8ff');g.addColorStop(1,'#1a4aa0');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p[0],p[1],r,0,7);ctx.fill();
@@ -183,7 +183,7 @@ function stepBall(dt){const b=tb;const n=3;for(let i=0;i<n;i++){const h=dt/n;con
 const timers=[];function setTimeout0(fn,s){timers.push({fn,t:s})}
 function runTimers(dt){for(let i=timers.length-1;i>=0;i--){timers[i].t-=dt;if(timers[i].t<=0){const f=timers[i].fn;timers.splice(i,1);f()}}}
 const _launch=launch;launch=function(who,from,tx,tz,T){_launch(who,from,tx,tz,T);tb.serve=ten.phase==='serve'};
-function tenDraw(){const W=Wd,H=Ht;cam.x=me.x*.35;cam.y=4.6;cam.z=-CL-8.5;cam.F=Math.min(W*.62*8.5/CW*.5,H*1.05);cam.HY=H*.16;
+function tenDraw(){const W=Wd,H=Ht;cam.x=me.x*.35;cam.z=-CL-6.5;cam.y=3.6+clamp((H/W-1)*4,0,5);cam.F=Math.min(.94*H,.87*W);cam.HY=Math.max(H*.12,.86*H-cam.y*cam.F/6.5);
   const g=ctx.createLinearGradient(0,0,0,cam.HY+30);g.addColorStop(0,'#7ac8ff');g.addColorStop(1,'#d8f0ff');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   poly([[-30,0,cam.z+1],[30,0,cam.z+1],[30,0,60],[-30,0,60]],'#4a9a5a');
   poly([[-CW-3,0,-CL-5],[CW+3,0,-CL-5],[CW+3,0,CL+5],[-CW-3,0,CL+5]],'#3a7ac0');
@@ -191,8 +191,8 @@ function tenDraw(){const W=Wd,H=Ht;cam.x=me.x*.35;cam.y=4.6;cam.z=-CL-8.5;cam.F=
   ctx.strokeStyle='#fff';const line=(a,b)=>{const p=P(...a),q=P(...b);ctx.lineWidth=Math.max(1,(p[2]+q[2])*.02);ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke()};
   for(const s of [-1,1]){line([-CW,0,s*CL],[CW,0,s*CL]);line([s*CW,0,-CL],[s*CW,0,CL]);line([-CW,0,s*SVC],[CW,0,s*SVC])}line([0,0,-SVC],[0,0,SVC]);
   // 공 그림자/상대/네트/공/나 순서
-  const drawShadow=()=>{if(!tb)return;const s=P(tb.x,0,tb.z);ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(s[0],s[1],s[2]*.06,s[2]*.02,0,0,7);ctx.fill()};
-  const drawB=()=>{if(!tb)return;const p=P(tb.x,tb.y,tb.z);ctx.fillStyle='#e8ff4a';ctx.strokeStyle='#8aa020';ctx.lineWidth=1;ctx.beginPath();ctx.arc(p[0],p[1],Math.max(2.5,p[2]*.07),0,7);ctx.fill();ctx.stroke()};
+  const drawShadow=()=>{if(!tb)return;const s=P(tb.x,0,tb.z);ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(s[0],s[1],Math.max(4,s[2]*.08),Math.max(1.5,s[2]*.03),0,0,7);ctx.fill()};
+  const drawB=()=>{if(!tb)return;const p=P(tb.x,tb.y,tb.z);ctx.fillStyle='#e8ff4a';ctx.strokeStyle='#8aa020';ctx.lineWidth=1;ctx.beginPath();ctx.arc(p[0],p[1],Math.max(4,p[2]*.1),0,7);ctx.fill();ctx.stroke()};
   const ballFar=tb&&tb.z>0;
   if(ballFar)drawShadow();player(ai,D.colors.ai,true);if(ballFar)drawB();
   // 네트
