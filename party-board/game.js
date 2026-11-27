@@ -102,7 +102,7 @@ function face(x,y,r,col,hop){ctx.fillStyle='rgba(0,0,0,.2)';ctx.beginPath();ctx.
   ctx.fillStyle='#fff';for(const k of [-1,1]){ctx.beginPath();ctx.arc(x+k*r*.33,y-r*.12,r*.22,0,7);ctx.fill()}ctx.fillStyle='#2a2420';for(const k of [-1,1]){ctx.beginPath();ctx.arc(x+k*r*.33,y-r*.08,r*.11,0,7);ctx.fill()}
   ctx.strokeStyle='#2a2420';ctx.lineWidth=Math.max(1.5,r*.08);ctx.beginPath();ctx.arc(x,y+r*.2,r*.25,.2,Math.PI-.2);ctx.stroke()}
 function starShape(x,y,r,col){ctx.fillStyle=col;ctx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r;ctx.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr)}ctx.closePath();ctx.fill()}
-function drawBoard(){const W=Wd,H=Ht,port=H>W;const gw=port?BHT:BWD,gh=port?BWD:BHT;const top=port?150:70;const C=Math.min((W-20)/(gw+.6),(H-top-60)/(gh+.6));const ox=(W-C*gw)/2,oy=top+(H-top-60-C*gh)/2;
+function drawBoard(){const W=Wd,H=Ht,port=H>W;const gw=port?BHT:BWD,gh=port?BWD:BHT;const top=port?130:Math.max(70,($('side').offsetHeight||40)+30);const C=Math.min((W-20)/(gw+.6),(H-top-60)/(gh+.6));const ox=(W-C*gw)/2,oy=top+(H-top-60-C*gh)/2;
   const pos=i=>{const [x,y]=cells[i];const gx=port?(BHT-1-y):x,gy=port?x:y;return [ox+(gx+.5)*C,oy+(gy+.5)*C]};
   const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#8ad0ff');g.addColorStop(1,'#d8f0ff');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   for(let i=0;i<5;i++){ctx.fillStyle='rgba(255,255,255,.7)';const cx=(i*237+time*12)%(W+200)-100,cy=60+i*97%(H*.8);ctx.beginPath();ctx.ellipse(cx,cy,60,18,0,0,7);ctx.fill()}
