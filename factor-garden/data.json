@@ -1,0 +1,31 @@
+{
+  "questionsPerStage": 10,
+  "starThresholds": [6, 8, 10],
+  "praise": ["꽃이 피었어요!", "딩동댕!", "약수 배수 척척!", "정확해요!", "정원사 최고!"],
+  "endTitles": ["한 번 더 해 볼까요?", "잘했어요!", "참 잘했어요!", "약수 배수 정원사!"],
+  "colors": { "dot": "#f0a020", "hi": "#2fa36b", "cell": "#fff", "mark": "#ffe08a" },
+  "gcdStories": [
+    { "t": "사탕 {a}개와 초콜릿 {b}개를 남김없이 최대한 많은 친구에게 똑같이 나누어 주려고 해요. 몇 명에게 나누어 줄 수 있을까요?", "u": "명", "e": "🍬" },
+    { "t": "가로 {a} cm, 세로 {b} cm 인 종이를 남는 부분 없이 가장 큰 정사각형으로 자르려고 해요. 정사각형 한 변은 몇 cm 일까요?", "u": " cm", "e": "📄" },
+    { "t": "장미 {a}송이와 튤립 {b}송이로 똑같은 꽃다발을 최대한 많이 만들려고 해요. 꽃다발은 몇 개일까요?", "u": "개", "e": "💐" }
+  ],
+  "lcmStories": [
+    { "t": "버스는 {a}분마다, 지하철은 {b}분마다 출발해요. 오전 9시에 함께 출발했다면, 다음에 함께 출발하는 것은 몇 분 뒤일까요?", "u": "분 뒤", "e": "🚌" },
+    { "t": "해바라기는 {a}일마다, 장미는 {b}일마다 물을 줘요. 오늘 둘 다 물을 줬다면 다음에 같은 날 물을 주는 것은 며칠 뒤일까요?", "u": "일 뒤", "e": "🌻" },
+    { "t": "가로 {a} cm, 세로 {b} cm 인 타일을 겹치지 않게 늘어놓아 가장 작은 정사각형을 만들어요. 한 변은 몇 cm 일까요?", "u": " cm", "e": "🧱" }
+  ],
+  "stages": [
+    { "name": "약수", "short": "약수", "sub": "나누어떨어지게 하는 수",
+      "kinds": [ { "kind": "factorList" }, { "kind": "notFactor" }, { "kind": "factorCount" } ] },
+    { "name": "배수", "short": "배수", "sub": "1배, 2배, 3배 … 한 수",
+      "kinds": [ { "kind": "multiplePick" }, { "kind": "nthMultiple" }, { "kind": "multipleGrid", "weight": 0.8 } ] },
+    { "name": "약수와 배수의 관계", "short": "관계", "sub": "24 = 6 × 4 → 6과 4는 24의 약수",
+      "kinds": [ { "kind": "relation" }, { "kind": "relationPick" } ] },
+    { "name": "최대공약수", "short": "공약수", "sub": "두 수의 공통 약수 중 가장 큰 수",
+      "kinds": [ { "kind": "commonFactors", "weight": 0.8 }, { "kind": "gcd", "weight": 1.3 } ] },
+    { "name": "최소공배수", "short": "공배수", "sub": "두 수의 공통 배수 중 가장 작은 수",
+      "kinds": [ { "kind": "commonMultiples", "weight": 0.8 }, { "kind": "lcm", "weight": 1.3 } ] },
+    { "name": "정원 문제", "short": "도전", "sub": "최대공약수일까, 최소공배수일까?", "challenge": true,
+      "kinds": [ { "kind": "gcdStory" }, { "kind": "lcmStory" }, { "kind": "gcd" }, { "kind": "lcm" } ] }
+  ]
+}
