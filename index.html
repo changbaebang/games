@@ -706,8 +706,18 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>어림 놀이공원</h2><p>키 130 cm 이상만 탈 수 있다면? 이상·이하·초과·미만, 수직선 ●/○, 올림·버림·반올림과 생활 속 어림 문제까지. 6단계.</p>
       <div class="tags"><span>수의 범위와 어림</span><span>5학년 2학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./multiply-garden/" style="--c:#f0b070">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#fbf5ea"/>
+      <g stroke="#5a3a1a" stroke-width="1.5"><rect x="30" y="30" width="140" height="140" fill="#fff"/>
+      <rect x="30" y="30" width="93" height="105" fill="#e8642a"/><rect x="123" y="30" width="47" height="105" fill="#9fd49a"/><rect x="30" y="135" width="93" height="35" fill="#ffd27a"/></g>
+      <g font-family="Jua,sans-serif" text-anchor="middle" fill="#2b2f45"><text x="245" y="80" font-size="26">0.4 × 0.3</text><text x="245" y="122" font-size="30" fill="#e8642a">= 0.12</text></g><text x="245" y="178" font-size="36" text-anchor="middle">🥕</text>
+    </svg>
+    <div class="info"><h2>곱셈 텃밭</h2><p>텃밭을 가로세로로 나눠 칠하며 분수 × 분수를 보고, 소수점 아래 자리 수를 세어 소수의 곱셈을 해요. 곱의 크기 어림과 10배·0.1배까지. 6단계.</p>
+      <div class="tags"><span>분수·소수의 곱셈</span><span>5학년 2학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
-<footer>게임 51개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 52개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -762,7 +772,8 @@ const REC={
   'factor-garden':()=>{const v=B('factorStarTotal');return v?`별 ${v}개 / 18개`:null},
   'fraction-juice':()=>{const v=B('fraction5StarTotal');return v?`별 ${v}개 / 18개`:null},
   'order-blocks':()=>{const v=B('mixcalcStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'range-park':()=>{const v=B('rangeStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'range-park':()=>{const v=B('rangeStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'multiply-garden':()=>{const v=B('mulsStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});
