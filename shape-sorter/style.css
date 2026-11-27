@@ -1,0 +1,14 @@
+/* VOICE: 꼼꼼한 분류 담당자, 표시 하나하나 확인
+   IDEA: 눈금·화살표·직각 표시를 단서로 이름표를 붙여요
+   PICTURE: 흰 카드 위 살구색 도형과 주황·파랑 표시
+   COLOUR and TYPE: 크림 종이, 주황 강조 / Jua
+   LAYOUT: 공통 틀 + 도형 카드 */
+:root{--paper:#fbf3ea;--grid:#f0e3d2;--accent:#e8642a;--soft:#e9d7c1;--edge:#6a3f1c}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fig{width:min(86vw,360px);height:auto;max-height:100%;background:#fff;border-radius:18px;box-shadow:0 5px 0 var(--soft)}
+svg text{font-family:'Jua',system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+.dim{font-size:17px;fill:var(--ink);paint-order:stroke;stroke:#fff;stroke-width:4px}
+.ang{font-size:18px;fill:#e8642a;paint-order:stroke;stroke:#fff;stroke-width:4px}
+.ln{font-size:15px;fill:var(--ink)}
+.fact{font-size:clamp(22px,6.4vw,30px);background:#fff;border-radius:20px;padding:22px 24px;box-shadow:0 5px 0 var(--soft);text-align:center;max-width:92vw;line-height:1.4}
+.ask small{display:block;font-size:.72em;color:var(--mute)}
