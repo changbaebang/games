@@ -15,7 +15,7 @@ function load(i){li=i;L=D.levels[i];map=L.rows.map(r=>r.split(''));MH=map.length
     if(c==='P'){pl.x=x+.5;pl.y=y+1;map[y][x]='.'}
     else if(c==='D'){door={x:x+.5,y:y+1};map[y][x]='.'}
     else if(c==='*'){stars.push({x:x+.5,y:y+.5,got:false});map[y][x]='.'}
-    else if(D.enemies[c]){const E=D.enemies[c];let yy=y;while(yy>0&&solid(x+.5,yy+.5))yy--;enemies.push({k:c,E,x:x+.5,y:yy+1,vx:-E.speed,vy:0,hp:E.hp,fly:!!E.fly,by:yy+.5,ph:Math.random()*6,frozen:0,kick:0,dead:false,hit:0});map[y][x]='.'}}}
+    else if(D.enemies[c]){const E=D.enemies[c];let yy=y;while(yy>0&&solid(x+.5,yy+.5))yy--;enemies.push({k:c,E,x:x+.5,y:yy+1,vx:-E.speed,vy:0,hp:E.hp,fly:!!E.fly,by:E.fly?yy-2:yy+.5,ph:Math.random()*6,frozen:0,kick:0,dead:false,hit:0});map[y][x]='.'}}}
 const tile=(x,y)=>{const tx=Math.floor(x),ty=Math.floor(y);if(tx<0||tx>=MW)return '#';if(ty<0)return '.';if(ty>=MH)return '.';return map[ty][tx]};
 const solid=(x,y)=>{const t=tile(x,y);return t==='#'||t==='='};
 const plat=(x,y)=>tile(x,y)==='-';
@@ -82,7 +82,7 @@ function update(dt){
     if(e.frozen>0){e.frozen-=dt;if(e.kick){e.x+=e.kick*dt;for(const o of enemies){if(o!==e&&!o.dead&&Math.abs(o.x-e.x)<.8&&Math.abs(o.y-e.y)<1)hitEnemy(o,2,'ice')}if(solid(e.x+Math.sign(e.kick)*.5,e.y-.4)){e.dead=true;fx.push({k:'pop',x:e.x,y:e.y-.4,t:.35});snd('crack')}}
       else if(Math.abs(e.x-pl.x)<.8&&Math.abs(e.y-pl.y)<.8){e.kick=pl.face*12;snd('swap')}continue}
     if(e.sucked){e.sucked=false;continue}
-    if(e.fly){e.x+=e.vx*dt;e.ph+=dt*3;e.y=e.by+Math.sin(e.ph)*1.2;if(solid(e.x+Math.sign(e.vx)*.5,e.y-.4))e.vx=-e.vx}
+    if(e.fly){e.x+=e.vx*dt;e.ph+=dt*3;for(let k=0;k<4&&(solid(e.x,e.by+1.3)||solid(e.x,e.by));k++)e.by-=.5;e.y=e.by+Math.sin(e.ph)*1.2;if(solid(e.x+Math.sign(e.vx)*.5,e.y-.4))e.vx=-e.vx}
     else{e.vy=Math.min(16,e.vy+PP.gravity*dt);const b={x:e.x,y:e.y,vx:e.vx,vy:e.vy,w:.8,h:.8};moveBody(b,dt,false);e.x=b.x;e.y=b.y;e.vy=b.vy;
       if(b.vx===0||(b.ground&&!solid(e.x+Math.sign(e.vx)*.6,e.y+.2)&&!plat(e.x+Math.sign(e.vx)*.6,e.y+.2)))e.vx=-(e.vx||e.E.speed);
       if(Math.abs(e.vx)<e.E.speed)e.vx=Math.sign(e.vx||-1)*e.E.speed;if(e.y>MH+2)e.dead=true}
