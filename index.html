@@ -504,6 +504,17 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>곱셈 공장</h2><p>몇십×몇, 두 자리·세 자리 × 한 자리 세로셈(올림 표시), 두 자리 × 두 자리는 넓이 모형으로! 어림과 문장제까지. 6단계.</p>
       <div class="tags"><span>곱셈</span><span>3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./circle-studio/" style="--c:#7aa8e8">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#eef4fb"/>
+      <circle cx="200" cy="92" r="64" fill="#e7efff" stroke="#3d74e5" stroke-width="5"/><circle cx="200" cy="92" r="4" fill="#2b2f45"/>
+      <line x1="200" y1="92" x2="264" y2="92" stroke="#e8642a" stroke-width="5" stroke-linecap="round"/>
+      <rect x="40" y="166" width="250" height="24" rx="4" fill="#ffe08a" stroke="#2b2f45" stroke-width="2"/>
+      <line x1="80" y1="40" x2="56" y2="164" stroke="#7a8296" stroke-width="6" stroke-linecap="round"/><line x1="80" y1="40" x2="112" y2="160" stroke="#4f8fe0" stroke-width="6" stroke-linecap="round"/><circle cx="80" cy="40" r="7" fill="#2b2f45"/>
+    </svg>
+    <div class="info"><h2>컴퍼스 공방</h2><p>원의 중심·반지름·지름을 알고, 자에 맞춰 컴퍼스를 벌려 직접 원을 그려요. 원 이어 붙이기, O/X, 원 무늬 규칙까지. 6단계.</p>
+      <div class="tags"><span>원</span><span>3학년 수학</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
+  </a>
 </main>
 <footer>게임 33개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
@@ -542,7 +553,8 @@ const REC={
   'hanja-seodang':()=>{const v=B('hanjaStarTotal');return v?`별 ${v}개 / 18개`:null},
   'spin-arena':()=>{const c=B('spinChamp'),v=B('spinBest');return c?`우승 ${n(c)}번 🏆`:v?`최고 ${n(v)}승`:null},
   'add-sub-rocket':()=>{const v=B('addsubStarTotal');return v?`별 ${v}개 / 18개`:null},
-  'multiply-factory':()=>{const v=B('multiplyStarTotal');return v?`별 ${v}개 / 18개`:null}};
+  'multiply-factory':()=>{const v=B('multiplyStarTotal');return v?`별 ${v}개 / 18개`:null},
+  'circle-studio':()=>{const v=B('circleStarTotal');return v?`별 ${v}개 / 18개`:null}};
 function paint(){let c=0;const cards=document.querySelectorAll('a.game');
   cards.forEach(a=>{const slug=(a.getAttribute('href')||'').replace(/^\.\/|\/$/g,'');const f=REC[slug];const t=f&&f();let el=a.querySelector('.rec');
     if(t){c++;if(!el){el=document.createElement('span');el.className='rec';a.querySelector('.info h2').after(el)}el.textContent='내 기록 · '+t}else if(el)el.remove()});

@@ -1,0 +1,37 @@
+{
+  "questionsPerStage": 10,
+  "starThresholds": [6, 8, 10],
+  "praise": ["동그랗게 완성!", "딩동댕!", "컴퍼스 달인!", "정확해요!", "멋져요!"],
+  "endTitles": ["한 번 더 해 볼까요?", "잘했어요!", "참 잘했어요!", "컴퍼스 공방 장인!"],
+  "colors": { "circle": "#3d74e5", "fill": "#e7efff", "hi": "#e8642a", "ink": "#2b2f45", "ruler": "#ffe08a" },
+  "cmPx": 40,
+
+  "facts": [
+    ["한 원에서 반지름은 길이가 모두 같아요", true],
+    ["한 원에서 지름은 1개뿐이에요", false, "지름은 셀 수 없이 많이 그을 수 있어요"],
+    ["지름은 반지름의 2배예요", true],
+    ["원 위의 두 점을 이은 선분 중에서 가장 긴 것은 지름이에요", true],
+    ["지름은 원을 똑같이 둘로 나눠요", true],
+    ["반지름은 지름의 2배예요", false, "거꾸로예요. 반지름은 지름의 반이에요"],
+    ["원의 중심은 원 위에 있어요", false, "원의 중심은 원의 한가운데, 원 안에 있어요"],
+    ["컴퍼스를 벌린 길이가 원의 반지름이 돼요", true],
+    ["한 원에서 반지름은 1개뿐이에요", false, "반지름도 셀 수 없이 많아요"],
+    ["원의 중심을 지나지 않아도 원 위의 두 점을 이으면 지름이에요", false, "지름은 꼭 원의 중심을 지나야 해요"],
+    ["컴퍼스 침을 꽂은 곳이 원의 중심이 돼요", true]
+  ],
+
+  "stages": [
+    { "name": "원의 부분 이름", "short": "이름", "sub": "중심 · 반지름 · 지름",
+      "kinds": [ { "kind": "partName" } ] },
+    { "name": "반지름과 지름", "short": "길이", "sub": "지름 = 반지름 × 2",
+      "kinds": [ { "kind": "rToD" }, { "kind": "dToR" }, { "kind": "longest", "weight": 0.7 } ] },
+    { "name": "컴퍼스로 그리기", "short": "컴퍼스", "sub": "자에 맞춰 벌리고 돌려요",
+      "kinds": [ { "kind": "compass" }, { "kind": "compass", "byD": true, "weight": 0.8 } ] },
+    { "name": "원 이어 붙이기", "short": "이어 붙이기", "sub": "반지름이 몇 번 들어갈까?",
+      "kinds": [ { "kind": "rowWidth" }, { "kind": "centers" }, { "kind": "nested", "weight": 0.7 } ] },
+    { "name": "원의 성질 O/X", "short": "O/X", "sub": "맞으면 O, 틀리면 X",
+      "kinds": [ { "kind": "ox" } ] },
+    { "name": "원 탐정", "short": "도전", "sub": "꼭 맞는 원, 원 무늬 규칙", "challenge": true,
+      "kinds": [ { "kind": "squareFit" }, { "kind": "pattern" }, { "kind": "rowWidth", "hard": true }, { "kind": "compass", "byD": true } ] }
+  ]
+}
