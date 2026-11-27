@@ -52,7 +52,23 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b1030;font-family:'J
 body.ctrl-drag .tb.dir,body.ctrl-tilt .tb.dir,body.ctrl-tilt #steerInd{display:none}
 body.ctrl-buttons #steerZone,body.ctrl-buttons #steerInd{display:none}
 body.ctrl-tilt #steerZone{display:none}
-@media (pointer:coarse) and (orientation:portrait){#speedBox{bottom:calc(132px + env(safe-area-inset-bottom))}#tDrift{right:calc(130px + env(safe-area-inset-right))}}
+/* 세로 화면: 미니맵·속도계는 오른쪽 위, 버튼은 오른쪽 아래에 세로로 */
+@media (orientation:portrait){
+  #map{width:96px;height:96px;right:calc(max(10px,env(safe-area-inset-right)) + 52px)}
+  .hud{max-width:calc(100vw - 170px)}.panel{padding:5px 9px;font-size:14px}.panel.pos b{font-size:26px}
+  #speedBox{left:auto;right:max(10px,env(safe-area-inset-right));top:calc(max(10px,env(safe-area-inset-top)) + 104px);bottom:auto;transform:none;text-align:right}
+  #speedBox b{font-size:34px}#nitroBar{width:120px;margin:4px 0 0 auto}
+  #chaseHud{width:min(200px,calc(100vw - 170px))}
+}
+@media (pointer:coarse) and (orientation:portrait){
+  #tNitro{width:96px;height:96px;right:calc(16px + env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom))}
+  #tDrift{width:82px;height:82px;right:calc(23px + env(safe-area-inset-right));bottom:calc(136px + env(safe-area-inset-bottom))}
+  #steerInd{left:calc(14px + env(safe-area-inset-left));width:150px}
+  #steerKnob{left:51px}
+  #steerZone{width:62%}
+  .tb.dir{width:78px;height:78px}#tR{left:calc(104px + env(safe-area-inset-left))}
+}
+body.title .hud,body.title #speedBox,body.title #map,body.title #pauseBtn,body.title #touch,body.title .help{visibility:hidden}
 .overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(6,8,26,.6);z-index:10;padding:14px}
 .overlay[hidden]{display:none}
 .card{background:#12173a;border:2px solid rgba(34,224,255,.45);border-radius:20px;padding:22px 24px;max-width:430px;width:100%;max-height:calc(100dvh - 20px);overflow:auto;text-align:center;box-shadow:0 0 0 4px rgba(255,59,138,.18),0 10px 40px rgba(0,0,0,.5)}

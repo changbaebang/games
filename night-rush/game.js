@@ -23,7 +23,7 @@ const camera=new THREE.PerspectiveCamera(64,W()/H(),.5,1500);camera.rotation.ord
 const hemi=new THREE.HemisphereLight(0xffffff,0x334455,.8);scene.add(hemi);
 const sunL=new THREE.DirectionalLight(0xffffff,.5);sunL.position.set(-200,300,120);scene.add(sunL);
 let baseFov=64;
-function fit(){camera.aspect=W()/H();baseFov=camera.aspect<1?82:64;camera.updateProjectionMatrix();renderer.setSize(W(),H())}
+function fit(){camera.aspect=W()/H();baseFov=camera.aspect<1?78:64;camera.updateProjectionMatrix();renderer.setSize(W(),H())}
 addEventListener('resize',fit);fit();
 const BOX=new THREE.BoxGeometry(1,1,1);
 const matCache={};
@@ -192,7 +192,7 @@ addEventListener('keydown',e=>{
 addEventListener('keyup',e=>keys[e.code]=false);
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;nitroBtn=driftBtn=btnL=btnR=false;dragSteer=0});
 const sz=$('steerZone'),si=$('steerInd'),sk=$('steerKnob');let sid=null,sx0=0;
-function knob(v){sk.style.transform=`translateX(${v*58}px)`}
+function knob(v){const w=si.offsetWidth||170;sk.style.transform=`translateX(${v*(w/2-27)}px)`}
 sz.addEventListener('pointerdown',e=>{e.preventDefault();if(sid!==null)return;sid=e.pointerId;sx0=e.clientX;try{sz.setPointerCapture(e.pointerId)}catch(_){}si.classList.add('on')});
 sz.addEventListener('pointermove',e=>{if(e.pointerId!==sid)return;let v=(e.clientX-sx0)/62;
   if(Math.abs(v)>1.4)sx0=e.clientX-Math.sign(v)*62*1.4; // 손가락이 많이 밀려도 반대로 꺾기 쉽게 기준점 따라가기
@@ -347,7 +347,7 @@ function updateChase(dt){
 // ---------- 시작/끝
 function startRace(){
   buildWorld(D.tracks[trackI]);setupRace();
-  for(const id of ['titleOv','garageOv','resultOv','pauseOv'])$(id).hidden=true;
+  for(const id of ['titleOv','garageOv','resultOv','pauseOv'])$(id).hidden=true;document.body.classList.remove('title');
   $('chaseHud').hidden=mode!=='chase';setT($('lapLbl'),mode==='race'?'랩':'시간');
   $('map').style.display='';
   state='count';countT=3.5;raceT=0;me.earned=0;paused=false;tiltZero=tiltRaw;
@@ -416,7 +416,7 @@ function renderTitle(){
   $('ctrlRow').style.display=MOBILE?'':'none';
   const ab=$('assistBtn');ab.setAttribute('aria-pressed',String(!!save.assist));ab.textContent=save.assist?'켜짐':'꺼짐';
   $('ctrlHelp').textContent=MOBILE?({drag:'왼쪽 화면을 누른 채 좌우로 밀면 핸들이 돌아가요.',buttons:'왼쪽 아래 ◀ ▶ 버튼으로 방향을 바꿔요.',tilt:'휴대폰을 핸들처럼 기울여요. 출발할 때 잡은 각도가 가운데예요.'})[save.ctrl]+' 가속은 자동이에요.':'← → 핸들 · Space 드리프트 · ↓ 브레이크 · Shift 니트로. 가속은 자동이에요.';
-  document.body.className='ctrl-'+save.ctrl;
+  document.body.className='ctrl-'+save.ctrl+(state==='title'?' title':'');
 }
 for(const b of $('modeSeg').children)b.onclick=()=>{snd('click');mode=b.dataset.m;renderTitle()};
 for(const b of $('ctrlSeg').children)b.onclick=()=>{snd('click');save.ctrl=b.dataset.c;store();renderTitle();
@@ -487,13 +487,13 @@ function frame(now){
   if(state==='title'){const r=13;camera.position.set(g.x+Math.sin(camYaw)*r,g.y+4.2,g.z+Math.cos(camYaw)*r);camera.lookAt(g.x,g.y+1,g.z);camera.fov=baseFov;camera.updateProjectionMatrix()}
   else{
     const p=at(me.s);let dh=p.h+me.yaw*.35-camYaw;dh=Math.atan2(Math.sin(dh),Math.cos(dh));camYaw+=dh*Math.min(1,dt*5);
-    const back=8.2+me.v*.04,fx_=Math.sin(camYaw),fz=Math.cos(camYaw);
+    const port=camera.aspect<1,back=(port?10:8.2)+me.v*.04,fx_=Math.sin(camYaw),fz=Math.cos(camYaw);
     shake=Math.max(0,shake-dt);const sk=shake*.5;
-    const tx=g.x-fx_*back,tz=g.z-fz*back,ty=Math.max(g.y,at(me.s-back).y)+3.1;
+    const tx=g.x-fx_*back,tz=g.z-fz*back,ty=Math.max(g.y,at(me.s-back).y)+(port?4.6:3.1);
     const cp=camera.position,k=state==='count'?1:Math.min(1,dt*9);
     cp.x+=(tx-cp.x)*k;cp.z+=(tz-cp.z)*k;cp.y+=(ty-cp.y)*k;
     camera.position.set(cp.x+(Math.random()-.5)*sk,cp.y+(Math.random()-.5)*sk,cp.z);
-    camera.lookAt(g.x+fx_*9,g.y+1.3,g.z+fz*9);
+    const ah=port?16:9;camera.lookAt(g.x+fx_*ah,g.y+(port?.6:1.3),g.z+fz*ah);
     const ft=baseFov+me.v*.13+(me.boost?9:0);fov+=(ft-fov)*Math.min(1,dt*4);camera.fov=fov;camera.updateProjectionMatrix();
   }
   renderer.render(scene,camera);requestAnimationFrame(frame);
