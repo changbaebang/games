@@ -1,5 +1,5 @@
 {
- "_설명": "나이트 러시 데이터. 속도 단위는 m/s(화면 km/h = ×3.6). cars: top 최고속도, accel 가속, grip 접지력(클수록 코너에서 덜 밀림), nitro 니트로 배율, price 가격. tracks: points는 [x, z, 높이] 조절점(순서대로 이어서 닫힌 길), laps 바퀴 수, aiTop 라이벌 최고속도, unlock은 앞 트랙 3등 안에 들면 열림. physics: slide 코너에서 바깥으로 밀리는 정도, assist 운전 도움이 밀림을 줄이는 비율, steerRate 핸들 세기. chase: 경찰 추격 모드(bustTime초 동안 붙잡히면 체포, escapeDist m 넘게 따돌리고 escapeTime초 버티면 탈출). rewards: 등수별 금화.",
+ "_설명": "나이트 러시 데이터. 속도 단위는 m/s(화면 km/h = ×3.6). cars: top 최고속도, accel 가속, grip 접지력(클수록 코너에서 덜 밀림), nitro 니트로 배율, price 가격. tracks: points는 [x, z, 높이] 조절점(순서대로 이어서 닫힌 길), laps 바퀴 수, aiTop 라이벌 최고속도, unlock은 앞 트랙 3등 안에 들면 열림. physics: slide 코너에서 바깥으로 밀리는 정도, assist 운전 도움이 밀림을 줄이는 비율, steerRate 핸들 세기. chase: 경찰 추격 모드(bustTime초 동안 붙잡히면 체포, escapeDist m 넘게 따돌리고 escapeTime초 버티면 탈출). rewards: 등수별 금화. features: boostPads 부스트 판 수, ramps 점프대 수(곧은 길에 자동 배치), padMult 부스트 판 속도 배율, takedownSpeed 이 속도(m/s)보다 세게 옆으로 들이받으면 테이크다운. tracks[].missions와 chaseMissions는 별 3개 미션(type: place 등수 이내, near 아슬아슬 횟수, jump 점프 횟수, boost 부스트 판, drift 드리프트 초, takedown 테이크다운, escape 탈출, survive 버틴 초). neon은 차 밑 네온 불빛, stars는 열리는 데 필요한 별 수.",
  "road": {
   "half": 9,
   "shoulder": 2.4,
@@ -256,6 +256,23 @@
      40,
      -80
     ]
+   ],
+   "missions": [
+    {
+     "type": "place",
+     "n": 3,
+     "text": "3등 안에 들기"
+    },
+    {
+     "type": "near",
+     "n": 6,
+     "text": "아슬아슬 6번"
+    },
+    {
+     "type": "jump",
+     "n": 3,
+     "text": "점프대 3번 날기"
+    }
    ]
   },
   {
@@ -316,6 +333,23 @@
      -150,
      1
     ]
+   ],
+   "missions": [
+    {
+     "type": "place",
+     "n": 2,
+     "text": "2등 안에 들기"
+    },
+    {
+     "type": "boost",
+     "n": 6,
+     "text": "부스트 판 6번 밟기"
+    },
+    {
+     "type": "drift",
+     "n": 6,
+     "text": "드리프트 6초"
+    }
    ]
   },
   {
@@ -376,7 +410,90 @@
      -90,
      0
     ]
+   ],
+   "missions": [
+    {
+     "type": "place",
+     "n": 1,
+     "text": "우승하기"
+    },
+    {
+     "type": "takedown",
+     "n": 2,
+     "text": "라이벌 테이크다운 2번"
+    },
+    {
+     "type": "drift",
+     "n": 10,
+     "text": "드리프트 10초"
+    }
    ]
+  }
+ ],
+ "features": {
+  "boostPads": 5,
+  "ramps": 2,
+  "padTime": 1.4,
+  "padMult": 1.22,
+  "padAccel": 22,
+  "rampLen": 9,
+  "rampHeight": 1.4,
+  "jumpMin": 20,
+  "jumpLift": 0.22,
+  "airNitro": 35,
+  "jumpCoins": 5,
+  "takedownCoins": 30,
+  "takedownNitro": 25,
+  "takedownSpeed": 5,
+  "wreckTime": 2.5
+ },
+ "chaseMissions": [
+  {
+   "type": "escape",
+   "n": 1,
+   "text": "경찰 따돌리기"
+  },
+  {
+   "type": "takedown",
+   "n": 2,
+   "text": "경찰차 테이크다운 2번"
+  },
+  {
+   "type": "survive",
+   "n": 60,
+   "text": "60초 버티기"
+  }
+ ],
+ "neon": [
+  {
+   "name": "없음",
+   "color": null,
+   "stars": 0
+  },
+  {
+   "name": "청록",
+   "color": "#22e0ff",
+   "stars": 1
+  },
+  {
+   "name": "핑크",
+   "color": "#ff3b8a",
+   "stars": 3
+  },
+  {
+   "name": "초록",
+   "color": "#33ff8a",
+   "stars": 6
+  },
+  {
+   "name": "보라",
+   "color": "#b45cff",
+   "stars": 9
+  },
+  {
+   "name": "무지개",
+   "color": "rainbow",
+   "stars": 13
   }
  ]
 }

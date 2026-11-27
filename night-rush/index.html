@@ -25,6 +25,7 @@
 <div id="banner"></div>
 <div id="toast"></div>
 <div id="count"></div>
+<div id="missionBox" hidden><b>미션</b><ul id="mList"></ul></div>
 <div class="help">← → 핸들 · Space 드리프트 · ↓ 브레이크 · Shift 니트로 · P 일시정지 · 가속은 자동</div>
 <div id="touch">
   <div id="steerZone"></div>
@@ -53,17 +54,21 @@
   <div class="cars" id="cars"></div>
   <p class="label">색깔</p>
   <div class="colors" id="colors"></div>
+  <p class="label">차 밑 네온 <span class="small" id="starTotal"></span></p>
+  <div class="neons" id="neons"></div>
   <button class="btn" id="garageClose">다 골랐어요</button>
 </div></div>
 
 <div class="overlay" id="pauseOv" hidden><div class="card">
   <h2>일시정지</h2>
+  <ul class="missions" id="pMissions"></ul>
   <div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="restartBtn">다시 시작</button><button class="btn soft" id="quitBtn">처음 화면</button></div>
 </div></div>
 
 <div class="overlay" id="resultOv" hidden><div class="card">
   <h1 id="resTitle">1등!</h1>
   <p id="resTxt"></p>
+  <ul class="missions" id="rMissions"></ul>
   <ol class="resList" id="resList"></ol>
   <div class="btns"><button class="btn" id="nextBtn">다음 트랙</button><button class="btn soft" id="againBtn">다시 하기</button><button class="btn soft" id="resTitleBtn">처음 화면</button></div>
 </div></div>

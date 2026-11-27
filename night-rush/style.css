@@ -117,3 +117,17 @@ body.title .hud,body.title #speedBox,body.title #map,body.title #pauseBtn,body.t
 .back a{color:#9aa3cc}
 @media(max-height:520px){.card{padding:12px 16px}.card h1{font-size:32px}.track{min-height:50px;padding:6px 12px}}
 @media(prefers-reduced-motion:reduce){#banner.on,#toast.on{animation-duration:.01s}}
+
+#missionBox{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:7;background:rgba(10,14,40,.82);border:1.5px solid rgba(255,210,63,.6);border-radius:14px;padding:8px 16px;pointer-events:none;text-align:left;font-size:15px;min-width:200px}
+#missionBox[hidden]{display:none}#missionBox b{font-weight:400;color:#ffd23f}
+#missionBox ul,.missions{list-style:none;margin:4px 0 0;padding:0}
+.missions{text-align:left;margin:0 auto 12px;max-width:300px;font-size:16px;color:#c9d0f0}
+.missions li,#mList li{padding:2px 0}.missions li.done,#mList li.done{color:#ffd23f}
+.missions li::before,#mList li::before{content:"☆ ";color:#8a93c0}.missions li.done::before,#mList li.done::before{content:"★ ";color:#ffd23f}
+.missions li.new::after{content:" 새로!";color:#22e0ff;font-size:13px}
+.neons{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.neons button{font:inherit;font-size:14px;border:2px solid transparent;border-radius:12px;padding:6px 10px;min-height:40px;background:#1a2050;color:#fff;cursor:pointer}
+.neons button.on{border-color:#fff;box-shadow:0 0 10px var(--c,#fff)}
+.neons button[disabled]{opacity:.45;cursor:default}
+.neons i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;background:var(--c,#555)}
+.track em small{display:block;color:#ffd23f;font-size:14px}

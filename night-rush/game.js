@@ -77,6 +77,10 @@ const roadTex=canvasTex(128,128,(g)=>{g.fillStyle='#3b3e48';g.fillRect(0,0,128,1
 roadTex.wrapS=roadTex.wrapT=THREE.RepeatWrapping;
 const winTex=[0,1,2].map(v=>canvasTex(64,128,(g,w,h)=>{g.fillStyle=['#1c2140','#24203a','#1a2a3a'][v];g.fillRect(0,0,w,h);
   for(let y=6;y<h-4;y+=10)for(let x=5;x<w-4;x+=10){const on=Math.random()<.55;g.fillStyle=on?pick(['#ffe8a0','#ffd36a','#a0e8ff','#ffffff']):'#11142a';g.fillRect(x,y,6,6)}}));
+const rampTex=canvasTex(64,64,(g)=>{for(let i=0;i<8;i++){g.fillStyle=i%2?'#1a1a1a':'#ffcf1f';g.fillRect(i*8,0,8,64)}g.fillStyle='rgba(255,255,255,.25)';g.fillRect(0,0,64,6)});
+const padTex=canvasTex(64,128,(g)=>{g.fillStyle='#0a3a5a';g.fillRect(0,0,64,128);g.strokeStyle='#5ff0ff';g.lineWidth=9;g.lineJoin='round';
+  for(let y=8;y<128;y+=40){g.beginPath();g.moveTo(8,y);g.lineTo(32,y+24);g.lineTo(56,y);g.stroke()}});
+const padMat=new THREE.MeshBasicMaterial({map:padTex});
 const checkTex=canvasTex(64,16,(g)=>{for(let x=0;x<16;x++)for(let y=0;y<4;y++){g.fillStyle=(x+y)%2?'#111':'#f4f4f4';g.fillRect(x*4,y*4,4,4)}});
 const gateTex=canvasTex(256,48,(g,w,h)=>{g.fillStyle='#ff3b8a';g.fillRect(0,0,w,h);g.fillStyle='#fff';g.font='32px Jua, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('NIGHT RUSH',w/2,h/2+2)});
 
@@ -106,8 +110,33 @@ function buildWorld(T){
   const ban=new THREE.Mesh(BOX,[basic('#ff3b8a'),basic('#ff3b8a'),basic('#ff3b8a'),basic('#ff3b8a'),new THREE.MeshBasicMaterial({map:gateTex}),new THREE.MeshBasicMaterial({map:gateTex})]);
   ban.scale.set(WALL*2+4,2.2,.6);ban.position.y=8.4;gate.add(ban);
   scenery(th.scenery);
+  placeFeatures();
   drawMapBase();
 }
+// 점프대·부스트 판 (곧은 길에 자동 배치)
+const F=D.features,G=28;let ramps=[],pads=[];
+function placeFeatures(){
+  ramps=[];pads=[];
+  const straight=s=>{for(let x=-20;x<=55;x+=5)if(Math.abs(at(s+x).k)>.0055)return false;return true};
+  const near=(s,list,dist)=>list.some(o=>Math.abs(rel(o.s,s))<dist);
+  for(let i=0;i<F.ramps;i++){const want=L*(i+.55)/F.ramps;
+    for(let o=0;o<L/F.ramps*.5;o+=6){let hit=null;for(const x of [want+o,want-o]){const ss=wrapS(x);if(ss>120&&ss<L-60&&straight(ss)&&!near(ss,ramps,L/(F.ramps+1)*.6)){hit=ss;break}}if(hit!=null){ramps.push({s:hit});break}}}
+  for(let i=0;i<F.boostPads;i++){const want=L*(i+.2)/F.boostPads;
+    for(let o=0;o<90;o+=4){let hit=null;for(const x of [want+o,want-o]){const ss=wrapS(x);if(ss>60&&ss<L-40&&Math.abs(at(ss).ka)<.006&&!near(ss,ramps,50)&&!near(ss,pads,40)){hit=ss;break}}
+      if(hit!=null){pads.push({s:hit,d:RD.lanes[(i*3+1)%RD.lanes.length]});break}}}
+  const ang=Math.atan(F.rampHeight/F.rampLen);
+  for(const r of ramps){const p=at(r.s+F.rampLen/2),m=new THREE.Mesh(BOX,new THREE.MeshLambertMaterial({map:rampTex}));
+    m.scale.set(HALF*2,.3,Math.hypot(F.rampLen,F.rampHeight));m.rotation.order='YXZ';m.rotation.y=p.h;m.rotation.x=-ang-Math.atan(p.g);m.position.set(p.x,p.y+F.rampHeight/2,p.z);world.add(m);
+    const e=at(r.s+F.rampLen);cube(lam('#555a66'),HALF*2,F.rampHeight,.4,0,0,0).position.set(e.x,e.y+F.rampHeight/2,e.z);world.children[world.children.length-1].rotation.y=e.h}
+  for(const q of pads){const o=worldPos(q.s,q.d,TMP),m=new THREE.Mesh(BOX,padMat);m.scale.set(3.6,.06,6);m.rotation.order='YXZ';m.rotation.y=o.h;m.rotation.x=-Math.atan(o.g);m.position.set(o.x,o.y+.07,o.z);world.add(m)}
+}
+const crossed=(a,b,x)=>b>=a?(x>a&&x<=b):(x>a||x<=b);
+function rampAir(c,prev,dt){
+  if(c.air){c.avy-=G*dt;c.ay+=c.avy*dt;if(c.ay<=0){c.ay=0;c.air=false;c.avy=0;return 'land'}return 'air'}
+  c.ay=0;
+  for(const r of ramps){const into=wrapS(c.s-r.s);if(into<F.rampLen&&Math.abs(c.d)<HALF+.5)c.ay=into/F.rampLen*F.rampHeight;
+    if(Math.abs(c.d)<HALF+.5&&crossed(prev,c.s,wrapS(r.s+F.rampLen))){c.air=true;c.ay=F.rampHeight;c.avy=c.v>F.jumpMin?c.v*F.jumpLift:0;return c.avy>0?'jump':'drop'}}
+  return null}
 function scenery(kind){
   let seed=7;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
   const place=(minOff,maxOff,step,fn)=>{for(let s=0;s<L;s+=step)for(const side of [-1,1]){if(rnd()<.25)continue;
@@ -147,11 +176,13 @@ function makeCar(color,shape,police){
   cube(basic('#fff4c0'),.46,.16,.06,.62,.66*low,2.2,b);cube(basic('#fff4c0'),.46,.16,.06,-.62,.66*low,2.2,b);
   cube(basic('#ff2a3a'),.5,.16,.06,.66,.7*low,-2.2,b);cube(basic('#ff2a3a'),.5,.16,.06,-.66,.7*low,-2.2,b);
   const sh=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:new THREE.Color('#000'),transparent:true,opacity:.35,depthWrite:false}));sh.scale.set(2.3,.02,4.7);sh.position.y=.03;g.add(sh);
+  const glow=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:new THREE.Color('#22e0ff'),transparent:true,opacity:.55,depthWrite:false}));glow.scale.set(2.9,.02,5.3);glow.position.y=.06;glow.visible=false;g.add(glow);
   let red=null,blue=null;
   if(police){cube(dark,2.04,.32,1.7,0,.6,0,b);red=cube(basic('#ff2030'),.6,.2,.4,-.33,1.55,cz,b);blue=cube(basic('#2060ff'),.6,.2,.4,.33,1.55,cz,b)}
-  return {g,b,red,blue,body}
+  return {g,b,red,blue,body,glow}
 }
-function placeCar(c,yaw,roll){const o=worldPos(c.s,c.d,TMP);c.m.g.position.set(o.x,o.y,o.z);c.m.g.rotation.y=o.h+(yaw||0);c.m.g.rotation.x=-Math.atan(o.g);c.m.b.rotation.z=roll||0}
+function placeCar(c,yaw,roll){const o=worldPos(c.s,c.d,TMP);c.m.g.position.set(o.x,o.y+(c.ay||0),o.z);c.m.g.rotation.y=o.h+(yaw||0);
+  const tilt=c.air?clamp(c.avy*.025,-.35,.35):(c.ay>0?Math.atan(F.rampHeight/F.rampLen):0);c.m.g.rotation.x=-Math.atan(o.g)-tilt;c.m.b.rotation.z=roll||0}
 const TMP={x:0,y:0,z:0,h:0,g:0};
 
 // ---------- 상태
@@ -164,10 +195,26 @@ function spawnTraffic(o,first){
   for(let tries=0;tries<20;tries++){const s=wrapS(me.s+(first?rand(120,L*.8):rand(200,360))),d=pick(RD.lanes);
     if(others.some(q=>q!==o&&Math.abs(rel(q.s,s))<18&&Math.abs(q.d-d)<3))continue;o.s=s;o.d=d;o.v=rand(...D.traffic.speed);o.last=null;return}
 }
+let stats={},doneNow=new Set(),lastLand=0;
+function resetStats(){stats={near:0,jump:0,boost:0,drift:0,takedown:0};doneNow=new Set()}
+function missionList(){return mode==='race'?(TR.missions||[]):(D.chaseMissions||[])}
+function missionOk(m){if(m.type==='place')return !!(me.place&&me.place<=m.n);if(m.type==='escape')return !!me.escaped;if(m.type==='survive')return !!(chase&&chase.time>=m.n);return (stats[m.type]||0)>=m.n}
+function starArr(md,id){save.stars=save.stars||{race:{},chase:{}};save.stars[md]=save.stars[md]||{};return save.stars[md][id]||(save.stars[md][id]=[0,0,0])}
+function totalStars(){let n=0;const st=save.stars||{};for(const md in st)for(const id in st[md])n+=st[md][id].reduce((a,b)=>a+b,0);return n}
+function checkMissions(){if(state!=='race')return;missionList().forEach((m,i)=>{if(m.type==='place'||m.type==='escape'||doneNow.has(i))return;if(missionOk(m)){doneNow.add(i);toast('미션 완료! ★','#ffd23f');snd('level')}})}
+function awardStars(){const arr=starArr(mode,TR.id),fresh=[];missionList().forEach((m,i)=>{if(missionOk(m)&&!arr[i]){arr[i]=1;fresh.push(i)}});return fresh}
+function renderMissions(el,fresh){el.innerHTML='';const arr=starArr(mode,TR.id);missionList().forEach((m,i)=>{const li=document.createElement('li');
+  let prog='';if(state!=='title'&&!['place','escape'].includes(m.type)){const v=m.type==='survive'?Math.floor(chase?chase.time:0):m.type==='drift'?Math.floor(stats.drift||0):(stats[m.type]||0);prog=` (${Math.min(v,m.n)}/${m.n})`}
+  li.textContent=m.text+prog;if(arr[i]||missionOk(m))li.className='done';if(fresh&&fresh.includes(i))li.className='done new';el.appendChild(li)})}
+function applyNeon(){if(!me.m)return;const n=D.neon[save.neon||0];me.m.glow.visible=!!(n&&n.color);if(n&&n.color&&n.color!=='rainbow')me.m.glow.material.color.set(n.color)}
+function takedown(o){o.wreck=F.wreckTime;o.spin=0;o.v*=.3;stats.takedown++;save.coins+=F.takedownCoins;me.earned+=F.takedownCoins;me.nitro=Math.min(100,me.nitro+F.takedownNitro);
+  toast('테이크다운! +'+F.takedownCoins,'#ff9a3d');flash('#ff9a3d');shake=Math.max(shake,.55);snd('boom');const w=o.m.g.position;puff(w.x,w.y+1,w.z,'#ffb347',10,5,.6,.4);
+  if(o.kind==='police'&&chase){chase.bust=Math.max(0,chase.bust-35)}}
 function setupRace(){
   clearCars();finishOrder=[];chase=null;
   const car=CAR(save.car);me.m=makeCar(D.colors[save.color]||D.colors[0],car.shape);
-  Object.assign(me,{lap:0,v:0,dv:0,yaw:0,nitro:PH.nitroStart,boost:false,drift:false,driftT:0,finished:false,lapStart:0,bestLap:1e9,lapNo:0});
+  Object.assign(me,{lap:0,v:0,dv:0,yaw:0,nitro:PH.nitroStart,boost:false,drift:false,driftT:0,finished:false,lapStart:0,bestLap:1e9,lapNo:0,ay:0,air:false,avy:0,padT:0,airT:0,place:0,escaped:false});
+  applyNeon();resetStats();
   if(mode==='race'){
     const R=D.rivals,grid=[[0,-3.4],[0,3.4],[1,-3.4],[1,3.4],[2,-3.4],[2,3.4]];
     me.s=wrapS(-8-12*2);me.d=3.4;me.lap=-1;
@@ -240,28 +287,36 @@ function updateMe(dt){
   const st=state==='race'?readSteer(dt):0;
   const off=Math.abs(me.d)>HALF;
   const brakeKey=keys.ArrowDown||keys.KeyS,driftKey=keys.Space||driftBtn;
-  me.drift=state==='race'&&driftKey&&Math.abs(st)>.25&&me.v>18;
+  me.drift=state==='race'&&!me.air&&driftKey&&Math.abs(st)>.25&&me.v>18;
   const braking=state==='race'&&(brakeKey||(driftKey&&!me.drift));
   me.boost=state==='race'&&(keys.ShiftLeft||keys.ShiftRight||keys.KeyN||nitroBtn)&&me.nitro>0;
   if(me.boost)me.nitro=Math.max(0,me.nitro-PH.nitroUse*dt);
-  let top=car.top*(me.boost?car.nitro:1)*(off?PH.offroadTop:1);
+  me.padT=Math.max(0,me.padT-dt);
+  let top=car.top*(me.boost?car.nitro:1)*(off&&!me.air?PH.offroadTop:1)*(me.padT>0?F.padMult:1);
   if(state!=='race'&&state!=='finish')top=0;
   if(state==='finish')top=car.top*.6;
   if(braking)me.v=Math.max(0,me.v-PH.brake*dt);
-  else if(me.v<top)me.v+=car.accel*(me.boost?1.6:1)*Math.max(0,1-(me.v/top)**2)*dt;
+  else if(me.v<top)me.v+=(car.accel*(me.boost?1.6:1)+(me.padT>0?F.padAccel:0))*Math.max(0,1-(me.v/top)**2)*dt;
   if(me.v>top)me.v-=(me.v-top)*(off?1.4:.8)*dt;
-  if(me.drift){me.v-=me.v*PH.driftDrag*dt;me.nitro=Math.min(100,me.nitro+PH.driftNitro*dt);me.driftT+=dt}
+  if(me.drift){me.v-=me.v*PH.driftDrag*dt;me.nitro=Math.min(100,me.nitro+PH.driftNitro*dt);me.driftT+=dt;stats.drift+=dt}
   else if(me.driftT>0){if(me.driftT>1.2){toast('드리프트! +니트로');me.nitro=Math.min(100,me.nitro+8)}me.driftT=0}
   let outward=k*me.v*me.v*PH.slide/car.grip;if(me.drift)outward*=PH.driftSlide;if(save.assist)outward*=1-PH.assist;
   const sr=PH.steerRate*(.4+.6*Math.min(1,me.v/25))*(me.drift?PH.driftSteer:1);
-  const target=st*sr+outward;
+  const target=me.air?st*sr*.35:st*sr+outward;
   me.dv+=(target-me.dv)*Math.min(1,dt*6);
   me.d+=me.dv*dt;
   if(Math.abs(me.d)>WALL){const hit=Math.abs(me.dv);me.d=Math.sign(me.d)*WALL;
     if(hit>2.5){me.v*=1-PH.wallSlow*Math.min(1,hit/18);shake=Math.max(shake,.25);snd('thud');const o=worldPos(me.s,me.d,TMP);puff(o.x,o.y+.6,o.z,'#ffd36a',6,4,.4,.25)}
     me.dv=-me.dv*.2}
-  me.s+=me.v*dt;
+  const prev=me.s;me.s+=me.v*dt;
   if(me.s>=L){me.s-=L;onLap()}
+  if(state==='race'){
+    for(const q of pads)if(!me.air&&crossed(prev,me.s,q.s)&&Math.abs(me.d-q.d)<2.4){me.padT=F.padTime;stats.boost++;toast('부스트!','#5ff0ff');snd('power')}
+    const ra=rampAir(me,prev,dt);
+    if(ra==='jump'){me.airT=0;snd('jump')}
+    if(me.air){me.airT+=dt;me.nitro=Math.min(100,me.nitro+F.airNitro*dt)}
+    if(ra==='land'){shake=Math.max(shake,.2);snd('thud');if(me.airT>.35){stats.jump++;save.coins+=F.jumpCoins;me.earned+=F.jumpCoins;toast('점프! +니트로')}}
+  }
   // 모양: 미끄러짐·드리프트 각도
   const slipT=me.drift?-Math.sign(st)*.55:-Math.atan2(me.dv,Math.max(8,me.v))*.9;
   me.yaw+=(slipT-me.yaw)*Math.min(1,dt*7);
@@ -269,7 +324,9 @@ function updateMe(dt){
   if(me.m){const o=me.m.g.position;
     if(me.drift&&Math.random()<.7){const y=me.m.g.rotation.y;puff(o.x-Math.sin(y)*2,o.y+.3,o.z-Math.cos(y)*2,'#d0d4e0',1,1.5,.7,.7)}
     if(me.boost&&Math.random()<.9){const y=me.m.g.rotation.y;puff(o.x-Math.sin(y)*2.5,o.y+.6,o.z-Math.cos(y)*2.5,Math.random()<.5?'#22e0ff':'#ffffff',1,.6,.25,.35)}
-    if(off&&me.v>15&&Math.random()<.3)puff(o.x,o.y+.2,o.z,'#a08a6a',1,1,.5,.4)}
+    if(off&&me.v>15&&Math.random()<.3)puff(o.x,o.y+.2,o.z,'#a08a6a',1,1,.5,.4);
+    if(me.padT>0&&Math.random()<.8){const y=me.m.g.rotation.y;puff(o.x-Math.sin(y)*2.4,o.y+.5,o.z-Math.cos(y)*2.4,'#5ff0ff',1,.8,.3,.4)}
+    const n=D.neon[save.neon||0];if(n&&n.color==='rainbow')me.m.glow.material.color.setHSL((time*.3)%1,1,.55);me.m.glow.material.opacity=me.boost||me.padT>0?.85:.55}
 }
 function onLap(){
   me.lap++;
@@ -284,8 +341,11 @@ function onLap(){
 function updateOthers(dt){
   const R=D.rivals,C=D.chase;
   for(const c of others){
-    if(c.kind==='traffic'){c.s=wrapS(c.s+c.v*dt);const r=rel(me.s,c.s);if(r<-60||r>520)spawnTraffic(c,false);placeCar(c);continue}
+    if(c.kind==='traffic'){const ps=c.s;c.s=wrapS(c.s+c.v*dt);rampAir(c,ps,dt);const r=rel(me.s,c.s);if(r<-60||r>520)spawnTraffic(c,false);placeCar(c);continue}
     if(state==='count'){placeCar(c);continue}
+    if(c.wreck>0){c.wreck-=dt;c.v=Math.max(0,c.v-30*dt);c.spin+=dt*Math.max(0,c.wreck-F.wreckTime+1.2)*9;c.s=wrapS(c.s+c.v*dt);placeCar(c,c.spin,.3);
+      if(Math.random()<.3){const w=c.m.g.position;puff(w.x,w.y+1,w.z,'#555a66',1,1,.9,.8)}
+      if(c.wreck<=0){c.spin=0;if(c.kind==='police')c.remove=true}continue}
     const p=at(c.s);let vt,dT;
     if(c.kind==='rival'){
       vt=Math.min(c.top,Math.sqrt(R.latMax/Math.max(1e-4,Math.abs(p.ka))));
@@ -307,10 +367,11 @@ function updateOthers(dt){
         if(r<9)vt=Math.min(vt,o.v)}}
     c.v+=clamp(vt-c.v,-PH.brake*dt,R.accel*dt);
     c.d+=clamp(dT-c.d,-5.5*dt,5.5*dt);c.d=clamp(c.d,-WALL+1,WALL-1);
-    const ns=c.s+c.v*dt;if(ns>=L){if(c.kind==='rival'){c.lap++;if(c.lap>=TR.laps&&!c.finished){c.finished=true;c.finishT=raceT;finishOrder.push(c)}}}c.s=wrapS(ns);
+    const ps=c.s,ns=c.s+c.v*dt;if(ns>=L){if(c.kind==='rival'){c.lap++;if(c.lap>=TR.laps&&!c.finished){c.finished=true;c.finishT=raceT;finishOrder.push(c)}}}c.s=wrapS(ns);rampAir(c,ps,dt);
     placeCar(c,0,0);
     if(c.red){const on=Math.floor(time*6)%2;c.red.visible=!!on;c.blue.visible=!on}
   }
+  for(const c of others)if(c.remove)scene.remove(c.m.g);others=others.filter(c=>!c.remove);
   // 경찰과 일반 차 충돌
   for(const c of others)if(c.kind==='police')for(const t of others)if(t.kind==='traffic'){const r=rel(c.s,t.s);if(r>0&&r<4.6&&Math.abs(t.d-c.d)<2.1){c.v=Math.min(c.v,t.v)-4;c.stun=Math.max(c.stun,.6)}}
 }
@@ -318,14 +379,17 @@ function collide(){
   for(const o of others){
     const r=rel(me.s,o.s),dd=o.d-me.d;
     if(o.kind==='traffic'&&o.last!=null&&o.last>0&&r<=0&&Math.abs(dd)<3.6&&Math.abs(dd)>=2.1&&me.v>22){
-      me.nitro=Math.min(100,me.nitro+PH.nearMissNitro);save.coins+=PH.nearMissCoins;me.earned=(me.earned||0)+PH.nearMissCoins;toast('아슬아슬! +'+PH.nearMissCoins);snd('coin')}
+      stats.near++;me.nitro=Math.min(100,me.nitro+PH.nearMissNitro);save.coins+=PH.nearMissCoins;me.earned=(me.earned||0)+PH.nearMissCoins;toast('아슬아슬! +'+PH.nearMissCoins);snd('coin')}
     o.last=r;
+    if(o.wreck>0||Math.abs((me.ay||0)-(o.ay||0))>1.3)continue;
     if(Math.abs(r)<4.5&&Math.abs(dd)<2.1){
       if(Math.abs(r)>Math.abs(dd)*1.3){
         if(r>0){const hard=me.v-o.v>14;me.v=Math.max(0,Math.min(me.v,o.v)-PH.bumpLoss*(hard?1.6:1));o.v+=3;me.s=wrapS(o.s-4.55);if(o.kind==='police')o.stun=.4;
           if(hard){toast('쾅!','#ff6a6a');flash('#ff4040')}shake=Math.max(shake,hard?.5:.3);snd(hard?'boom':'thud')}
         else{o.v=Math.max(0,Math.min(o.v,me.v)-3);o.s=wrapS(me.s-4.55);snd('thud');shake=Math.max(shake,.2)}
-      }else{const sg=Math.sign(dd)||1,push=(2.1-Math.abs(dd))/2;me.d-=push*sg;o.d+=push*sg;me.dv=-sg*5;if(o.kind==='police'){o.stun=1;o.v*=.85}snd('thud');shake=Math.max(shake,.2)}
+      }else{const sg=Math.sign(dd)||1,push=(2.1-Math.abs(dd))/2,toward=me.dv*sg;me.d-=push*sg;o.d+=push*sg;
+        if((o.kind==='rival'||o.kind==='police')&&(toward>F.takedownSpeed||Math.abs(o.d)>WALL-1.3)){takedown(o);me.dv=-sg*2}
+        else{me.dv=-sg*5;if(o.kind==='police'){o.stun=1;o.v*=.85}snd('thud');shake=Math.max(shake,.2)}}
     }
   }
 }
@@ -338,7 +402,7 @@ function updateChase(dt){
     if(ad<C.bustRange&&Math.abs(c.d-me.d)<5)near=true;if(ad<C.escapeDist)allFar=false}
   if(near)chase.bust=Math.min(100,chase.bust+dt*100/C.bustTime*(me.v<15?1.6:1));else chase.bust=Math.max(0,chase.bust-dt*14);
   if(allFar)chase.esc=Math.min(100,chase.esc+dt*100/C.escapeTime);else chase.esc=Math.max(0,chase.esc-dt*25);
-  chase.next-=dt;
+  chase.next-=dt*(others.some(c=>c.kind==='police')?1:2.5);
   if(chase.next<=0){chase.next=C.reinforceEvery;const n=others.filter(c=>c.kind==='police').length;if(n<C.policeMax){addPolice(-200);chase.heat++;banner('경찰 지원 출동!','별 '+chase.heat+'개');snd('alert')}}
   chase.siren-=dt;if(closest<90&&chase.siren<=0){chase.siren=1.4;snd('siren')}
   if(chase.bust>=100)endChase(false);else if(chase.esc>=100)endChase(true);
@@ -351,6 +415,7 @@ function startRace(){
   $('chaseHud').hidden=mode!=='chase';setT($('lapLbl'),mode==='race'?'랩':'시간');
   $('map').style.display='';
   state='count';countT=3.5;raceT=0;me.earned=0;paused=false;tiltZero=tiltRaw;
+  renderMissions($('mList'));$('missionBox').hidden=false;
   engineStart();
 }
 function finishRace(){
@@ -360,14 +425,14 @@ function finishRace(){
   if(place<=3&&trackI+1>=save.unlocked&&trackI+1<D.tracks.length)save.unlocked=trackI+2;
   if(place===1){save.wins++;if(window.Arcade)Arcade.record('nightRushWins',save.wins)}
   if(me.bestLap<1e9){const k=TR.id,b=save.best[k];if(!b||me.bestLap<b)save.best[k]=me.bestLap}
-  store();
+  me.fresh=awardStars();store();
   banner(place===1?'우승!':place+'등','결승선 통과');snd(place<=3?'win':'goal');
   resultTimer=2.4;
 }
 let resultTimer=0;
 function endChase(escaped){
   state='finish';const secs=Math.floor(chase.time),coins=(escaped?D.rewards.chaseEscape:0)+secs*D.rewards.chasePerSec;
-  save.coins+=coins;me.earned+=coins;me.escaped=escaped;if(escaped){save.escapes++;if(window.Arcade)Arcade.record('nightRushEscapes',save.escapes)}store();
+  save.coins+=coins;me.earned+=coins;me.escaped=escaped;if(escaped){save.escapes++;if(window.Arcade)Arcade.record('nightRushEscapes',save.escapes)}me.fresh=awardStars();store();
   banner(escaped?'탈출 성공!':'체포됐어요',escaped?'경찰을 따돌렸어요':'다음엔 니트로로 도망쳐요');snd(escaped?'win':'lose');resultTimer=2.4;
 }
 function showResult(){
@@ -384,15 +449,16 @@ function showResult(){
     setT($('resTitle'),me.escaped?'탈출 성공!':'체포!');
     $('resTxt').textContent=`${Math.floor(chase.time)}초 버텼어요 · 경찰 별 ${chase.heat}개 · 금화 +${me.earned}`;$('nextBtn').hidden=true;
   }
+  renderMissions($('rMissions'),me.fresh||[]);$('missionBox').hidden=true;
   $('resultOv').hidden=false;engineSet(false);
 }
 function toTitle(){
   state='title';paused=false;for(const id of ['pauseOv','resultOv','garageOv'])$(id).hidden=true;$('chaseHud').hidden=true;
   if(!TR||TR!==D.tracks[trackI])buildWorld(D.tracks[trackI]);
-  clearCars();me.m=makeCar(D.colors[save.color],CAR(save.car).shape);me.s=4;me.d=0;me.v=0;me.yaw=0;placeCar(me);
+  clearCars();me.m=makeCar(D.colors[save.color],CAR(save.car).shape);me.s=4;me.d=0;me.v=0;me.yaw=0;me.ay=0;me.air=false;applyNeon();placeCar(me);$('missionBox').hidden=true;
   renderTitle();$('titleOv').hidden=false;engineSet(false);
 }
-function setPause(on){if(state!=='race'&&state!=='count')on=false;paused=on;$('pauseOv').hidden=!on;if(on){engineSet(false);nitroBtn=driftBtn=false;$('resumeBtn').focus()}}
+function setPause(on){if(state!=='race'&&state!=='count')on=false;paused=on;$('pauseOv').hidden=!on;if(on){renderMissions($('pMissions'));engineSet(false);nitroBtn=driftBtn=false;$('resumeBtn').focus()}}
 $('pauseBtn').onclick=()=>{snd('click');setPause(!paused)};
 $('resumeBtn').onclick=()=>{snd('click');setPause(false)};
 $('restartBtn').onclick=()=>{snd('click');startRace()};
@@ -410,7 +476,8 @@ function renderTitle(){
   const box=$('tracks');box.innerHTML='';
   D.tracks.forEach((T,i)=>{const b=document.createElement('button');b.className='track';const lock=mode==='race'&&i>=save.unlocked;b.disabled=lock;
     const nb=document.createElement('b'),ni=document.createElement('i'),ne=document.createElement('em');nb.textContent=T.name;ni.textContent=lock?'앞 트랙에서 3등 안에 들면 열려요':T.desc;
-    ne.textContent=lock?'잠김':mode==='race'?(save.best[T.id]?'최고 랩 '+fmt(save.best[T.id]):'출발'):'추격 시작';b.append(nb,ni,ne);
+    ne.textContent=lock?'잠김':mode==='race'?(save.best[T.id]?'최고 랩 '+fmt(save.best[T.id]):'출발'):'추격 시작';
+    if(!lock){const sm=document.createElement('small'),a=starArr(mode,T.id);sm.textContent=a.map(x=>x?'★':'☆').join('');ne.appendChild(sm)}b.append(nb,ni,ne);
     b.onclick=()=>{if(lock)return;snd('select');trackI=i;startRace()};box.appendChild(b)});
   for(const b of $('ctrlSeg').children)b.classList.toggle('on',b.dataset.c===save.ctrl);
   $('ctrlRow').style.display=MOBILE?'':'none';
@@ -435,8 +502,12 @@ function renderGarage(){
     box.appendChild(b)}
   const cb=$('colors');cb.innerHTML='';D.colors.forEach((col,i)=>{const b=document.createElement('button');b.style.background=col;b.setAttribute('aria-label','색 '+(i+1));if(i===save.color)b.className='on';
     b.onclick=()=>{save.color=i;store();snd('click');renderGarage();refreshMyCar()};cb.appendChild(b)});
+  const ts=totalStars();setT($('starTotal'),'· 내 별 ★'+ts);const nb=$('neons');nb.innerHTML='';
+  D.neon.forEach((n,i)=>{const b=document.createElement('button'),lock=ts<n.stars;b.disabled=lock;if(i===(save.neon||0))b.className='on';
+    const dot=document.createElement('i');dot.style.background=n.color==='rainbow'?'linear-gradient(90deg,#f33,#fd3,#3f8,#3cf,#b5f)':n.color||'#555';b.style.setProperty('--c',n.color&&n.color!=='rainbow'?n.color:'#fff');
+    b.append(dot,lock?n.name+' ★'+n.stars:n.name);b.onclick=()=>{if(lock)return;save.neon=i;store();snd('click');renderGarage();refreshMyCar()};nb.appendChild(b)});
 }
-function refreshMyCar(){if(me.m)scene.remove(me.m.g);me.m=makeCar(D.colors[save.color],CAR(save.car).shape);placeCar(me)}
+function refreshMyCar(){if(me.m)scene.remove(me.m.g);me.m=makeCar(D.colors[save.color],CAR(save.car).shape);applyNeon();placeCar(me)}
 
 // ---------- 미니맵
 function drawMapBase(){
@@ -463,17 +534,17 @@ function updateHud(){
 }
 
 // ---------- 매 프레임
-let last=performance.now(),lastN=0,goT=0;
+let last=performance.now(),lastN=0,goT=0,missionHideT=0;
 function frame(now){
   const dt=Math.min((now-last)/1000||0,.05);last=now;
   if(!paused){time+=dt;
     if(state==='count'){countT-=dt;const n=Math.ceil(countT-.5);setT($('count'),n>=1&&n<=3?n:'');
       if(n!==lastN){lastN=n;if(n>=1&&n<=3)snd('count')}
-      if(countT<=.5){state='race';goT=.8;snd('go')}
+      if(countT<=.5){state='race';goT=.8;snd('go');missionHideT=1.5}
       updateMe(dt);updateOthers(dt)}
     else if(state==='race'||state==='finish'){
       if(state==='race')raceT+=dt;
-      goT-=dt;setT($('count'),goT>0?'GO!':'');
+      goT-=dt;setT($('count'),goT>0?'GO!':'');if(missionHideT>0&&(missionHideT-=dt)<=0)$('missionBox').hidden=true;checkMissions();
       updateMe(dt);updateOthers(dt);if(state==='race')collide();
       if(mode==='chase'&&state==='race')updateChase(dt);
       if(state==='finish'&&(resultTimer-=dt)<=0)showResult();
@@ -500,5 +571,5 @@ function frame(now){
 }
 toTitle();
 requestAnimationFrame(frame);
-window.__nr={me,get others(){return others},get state(){return state},get chase(){return chase},get L(){return L},at,startRace,setMode:m=>{mode=m},setTrack:i=>{trackI=i},keys,save,get raceT(){return raceT},get finishOrder(){return finishOrder},showResult,S:()=>S};
+window.__nr={get stats(){return stats},get ramps(){return ramps},get pads(){return pads},takedown,me,get others(){return others},get state(){return state},get chase(){return chase},get L(){return L},at,startRace,setMode:m=>{mode=m},setTrack:i=>{trackI=i},keys,save,get raceT(){return raceT},get finishOrder(){return finishOrder},showResult,S:()=>S};
 });
