@@ -1,0 +1,14 @@
+/* VOICE: 동네 놀이터, 자와 삼각자로 놀아요
+   IDEA: 끝이 있나 없나, 한 점에서 만나나, 반듯한 직각인가를 눈으로 확인
+   PICTURE: 흰 판 위 파란 선과 검은 점, 주황 직각 표시
+   COLOUR and TYPE: 하늘 종이, 파랑 선, 주황 강조 / Jua
+   LAYOUT: 공통 틀 + 그림 카드 */
+:root{--paper:#eef5ff;--grid:#dde8f8;--accent:#e8642a;--soft:#cfdcf0;--edge:#2b3f78}
+.box{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fig{width:min(92vw,380px);height:auto;max-height:100%;background:#fff;border-radius:18px;box-shadow:0 5px 0 var(--soft)}
+svg text{font-family:'Jua',system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+.pl{font-size:20px;fill:var(--ink)}
+.len{font-size:17px;fill:#e8642a;paint-order:stroke;stroke:#fff;stroke-width:4px}
+.emo{font-size:clamp(70px,22vw,110px)}
+.fact{font-size:clamp(22px,6.4vw,30px);background:#fff;border-radius:20px;padding:22px 24px;box-shadow:0 5px 0 var(--soft);text-align:center;max-width:92vw;line-height:1.4}
+.ask small{display:block;font-size:.72em;color:var(--mute)}
