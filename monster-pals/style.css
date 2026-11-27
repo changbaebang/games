@@ -1,0 +1,57 @@
+/* VOICE: 포근한 모험 마을, 몬스터와 함께 크는 이야기
+   PICTURE: 위에서 내려다본 작은 마을과 풀숲, 대결은 마주 보는 무대
+   COLOUR and TYPE: 풀빛 초록, 크림 카드, 속성별 색 / Jua */
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#6cc06a;font-family:'Jua',system-ui,sans-serif;color:#33302a;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{position:fixed;left:max(8px,env(safe-area-inset-left));top:max(8px,env(safe-area-inset-top));display:flex;gap:6px;z-index:5;pointer-events:none;flex-wrap:wrap;max-width:calc(100% - 170px)}
+.hud span{background:rgba(255,253,240,.92);padding:4px 10px;border-radius:12px;font-size:16px;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.hud b{font-weight:400}
+#partyBtn{position:fixed;right:max(62px,calc(env(safe-area-inset-right) + 62px));top:max(8px,env(safe-area-inset-top));height:44px;padding:0 14px;border:0;border-radius:12px;background:#ff8a3a;color:#fff;font:inherit;font-size:16px;box-shadow:0 3px 0 #b85a1a;z-index:6}
+#pauseBtn{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));width:44px;height:44px;border:0;border-radius:12px;background:rgba(0,0,0,.4);color:#fff;font:inherit;font-size:22px;z-index:6}
+#toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:rgba(40,36,30,.85);color:#fff;padding:8px 16px;border-radius:14px;font-size:18px;opacity:0;transition:opacity .25s;z-index:7;pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1}
+.help{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.45);color:#fff;padding:5px 12px;border-radius:10px;font-size:14px;z-index:4;pointer-events:none;white-space:nowrap}
+@media (pointer:coarse){.help{display:none}}
+#stick{position:fixed;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;border:3px solid rgba(255,255,255,.7);background:rgba(255,255,255,.18);z-index:4;pointer-events:none;display:none}
+#stick i{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,255,255,.85)}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(30,40,30,.55);z-index:10;padding:16px}
+.overlay[hidden]{display:none}
+.card{background:#fffbea;border-radius:22px;padding:20px 22px;max-width:420px;width:100%;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.25);max-height:92vh;overflow:auto}
+.card.wide{max-width:560px}
+.card h1{margin:0 0 8px;font-weight:400;font-size:34px;color:#e0602a}
+.card h2{margin:0 0 8px;font-weight:400;font-size:26px;color:#e0602a}
+.card h3{margin:12px 0 6px;font-weight:400;font-size:18px;color:#7a6a50}
+.card p{margin:6px 0;font-size:17px;line-height:1.45}
+.small{font-size:14px!important;color:#7a6a50}
+.mob{display:none}@media (pointer:coarse){.mob{display:block}}
+.back a{color:#7a6a50;font-size:15px}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.btn{border:0;border-radius:14px;background:#ff8a3a;color:#fff;font:inherit;font-size:20px;padding:10px 22px;box-shadow:0 4px 0 #b85a1a;cursor:pointer}
+.btn.soft{background:#e8dcc0;color:#5a4a30;box-shadow:0 4px 0 #b8a880}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #b85a1a}
+#starters{display:flex;gap:8px;justify-content:center;margin:10px 0}
+.mon{border:3px solid #e8dcc0;background:#fff;border-radius:16px;padding:6px;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;max-width:120px}
+.mon canvas{width:72px;height:72px}
+.mon b{font-weight:400;font-size:17px}
+.mon .ty{font-size:13px;color:#fff;border-radius:8px;padding:1px 8px}
+.mon:hover,.mon.sel{border-color:#ff8a3a}
+#plist,#blist{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pm{display:flex;align-items:center;gap:8px;border:3px solid #e8dcc0;background:#fff;border-radius:14px;padding:6px 10px;cursor:pointer;font:inherit;color:inherit;width:240px;text-align:left}
+.pm.sel{border-color:#ff8a3a}.pm.dead{opacity:.55}
+.pm canvas{width:52px;height:52px;flex:none}
+.pm .info{flex:1}.pm .nm{font-size:17px}.pm .sub{font-size:13px;color:#7a6a50}
+.bar{height:8px;background:#e0d8c4;border-radius:5px;overflow:hidden;margin-top:3px}.bar i{display:block;height:100%;background:#4ac45a}
+#battle{background:#f4ecd4;padding:0;flex-direction:column;justify-content:flex-end}
+#bc{position:absolute;inset:0;width:100%;height:100%}
+.bbox{position:relative;width:100%;max-width:640px;margin:0 auto;padding:10px 12px max(12px,env(safe-area-inset-bottom))}
+#msg{background:#fffbea;border:4px solid #5a4a30;border-radius:16px;padding:12px 16px;font-size:19px;min-height:58px;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+#menu{margin-top:8px}
+#menu[hidden]{display:none}
+.moves{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.moves button{border:0;border-radius:14px;color:#fff;font:inherit;font-size:18px;padding:10px 6px;box-shadow:0 4px 0 rgba(0,0,0,.25);text-shadow:0 1px 2px rgba(0,0,0,.3)}
+.moves button small{display:block;font-size:12px;opacity:.9}
+.acts{display:flex;gap:8px;margin-top:8px}
+.acts button{flex:1;border:0;border-radius:14px;background:#e8dcc0;color:#5a4a30;font:inherit;font-size:17px;padding:10px 4px;box-shadow:0 4px 0 #b8a880}
+.acts button:disabled{opacity:.4}
+button:active{transform:translateY(2px)}

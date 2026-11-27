@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>몬스터 친구들</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<canvas id="c"></canvas>
+<div class="hud"><span>🏅 <b id="hBadge">0</b></span><span>🪙 <b id="hCoin">0</b></span><span>⚪ <b id="hBall">0</b></span><span>📖 <b id="hDex">0</b></span></div>
+<button id="partyBtn">내 몬스터</button>
+<button id="pauseBtn" aria-label="메뉴">≡</button>
+<div id="toast"></div>
+<div class="help">방향키·WASD로 걷기 · 풀숲에서 야생 몬스터가 나와요 · 사람이나 집에 부딪치면 말을 걸어요</div>
+<div id="stick"><i></i></div>
+
+<div class="overlay" id="battle" hidden>
+  <canvas id="bc"></canvas>
+  <div class="bbox">
+    <div id="msg">야생 몬스터가 나타났다!</div>
+    <div id="menu">
+      <div class="moves" id="moves"></div>
+      <div class="acts"><button id="aBall">⚪ 공 던지기</button><button id="aSwap">교체</button><button id="aRun">도망</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="partyOv" hidden><div class="card wide">
+  <h2 id="pTitle">내 몬스터</h2><p class="small" id="pHint">누르면 맨 앞(먼저 나가는 몬스터)으로 바꿔요</p>
+  <div id="plist"></div>
+  <h3 id="boxH">보관함</h3><div id="blist"></div>
+  <div class="btns"><button class="btn soft" id="pClose">닫기</button></div>
+</div></div>
+
+<div class="overlay" id="talkOv" hidden><div class="card">
+  <h2 id="tName"></h2><p id="tTxt"></p><div class="btns" id="tBtns"></div>
+</div></div>
+
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>몬스터 친구들</h1>
+  <p>풀숲에서 몬스터를 만나 <b>공</b>으로 잡고, 함께 자라며 트레이너 네 명과 <b>관장</b>을 이겨 배지를 따요!</p>
+  <p class="small">불은 풀에, 풀은 물에, 물은 불에 강해요. 번개·바위·바람도 서로 상성이 있어요.</p>
+  <div id="starters"></div>
+  <div class="btns"><button class="btn" id="contBtn" hidden>이어서 하기</button><button class="btn soft" id="newBtn" hidden>처음부터</button></div>
+  <p class="small mob">화면을 누른 채 끌면 그 방향으로 걸어요.</p>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<script src="game.js"></script>
+</body></html>

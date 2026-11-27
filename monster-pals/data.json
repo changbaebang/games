@@ -1,0 +1,520 @@
+{
+ "_설명": "몬스터 친구들 데이터. types: 속성과 색, chart: 공격 속성 → 맞는 속성 배율(2 아주 좋음, 0.5 별로). moves: 기술(power 위력, heal 체력 회복 비율). species: 몬스터(hp 체력, atk 공격, def 방어, spd 빠르기, shape 모양, moves 레벨이 오르며 배우는 기술 순서). map: # 나무·벽, \" 풀숲(야생 몬스터가 나와요), ~ 물, H 회복 센터, T 트레이너(위치는 trainerPos), L 관장, S 출발. wild: 풀숲에서 나오는 몬스터와 레벨 범위. trainers: 트레이너 이름과 몬스터들 [종류, 레벨].",
+ "types": {
+  "fire": {
+   "name": "불",
+   "color": "#ff6a3a"
+  },
+  "water": {
+   "name": "물",
+   "color": "#3a9aff"
+  },
+  "grass": {
+   "name": "풀",
+   "color": "#4ac45a"
+  },
+  "bolt": {
+   "name": "번개",
+   "color": "#ffd23f"
+  },
+  "rock": {
+   "name": "바위",
+   "color": "#a08a6a"
+  },
+  "wind": {
+   "name": "바람",
+   "color": "#9ad8f0"
+  }
+ },
+ "chart": {
+  "fire": {
+   "grass": 2,
+   "water": 0.5,
+   "rock": 0.5,
+   "fire": 0.5
+  },
+  "water": {
+   "fire": 2,
+   "rock": 2,
+   "grass": 0.5,
+   "water": 0.5
+  },
+  "grass": {
+   "water": 2,
+   "rock": 2,
+   "fire": 0.5,
+   "wind": 0.5,
+   "grass": 0.5
+  },
+  "bolt": {
+   "water": 2,
+   "wind": 2,
+   "rock": 0.5,
+   "grass": 0.5
+  },
+  "rock": {
+   "fire": 2,
+   "wind": 2,
+   "bolt": 2,
+   "grass": 0.5
+  },
+  "wind": {
+   "grass": 2,
+   "bolt": 0.5,
+   "rock": 0.5
+  }
+ },
+ "moves": {
+  "tackle": {
+   "name": "몸통 박치기",
+   "type": "rock",
+   "power": 35
+  },
+  "ember": {
+   "name": "불씨",
+   "type": "fire",
+   "power": 45
+  },
+  "flame": {
+   "name": "화르륵",
+   "type": "fire",
+   "power": 75
+  },
+  "bubble": {
+   "name": "물방울",
+   "type": "water",
+   "power": 45
+  },
+  "wave": {
+   "name": "파도타기",
+   "type": "water",
+   "power": 75
+  },
+  "leaf": {
+   "name": "나뭇잎",
+   "type": "grass",
+   "power": 45
+  },
+  "vine": {
+   "name": "덩굴 채찍",
+   "type": "grass",
+   "power": 75
+  },
+  "zap": {
+   "name": "찌릿",
+   "type": "bolt",
+   "power": 45
+  },
+  "thunder": {
+   "name": "번개 쾅",
+   "type": "bolt",
+   "power": 80
+  },
+  "pebble": {
+   "name": "돌 던지기",
+   "type": "rock",
+   "power": 45
+  },
+  "quake": {
+   "name": "땅 흔들기",
+   "type": "rock",
+   "power": 80
+  },
+  "gust": {
+   "name": "바람 휙",
+   "type": "wind",
+   "power": 45
+  },
+  "tornado": {
+   "name": "회오리",
+   "type": "wind",
+   "power": 75
+  },
+  "heal": {
+   "name": "쉬기",
+   "type": "none",
+   "power": 0,
+   "heal": 0.35
+  }
+ },
+ "species": {
+  "bulmung": {
+   "name": "불멍이",
+   "type": "fire",
+   "shape": "dog",
+   "hp": 44,
+   "atk": 52,
+   "def": 40,
+   "spd": 55,
+   "moves": [
+    "tackle",
+    "ember",
+    "flame",
+    "heal"
+   ],
+   "color": "#ff7a3a"
+  },
+  "pongdang": {
+   "name": "퐁당이",
+   "type": "water",
+   "shape": "blob",
+   "hp": 48,
+   "atk": 46,
+   "def": 52,
+   "spd": 44,
+   "moves": [
+    "tackle",
+    "bubble",
+    "wave",
+    "heal"
+   ],
+   "color": "#4aa8ff"
+  },
+  "ipsae": {
+   "name": "잎새",
+   "type": "grass",
+   "shape": "sprout",
+   "hp": 46,
+   "atk": 48,
+   "def": 48,
+   "spd": 48,
+   "moves": [
+    "tackle",
+    "leaf",
+    "vine",
+    "heal"
+   ],
+   "color": "#5acb6a"
+  },
+  "jjirit": {
+   "name": "찌릿이",
+   "type": "bolt",
+   "shape": "mouse",
+   "hp": 38,
+   "atk": 55,
+   "def": 36,
+   "spd": 70,
+   "moves": [
+    "tackle",
+    "zap",
+    "thunder",
+    "gust"
+   ],
+   "color": "#ffd23f"
+  },
+  "doldol": {
+   "name": "돌돌이",
+   "type": "rock",
+   "shape": "rock",
+   "hp": 52,
+   "atk": 50,
+   "def": 65,
+   "spd": 25,
+   "moves": [
+    "tackle",
+    "pebble",
+    "quake",
+    "heal"
+   ],
+   "color": "#9a8a74"
+  },
+  "hwihwi": {
+   "name": "휘휘",
+   "type": "wind",
+   "shape": "bird",
+   "hp": 40,
+   "atk": 48,
+   "def": 38,
+   "spd": 66,
+   "moves": [
+    "tackle",
+    "gust",
+    "tornado",
+    "pebble"
+   ],
+   "color": "#8fd6f2"
+  },
+  "kongnamu": {
+   "name": "콩나무",
+   "type": "grass",
+   "shape": "sprout",
+   "hp": 55,
+   "atk": 42,
+   "def": 55,
+   "spd": 30,
+   "moves": [
+    "leaf",
+    "vine",
+    "heal",
+    "tackle"
+   ],
+   "color": "#7fbf4a"
+  },
+  "bulssi": {
+   "name": "불씨새",
+   "type": "fire",
+   "shape": "bird",
+   "hp": 40,
+   "atk": 56,
+   "def": 36,
+   "spd": 62,
+   "moves": [
+    "ember",
+    "gust",
+    "flame",
+    "tackle"
+   ],
+   "color": "#ff5a6a"
+  },
+  "mulgom": {
+   "name": "물곰이",
+   "type": "water",
+   "shape": "dog",
+   "hp": 58,
+   "atk": 54,
+   "def": 50,
+   "spd": 38,
+   "moves": [
+    "bubble",
+    "wave",
+    "tackle",
+    "quake"
+   ],
+   "color": "#3a7ad8"
+  },
+  "banjjak": {
+   "name": "반짝벌레",
+   "type": "bolt",
+   "shape": "blob",
+   "hp": 36,
+   "atk": 50,
+   "def": 40,
+   "spd": 60,
+   "moves": [
+    "zap",
+    "leaf",
+    "thunder",
+    "tackle"
+   ],
+   "color": "#f0e060"
+  },
+  "moraeduk": {
+   "name": "모래떡",
+   "type": "rock",
+   "shape": "blob",
+   "hp": 50,
+   "atk": 46,
+   "def": 58,
+   "spd": 32,
+   "moves": [
+    "pebble",
+    "tackle",
+    "quake",
+    "heal"
+   ],
+   "color": "#d8b878"
+  },
+  "gureum": {
+   "name": "구름솜",
+   "type": "wind",
+   "shape": "blob",
+   "hp": 50,
+   "atk": 44,
+   "def": 50,
+   "spd": 50,
+   "moves": [
+    "gust",
+    "bubble",
+    "tornado",
+    "heal"
+   ],
+   "color": "#e8f0ff"
+  }
+ },
+ "starters": [
+  "bulmung",
+  "pongdang",
+  "ipsae"
+ ],
+ "encounter": 0.13,
+ "wild": [
+  {
+   "from": 0,
+   "list": [
+    "jjirit",
+    "doldol",
+    "hwihwi",
+    "kongnamu",
+    "banjjak"
+   ],
+   "lv": [
+    2,
+    5
+   ]
+  },
+  {
+   "from": 11,
+   "list": [
+    "bulssi",
+    "mulgom",
+    "moraeduk",
+    "gureum",
+    "jjirit",
+    "hwihwi"
+   ],
+   "lv": [
+    5,
+    9
+   ]
+  }
+ ],
+ "trainers": {
+  "T1": {
+   "name": "꼬마 민수",
+   "say": "내 몬스터랑 붙어 보자!",
+   "team": [
+    [
+     "doldol",
+     4
+    ],
+    [
+     "hwihwi",
+     4
+    ]
+   ],
+   "prize": 40
+  },
+  "T2": {
+   "name": "소녀 하나",
+   "say": "우리 반짝이는 정말 빨라!",
+   "team": [
+    [
+     "banjjak",
+     6
+    ],
+    [
+     "jjirit",
+     6
+    ]
+   ],
+   "prize": 60
+  },
+  "T3": {
+   "name": "낚시꾼 철수",
+   "say": "물에서 잡은 아이들이야!",
+   "team": [
+    [
+     "pongdang",
+     7
+    ],
+    [
+     "mulgom",
+     8
+    ]
+   ],
+   "prize": 80
+  },
+  "T4": {
+   "name": "캠프 대장 지우",
+   "say": "불처럼 뜨겁게 간다!",
+   "team": [
+    [
+     "bulssi",
+     9
+    ],
+    [
+     "bulmung",
+     9
+    ],
+    [
+     "moraeduk",
+     9
+    ]
+   ],
+   "prize": 100
+  },
+  "L": {
+   "name": "관장 별님",
+   "say": "배지를 원한다면 나를 이겨 봐!",
+   "team": [
+    [
+     "gureum",
+     11
+    ],
+    [
+     "kongnamu",
+     11
+    ],
+    [
+     "mulgom",
+     12
+    ],
+    [
+     "bulssi",
+     12
+    ]
+   ],
+   "prize": 300
+  }
+ },
+ "map": [
+  "################################",
+  "#....\"\"\"\"\"....~~~~~..........T.#",
+  "#.S..\"\"\"\"\"....~~~~~............#",
+  "#..H.\"\"\"\"\"....~~~~~...\"\"\"\"\"\"...#",
+  "#...........######....\"\"\"\"\"\"...#",
+  "#...........#....#....\"\"\"\"\"\"...#",
+  "#\"\"\"\"\"......#..T.#.............#",
+  "#\"\"\"\"\"......#.......###........#",
+  "#\"\"\"\"\".....\"\"\"\"\".....~~....\"\"\".#",
+  "#\"\"\"\"\".....\"\"\"\"\".....~~....\"\"\".#",
+  "#########.##########.###########",
+  "#...............T..............#",
+  "#......\"\"\"\"\"\".....#####...\"\"\"\"\"#",
+  "#~~~~..\"\"\"\"\"\".....#.H.#...\"\"\"\"\"#",
+  "#~~~~..\"\"\"\"\"\".....#...#...\"\"\"\"\"#",
+  "#~~~~..........................#",
+  "#.....\"\"\"\"\"..####......T.##....#",
+  "#.....\"\"\"\"\"..#..#........#.....#",
+  "#.....\"\"\"\"\".......\"\"\"\"\"\".#.....#",
+  "#.................\"\"\"\"\"\".#..L..#",
+  "#........................#.....#",
+  "################################"
+ ],
+ "trainerPos": {
+  "T1": [
+   29,
+   1
+  ],
+  "T2": [
+   15,
+   6
+  ],
+  "T3": [
+   16,
+   11
+  ],
+  "T4": [
+   23,
+   16
+  ],
+  "L": [
+   28,
+   19
+  ]
+ },
+ "learn": [
+  1,
+  1,
+  4,
+  8
+ ],
+ "shop": {
+  "ball": 20
+ },
+ "start": {
+  "coins": 60,
+  "balls": 5,
+  "level": 5
+ }
+}
