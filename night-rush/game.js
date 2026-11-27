@@ -284,7 +284,7 @@ function onLap(){
 function updateOthers(dt){
   const R=D.rivals,C=D.chase;
   for(const c of others){
-    if(c.kind==='traffic'){c.s=wrapS(c.s+c.v*dt);const r=rel(me.s,c.s);if(r<-60||r>520)spawnTraffic(c,false);continue}
+    if(c.kind==='traffic'){c.s=wrapS(c.s+c.v*dt);const r=rel(me.s,c.s);if(r<-60||r>520)spawnTraffic(c,false);placeCar(c);continue}
     if(state==='count'){placeCar(c);continue}
     const p=at(c.s);let vt,dT;
     if(c.kind==='rival'){
