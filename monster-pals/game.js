@@ -134,7 +134,7 @@ function wildBattle(){if(!G.party.some(m=>m.hp>0))return;const zone=[...D.wild].
   say('야생 '+nm(foe())+'(Lv'+foe().lv+')이(가) 나타났다!');say('가랏, '+nm(act())+'!');}
 function trainerBattle(id){const tr=D.trainers[id];B={wild:false,id,tr,foes:tr.team.map(([s,l])=>makeMon(s,l)),fi:0};openBattle();
   say(tr.name+'이(가) 대결을 걸어왔다!');say(tr.name+'은(는) '+nm(foe())+'을(를) 내보냈다!');say('가랏, '+nm(act())+'!')}
-function say(m,fn){seq.push({m,fn})}
+function say(m,fn){seq.push(m&&typeof m==='object'?m:{m,fn})}
 function sayNow(list){seq.unshift(...list)}
 function showMenu(){const m=act();$('menu').hidden=false;const mv=$('moves');mv.innerHTML='';
   for(const id of m.moves){const k=MV[id],b=document.createElement('button');const col=k.type==='none'?'#e06aa8':TY[k.type].color;b.style.background=col;
