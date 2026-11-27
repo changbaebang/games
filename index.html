@@ -89,6 +89,17 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>철길 질주</h2><p>기차와 울타리를 피해 3줄 철길을 끝없이 달려요. 밀어서 점프·구르기, 기차 지붕 위로 달리고 자석·제트팩도 써요.</p>
       <div class="tags"><span>3D 달리기</span><span>스와이프</span><span>끝없이</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./hop-road/" style="--c:#3aaa4a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#8fd16a"/><rect y="40" width="320" height="40" fill="#5a5f6a"/><rect y="80" width="320" height="40" fill="#5a5f6a"/><g fill="#e8e8e8"><rect x="20" y="78" width="30" height="4"/><rect x="90" y="78" width="30" height="4"/><rect x="160" y="78" width="30" height="4"/><rect x="230" y="78" width="30" height="4"/></g>
+      <rect y="0" width="320" height="40" fill="#4ab0e8"/><rect x="40" y="8" width="90" height="24" fill="#9a6a3a"/><rect x="200" y="8" width="70" height="24" fill="#9a6a3a"/>
+      <rect x="40" y="46" width="60" height="28" rx="4" fill="#ff5a5a"/><rect x="52" y="40" width="30" height="14" fill="#26304c"/><rect x="200" y="86" width="90" height="28" rx="4" fill="#2f8cff"/><rect x="206" y="80" width="40" height="14" fill="#e8e8e8"/>
+      <rect x="20" y="140" width="24" height="30" fill="#2e9a4a"/><rect x="270" y="135" width="26" height="36" fill="#3aaa50"/>
+      <g transform="translate(140,128)"><rect x="0" y="14" width="36" height="32" fill="#ffe14a"/><rect x="4" y="0" width="28" height="24" fill="#ffe14a"/><rect x="12" y="-6" width="8" height="8" fill="#ff4a4a"/><rect x="9" y="8" width="5" height="6" fill="#111"/><rect x="22" y="8" width="5" height="6" fill="#111"/><rect x="13" y="15" width="10" height="6" fill="#ff9a1c"/></g>
+    </svg>
+    <div class="info"><h2>폴짝 건너기</h2><p>삐약이와 동물 친구들이 찻길·통나무 강·기찻길을 폴짝폴짝 건너요. 톡 치면 앞으로, 밀면 옆으로! 오래 서 있으면 큰 새가 와요.</p>
+      <div class="tags"><span>3D 블록</span><span>톡톡 한 손</span><span>끝없이</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -593,7 +604,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>평면도형</span><span>3학년 1학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 41개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 42개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -601,6 +612,7 @@ const REC={
   'sky-obby':()=>{const v=B('skyObbyStages');return v?`${n(v)}단계 깼어요`:null},
   'item-kart':()=>{const v=B('itemKartWins');return v?`우승 ${n(v)}번`:null},
   'rail-dash':()=>{const v=B('railDashBest');return v?`최고 ${n(v)}점`:null},
+  'hop-road':()=>{const v=B('hopRoadBest');return v?`최고 ${n(v)}칸`:null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},

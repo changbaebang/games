@@ -1,0 +1,19 @@
+{
+ "_설명": "폴짝 건너기 데이터. rows: 줄 종류별로 나오는 정도(weight)와 몇 줄씩 이어 나오는지(group). road는 자동차 길(speed 최소~최대, 점수가 오를수록 speedPerRow만큼 빨라짐), river는 통나무 강, rail은 기찻길(기차 간격 초), grass는 나무가 있는 풀밭. camera.speed는 화면이 저절로 앞으로 가는 빠르기, idle초 동안 가만히 있으면 큰 새가 잡아가요. animals는 고를 수 있는 동물과 동전 가격.",
+ "cols": 4,
+ "rows": {
+  "grass": {"weight": 3, "group": [1, 2], "trees": [0.15, 0.35]},
+  "road": {"weight": 4, "group": [1, 4], "speed": [2.2, 4.2], "speedPerRow": 0.012, "gap": [3.5, 7], "truck": 0.3},
+  "river": {"weight": 2.2, "group": [1, 3], "speed": [1.3, 2.6], "log": [2, 4], "gap": [1.8, 3.5]},
+  "rail": {"weight": 1, "group": [1, 2], "every": [3.5, 7], "warn": 1.4, "trainSpeed": 45}
+ },
+ "coinChance": 0.08,
+ "camera": {"speed": 0.45, "speedPerRow": 0.004, "idle": 9},
+ "animals": [
+  {"id": "chick", "name": "삐약이", "price": 0, "body": "#ffe14a", "head": "#ffe14a", "beak": "#ff9a1c"},
+  {"id": "bunny", "name": "토끼", "price": 100, "body": "#ffffff", "head": "#ffffff", "beak": "#ffb0c8", "ears": "long"},
+  {"id": "penguin", "name": "펭귄", "price": 150, "body": "#2a2f3a", "head": "#2a2f3a", "beak": "#ffb020", "belly": "#ffffff"},
+  {"id": "frog", "name": "개구리", "price": 200, "body": "#5ccf5c", "head": "#5ccf5c", "beak": "#3a8a3a", "ears": "eyes"},
+  {"id": "pig", "name": "돼지", "price": 300, "body": "#ffb0c0", "head": "#ffb0c0", "beak": "#ff7a9a", "ears": "small"}
+ ]
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>폴짝 건너기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div id="game"></div>
+<div class="hud"><b id="score">0</b><span><i class="coin"></i><b id="coins">0</b></span></div>
+<button id="pauseBtn" aria-label="일시정지">II</button>
+<div id="toast"></div>
+<div class="help">↑ 앞으로 · ← → 옆으로 · ↓ 뒤로 · P 일시정지</div>
+<p class="tapHint" id="tapHint">톡 치면 앞으로, 밀면 그 방향으로 폴짝!</p>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>폴짝 건너기</h1>
+  <p>찻길, 강, 기찻길을 폴짝폴짝 건너 최대한 멀리 가요. 너무 오래 서 있으면 큰 새가 잡아가요!</p>
+  <p class="best">최고 <b id="tBest">0</b>칸 · 동전 <b id="tCoins">0</b></p>
+  <div class="animals" id="animals"></div>
+  <button class="btn" id="startBtn">출발!</button>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="pauseOv" hidden><div class="card"><h2>일시정지</h2>
+  <div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">처음 화면</button></div></div></div>
+<div class="overlay" id="overOv" hidden><div class="card">
+  <h1 id="overTitle">앗!</h1><p class="big"><b id="oScore">0</b>칸</p><p id="oTxt"></p>
+  <div class="btns"><button class="btn" id="againBtn">다시 하기</button><button class="btn soft" id="oTitle">처음 화면</button></div>
+</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="game.js"></script>
+</body></html>
