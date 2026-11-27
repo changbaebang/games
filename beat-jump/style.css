@@ -1,0 +1,32 @@
+/* VOICE: 쿵쿵 박자에 맞춘 신나는 도전
+   IDEA: 음악 따라 달리는 네온 네모
+   PICTURE: 옆에서 본 네온 무대
+   COLOUR and TYPE: 단계마다 다른 네온 색 / Jua
+   LAYOUT: 위쪽 진행 막대, 화면 전체가 점프 버튼 */
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#0e1a40;font-family:'Jua',system-ui,sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;z-index:5;pointer-events:none;font-size:16px}
+.bar{width:min(240px,46vw);height:12px;border-radius:6px;background:rgba(255,255,255,.2);overflow:hidden}.bar i{display:block;height:100%;width:0;background:#ffd23f}
+#pauseBtn{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));width:44px;height:44px;border:0;border-radius:12px;background:rgba(0,0,0,.35);color:#fff;font:inherit;font-size:16px;z-index:6}
+.help{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);font-size:13px;background:rgba(0,0,0,.45);padding:6px 14px;border-radius:10px;pointer-events:none;z-index:5;white-space:nowrap}
+@media (pointer:coarse){.help{display:none}}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(6,8,26,.6);z-index:10;padding:14px}
+.overlay[hidden]{display:none}
+.card{background:#151a3a;border:2px solid rgba(255,210,63,.5);border-radius:20px;padding:22px 24px;max-width:420px;width:100%;max-height:calc(100dvh - 20px);overflow:auto;text-align:center}
+.card h1{font-size:44px;line-height:1.05;margin:0 0 6px;font-weight:400;color:#ffd23f;text-shadow:0 0 14px rgba(255,210,63,.6)}
+.card h2{font-size:32px;margin:0 0 12px;font-weight:400;color:#ffd23f}
+.card p{margin:4px 0 12px;font-size:16px;color:#c9d0f0}.card .big{font-size:40px;color:#ffd23f;margin:0}.card .small{font-size:13px;color:#9aa3cc}
+.lv{display:grid;gap:8px;margin-bottom:12px}
+.lvb{font:inherit;border:0;border-radius:14px;padding:12px 16px;cursor:pointer;color:#fff;background:var(--c);display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;min-height:58px;box-shadow:0 5px 0 rgba(0,0,0,.3)}
+.lvb b{font-weight:400;font-size:20px}.lvb span{font-size:14px;text-align:right}
+.lvb:active{transform:translateY(3px)}
+.prac{display:flex;gap:8px;align-items:center;justify-content:center;font-size:15px;color:#c9d0f0;margin-bottom:6px}
+.prac input{width:22px;height:22px}
+.btn{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 22px;background:#ffd23f;color:#3a2a00;box-shadow:0 5px 0 #c49a00;cursor:pointer;min-height:52px;width:100%}
+.btn.soft{background:#2a3166;color:#fff;box-shadow:0 5px 0 #161b44}.btn[hidden]{display:none}
+.btn:active{transform:translateY(3px)}
+.btns{display:grid;gap:10px}
+.btn:focus-visible,.lvb:focus-visible{outline:3px solid #22d3ee;outline-offset:3px}
+.mob{display:none}@media(pointer:coarse){.mob{display:block}}
+.back a{color:#9aa3cc}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>박자 점프</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<canvas id="c"></canvas>
+<div class="hud"><div class="bar"><i id="prog"></i></div><span id="pct">0%</span><span id="tries">도전 1</span></div>
+<button id="pauseBtn" aria-label="일시정지">II</button>
+<div class="help">Space·↑·클릭 = 점프 (누르고 있으면 계속 점프) · P 일시정지</div>
+<div class="overlay" id="titleOv"><div class="card">
+  <h1>박자 점프</h1>
+  <p>네모가 음악에 맞춰 저절로 달려요. 톡 눌러 가시를 뛰어넘고, 노란 판과 링으로 높이 날아요!</p>
+  <div class="lv" id="levels"></div>
+  <label class="prac"><input type="checkbox" id="practice"> 연습 모드 (중간부터 다시 시작)</label>
+  <p class="small mob">화면 아무 데나 톡! 누르고 있으면 착지할 때마다 계속 뛰어요.</p>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="pauseOv" hidden><div class="card"><h2>일시정지</h2><div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">단계 고르기</button></div></div></div>
+<div class="overlay" id="clearOv" hidden><div class="card"><h1>완주!</h1><p class="big" id="cStars">★★★</p><p id="cTxt"></p>
+  <div class="btns"><button class="btn" id="nextBtn">다음 단계</button><button class="btn soft" id="cMenu">단계 고르기</button></div></div></div>
+<script src="game.js"></script>
+</body></html>

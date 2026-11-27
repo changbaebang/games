@@ -121,6 +121,19 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>빛지렁이</h2><p>어두운 연못에서 빛 알갱이를 먹고 길어지는 지렁이! 다른 지렁이 앞을 달리기로 가로막아 쓰러뜨리고 1등이 되어 봐요.</p>
       <div class="tags"><span>지렁이 대결</span><span>한 손가락</span><span>끝없이</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./beat-jump/" style="--c:#ffd23f">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#0e1a40"/><g fill="#2f8cff" opacity=".25"><rect x="30" y="30" width="40" height="130"/><rect x="150" y="30" width="40" height="130"/><rect x="270" y="30" width="40" height="130"/></g>
+      <rect y="160" width="320" height="40" fill="#000"/><rect y="160" width="320" height="3" fill="#2f8cff"/>
+      <g fill="#fff" stroke="#000" stroke-width="2"><polygon points="170,160 185,132 200,160"/><polygon points="200,160 215,132 230,160"/></g>
+      <rect x="250" y="120" width="40" height="40" fill="#000" stroke="#2f8cff" stroke-width="3"/>
+      <circle cx="130" cy="70" r="14" fill="rgba(255,210,63,.35)" stroke="#ffd23f" stroke-width="4"/>
+      <g transform="translate(80,96) rotate(20)"><rect x="-18" y="-18" width="36" height="36" fill="#ffd23f" stroke="#000" stroke-width="3"/><rect x="-9" y="-9" width="18" height="18" fill="#22d3ee"/></g>
+      <text x="230" y="60" font-family="Jua" font-size="28" fill="#ffd23f">★</text>
+    </svg>
+    <div class="info"><h2>박자 점프</h2><p>음악에 맞춰 저절로 달리는 네모! 톡 눌러 가시를 넘고, 노란 판과 링으로 높이 날고, 중력을 뒤집어 천장도 달려요.</p>
+      <div class="tags"><span>리듬 점프</span><span>한 손가락</span><span>3단계</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -625,7 +638,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>평면도형</span><span>3학년 1학기</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 44개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 45개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -636,6 +649,7 @@ const REC={
   'hop-road':()=>{const v=B('hopRoadBest');return v?`최고 ${n(v)}칸`:null},
   'gem-brawl':()=>{const v=B('gemBrawlTrophy'),w=B('gemBrawlWins');return v||w?`트로피 ${n(v||0)}`+(w?` · ${n(w)}승`:''):null},
   'glow-worm':()=>{const v=B('glowWormBest');return v?`최고 길이 ${n(v)}`:null},
+  'beat-jump':()=>{const v=B('beatJumpLevels');return v?`${n(v)}단계 완주`:null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},
