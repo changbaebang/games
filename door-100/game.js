@@ -183,12 +183,14 @@ function draw(){const W=Wd,H=Ht;ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle=
   for(let n=Math.max(1,cur-2);n<=Math.min(100,cur+2);n++){const R=room(n);
     // 벽
     ctx.fillStyle=R.type==='library'||R.type==='final'?'#3a2a4a':'#7a3a4a';ctx.fillRect(X((R.x-1)*T),Y((R.y-1)*T),(R.w+2)*T,(R.h+2)*T);ctx.fillStyle='#5a2a3a';ctx.fillRect(X((R.x-1)*T),Y((R.y-1)*T)+T*.7,(R.w+2)*T,T*.3);
+  }
+  for(let n=Math.min(100,cur+2);n>=Math.max(1,cur-2);n--){const R=room(n);
     // 바닥
     for(let ty=R.y;ty<R.y+R.h;ty++)for(let tx=R.x;tx<R.x+R.w;tx++){ctx.fillStyle=(tx+ty)%2?'#c8925a':'#d4a066';if(R.type==='seek'||R.type==='seek0')ctx.fillStyle=(tx+ty)%2?'#9a8aa0':'#a898ae';if(R.type==='library'||R.type==='final')ctx.fillStyle=(tx+ty)%2?'#6a8a6a':'#729272';ctx.fillRect(X(tx*T),Y(ty*T),T+1,T+1)}
     if(R.halt){ctx.fillStyle='rgba(80,200,255,.12)';ctx.fillRect(X(R.x*T),Y(R.y*T),R.w*T,R.h*T)}
     if(R.type==='normal'&&!R.halt){ctx.fillStyle='rgba(160,40,70,.35)';ctx.beginPath();ctx.roundRect(X((R.x+R.w/2-1.5)*T),Y((R.y+R.h/2-1)*T),3*T,2*T,12);ctx.fill()}
     // 문 (위쪽)
-    const dxp=X(R.dx*T),dyp=Y((R.y-1)*T);ctx.fillStyle=R.open?'#3a2a1a':R.locked?'#8a6a3a':'#b8864a';ctx.fillRect(dxp+4,dyp+2,T-8,T-2);if(!R.open){ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.arc(dxp+T-14,dyp+T*.55,4,0,TAU);ctx.fill()}
+    const dxp=X(R.dx*T),dyp=Y((R.y-1)*T);if(!R.open&&n===cur){ctx.fillStyle=`rgba(255,220,120,${.25+.2*Math.sin(time*4)})`;ctx.fillRect(dxp-4,dyp-4,T+8,T+8)}ctx.fillStyle=R.open?'#3a2a1a':R.locked?'#8a6a3a':'#b8864a';ctx.fillRect(dxp+4,dyp+2,T-8,T-2);if(!R.open){ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.arc(dxp+T-14,dyp+T*.55,4,0,TAU);ctx.fill()}
     ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.roundRect(dxp+6,dyp-18,T-12,18,5);ctx.fill();ctx.fillStyle='#5a3a00';ctx.font='14px Jua';ctx.textAlign='center';ctx.fillText(R.n+1>100?'출구':String(R.n+1).padStart(3,'0'),dxp+T/2,dyp-4);
     if(R.locked){ctx.font='18px Jua';ctx.fillText(R.type==='library'?'🔢':'🔒',dxp+T/2,dyp+T*.62)}
     if(R.fake){const fx=X(R.fake*T);ctx.fillStyle='#4a3a4a';ctx.fillRect(fx+4,dyp+2,T-8,T-2);ctx.fillStyle='#ff8ad8';ctx.font='18px Jua';ctx.fillText('✋',fx+T/2,dyp+T*.62)}
