@@ -76,7 +76,7 @@ function updDis(dt,t){
     const cx=Math.floor(tornado.x/T);for(let k=0;k<2;k++){const x=cx+Math.floor(rand(-1,2)),y=Math.floor(rand(4,G));if(BREAK.has(at(x,y))&&Math.random()<dt*20)breakTile(x,y,3)}
     for(const e of ents)if(!e.dead&&Math.abs(e.x-tornado.x)<48){e.vy=Math.min(e.vy,-260);e.vx+=rand(-1,1)*900*dt+(e.x<tornado.x?-1:1)*300*dt;hurt(e,12*dt,'회오리바람')}}
   if(dis.has('fire')){for(let i=0;i<C*R;i++){if(burn[i]<=0)continue;burn[i]+=dt;const x=i%C,y=(i/C)|0;
-      if(Math.random()<dt*.45){const [nx,ny]=pick([[1,0],[-1,0],[0,1],[0,-1]]);const j=(y+ny)*C+x+nx;if(x+nx>=0&&x+nx<C&&y+ny>=0&&y+ny<R&&FLAM.has(grid[j])&&burn[j]<=0&&(grid[j]!=='g'||Math.random()<.3))burn[j]=.01}
+      if(Math.random()<dt*.45){const [nx,ny]=pick([[1,0],[-1,0],[0,1],[0,-1]]);const j=(y+ny)*C+x+nx;if(x+nx>=0&&x+nx<C&&y+ny>=0&&y+ny<R&&FLAM.has(grid[j])&&burn[j]<=0&&(grid[j]!=='g'||(grid[i]!=='g'&&grid[i]!=='b'&&Math.random()<.5)))burn[j]=.01}
       if(burn[i]>7){if(grid[i]==='g'){grid[i]='b';burn[i]=0}else{grid[i]=0;burn[i]=0}}}
     for(const e of ents){if(e.dead)continue;const c0=Math.floor((e.x-PW-3)/T),c1=Math.floor((e.x+PW+3)/T),r0=Math.floor((e.y-PH-3)/T),r1=Math.floor((e.y+3)/T);let f=false;for(let r=r0;r<=r1&&!f;r++)for(let c=c0;c<=c1;c++)if(c>=0&&c<C&&r>=0&&r<R&&burn[r*C+c]>0){f=true;break}if(f)hurt(e,14*dt,'불')}}
   if(dis.has('acid'))for(const e of ents)if(!e.dead&&exposedSky(e))hurt(e,7*dt,'따끔 비');
