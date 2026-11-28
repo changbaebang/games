@@ -142,9 +142,9 @@ function draw(dt){
   ctx.textBaseline='alphabetic';
 }
 if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
-level=0;loadLevel(0);
+level=0;score=0;lives=D.lives;fx=[];pops=[];loadLevel(0);
 let last=performance.now();
-function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play')update(dt);draw(dt);requestAnimationFrame(frame)}
+function frame(now){requestAnimationFrame(frame);const dt=Math.min(.033,(now-last)/1000);last=now;if(st==='play')update(dt);draw(dt)}
 requestAnimationFrame(frame);
 });
 </script>
