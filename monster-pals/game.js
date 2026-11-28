@@ -148,7 +148,7 @@ function questTarget(){if(!G.started)return null;
   if(G.tut>=4&&G.tut<9){const id=ORDER.find(k=>!G.beaten[k]);if(id){const [x,y]=D.trainerPos[id];return {x,y,id}}}
   if(G.party.length&&G.party.every(m=>m.hp<m.max*.25))return nearestHome();
   return null}
-function questText(){const t=G.tut;
+function questText(){const t=G.tut;if(t===0)return '🧑‍🔬 하늘 박사의 이야기를 들어요';
   if(t===1)return '🌿 풀숲에 들어가 몬스터를 만나 봐요';
   if(t===2)return '🏠 빨간 지붕 쉼터에 들러 회복해요';
   if(t===3)return '⭐ 풀숲에서 몬스터 키우기: Lv'+leadLv()+' / '+D.quest.trainLv;
@@ -156,7 +156,7 @@ function questText(){const t=G.tut;
   return '📖 도감 채우기 '+Object.keys(G.caught).length+'/'+Object.keys(SP).length;}
 function questUI(){const q=$('quest');if(!q)return;setT(q,josa(questText()));q.hidden=!G.started||state==='title'}
 function intro(sp){const n=SP[sp].name;
-  talk('하늘 박사','안녕! 나는 이 마을의 <b>하늘 박사</b>야. 🧑‍🔬<br>오늘부터 너와 <b>'+n+'</b>은(는) 단짝이야!',[['다음 ▶',()=>
+  talk('하늘 박사','안녕! 나는 이 마을의 <b>하늘 박사</b>야. 🧑‍🔬<br>오늘부터 너와 <b>'+n+'은(는)</b> 단짝이야!',[['다음 ▶',()=>
   talk('하늘 박사','<b>걷기</b>: 화면을 누른 채 가고 싶은 쪽으로 끌어요. (컴퓨터는 방향키)<br><br>화면 위 <b>노란 줄</b>에 지금 할 일이 나오고, <b>노란 화살표</b>가 갈 곳을 알려 줘요!',[['다음 ▶',()=>
   talk('하늘 박사','몬스터마다 <b>속성</b>이 있어. 🔥불은 🌿풀에, 🌿풀은 💧물에, 💧물은 🔥불에 강해!<br><br>자, 바로 옆 <b>풀숲</b>에 들어가서 첫 야생 몬스터를 만나 보자. 내가 대결하는 법을 알려 줄게!',[['풀숲으로 출발!',()=>{G.tut=1;store();questUI();snd('go')}]])]])]])}
 function helpTalk(){talk('도움말','<b>대결</b>: 기술 버튼으로 공격. 「효과 굉장!」은 2배, 「별로…」는 절반.<br><b>상성</b>: 불→풀→물→불 · 번개→물·바람 · 바위→불·바람·번개 · 바람→풀<br><b>잡기</b>: 상대 체력이 적을 때 ⚪ 공! 트레이너 몬스터는 못 잡아요.<br><b>회복</b>: 빨간 지붕 쉼터에 가면 무료로 모두 회복. 💊 회복약은 대결 중에 써요.<br><b>교체</b>: 상성이 나쁘면 다른 몬스터로 바꿔요.<br><b>저장</b>: 걸을 때마다 자동 저장돼요.',[['알겠어요',null]])}
