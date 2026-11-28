@@ -1,19 +1,134 @@
 {
- "_설명": "파고파고 고릴라 데이터. world: 섬 크기(x, 높이, z). blocks: 블록 종류별 색과 단단함(hp, 0이면 못 부숨), coin 부서질 때 나오는 금화. levels: 층마다 땅 높이(base·hill), 보석 수(gems, 다 모으면 다음 층), 바나나 수, 두더지 수, 바위가 섞이는 정도(rock), 금광석 정도(gold), 색 테마. player: speed 속도, jump 점프 힘, gravity 중력, hp 하트, punch 주먹 사거리, charge 강펀치 모으는 시간(초).",
- "world": [24, 16, 24],
- "player": {"speed": 5.2, "jump": 8.6, "gravity": 26, "hp": 5, "punch": 1.7, "charge": 0.55},
+ "_설명": "파고파고 고릴라 데이터. 각 단계는 앞으로 쭉 이어진 길(course)이에요. course 글자: F숫자 평평한 길, U숫자 오르막 계단, D숫자 내리막, G숫자 구멍(건너뛰기), W 흙벽(주먹으로 뚫기), R 바위벽(강펀치), T숫자 언덕 굴(파거나 넘기), N숫자 좁은 다리, X 보물 표시(빨간 칸 아래 2칸에 보석), L 금글자(보·물·찾·기), O 금화 고리, M숫자 두더지, B 굴러오는 통, C 중간 깃발, E 도착 바나나. blocks: 블록 단단함과 금화. player: 빠르기·점프·하트 등.",
+ "world": [
+  17,
+  20,
+  0
+ ],
+ "player": {
+  "speed": 5.2,
+  "jump": 8.6,
+  "gravity": 26,
+  "hp": 5,
+  "punch": 1.7,
+  "charge": 0.55
+ },
  "blocks": {
-  "1": {"name": "풀", "hp": 1, "coin": 0},
-  "2": {"name": "흙", "hp": 1, "coin": 0},
-  "3": {"name": "돌", "hp": 2, "coin": 1},
-  "4": {"name": "바위", "hp": 4, "coin": 2},
-  "5": {"name": "금광석", "hp": 2, "coin": 8},
-  "6": {"name": "바닥돌", "hp": 0, "coin": 0}
+  "1": {
+   "name": "풀",
+   "hp": 1,
+   "coin": 0
+  },
+  "2": {
+   "name": "흙",
+   "hp": 1,
+   "coin": 0
+  },
+  "3": {
+   "name": "돌",
+   "hp": 2,
+   "coin": 1
+  },
+  "4": {
+   "name": "바위",
+   "hp": 4,
+   "coin": 2
+  },
+  "5": {
+   "name": "금광석",
+   "hp": 2,
+   "coin": 8
+  },
+  "6": {
+   "name": "바닥돌",
+   "hp": 0,
+   "coin": 0
+  },
+  "7": {
+   "name": "보물 표시",
+   "hp": 1,
+   "coin": 0
+  }
  },
  "levels": [
-  {"name": "바나나 섬", "base": 7, "hill": 3, "gems": 4, "bananas": 10, "moles": 2, "rock": 0.08, "gold": 0.04, "colors": {"1": "#6ccf4a", "2": "#b07a46", "3": "#9a9aa6", "4": "#5f5f6e", "5": "#e0b030", "6": "#2a2a33"}, "sky": "#8fd8ff"},
-  {"name": "모래 동굴", "base": 8, "hill": 3, "gems": 5, "bananas": 10, "moles": 3, "rock": 0.14, "gold": 0.06, "colors": {"1": "#e8d08a", "2": "#d0a860", "3": "#b8a080", "4": "#806850", "5": "#ffd040", "6": "#2a2a33"}, "sky": "#ffd9a0"},
-  {"name": "얼음 산", "base": 8, "hill": 5, "gems": 6, "bananas": 9, "moles": 4, "rock": 0.18, "gold": 0.07, "colors": {"1": "#f4faff", "2": "#a8d0f0", "3": "#7aa0c8", "4": "#4a6a90", "5": "#ffe070", "6": "#1a2233"}, "sky": "#cfe8ff"},
-  {"name": "용암 심장", "base": 9, "hill": 4, "gems": 7, "bananas": 9, "moles": 5, "rock": 0.24, "gold": 0.09, "colors": {"1": "#5a3a2a", "2": "#7a3a22", "3": "#5a4a4a", "4": "#3a2a2a", "5": "#ffb020", "6": "#1a0a0a"}, "sky": "#ff9a6a"}
- ]
+  {
+   "name": "바나나 섬",
+   "rock": 0.08,
+   "gold": 0.04,
+   "colors": {
+    "1": "#6ccf4a",
+    "2": "#b07a46",
+    "3": "#9a9aa6",
+    "4": "#5f5f6e",
+    "5": "#e0b030",
+    "6": "#2a2a33",
+    "7": "#ff5a3a"
+   },
+   "sky": "#8fd8ff",
+   "course": "F6 O F3 L F4 M3 F5 W F4 X F3 U2 F5 O G2 F4 C L F3 M3 F5 T4 F3 D2 F4 X F4 B F6 L G2 F3 M3 F4 O F3 N3 F3 L F4 M2 F4 E"
+  },
+  {
+   "name": "모래 동굴",
+   "rock": 0.14,
+   "gold": 0.06,
+   "colors": {
+    "1": "#e8d08a",
+    "2": "#d0a860",
+    "3": "#b8a080",
+    "4": "#806850",
+    "5": "#ffd040",
+    "6": "#2a2a33",
+    "7": "#ff5a3a"
+   },
+   "sky": "#ffd9a0",
+   "course": "F5 O F3 L M3 F4 R F3 X F3 U3 F4 G3 F4 B F6 C O F3 T5 F3 L M4 F4 D3 F4 X F3 N4 F3 O G2 F3 L F4 M4 B F6 W F3 X F3 L F4 E"
+  },
+  {
+   "name": "얼음 산",
+   "rock": 0.18,
+   "gold": 0.07,
+   "colors": {
+    "1": "#f4faff",
+    "2": "#a8d0f0",
+    "3": "#7aa0c8",
+    "4": "#4a6a90",
+    "5": "#ffe070",
+    "6": "#1a2233",
+    "7": "#ff5a3a"
+   },
+   "sky": "#cfe8ff",
+   "course": "F5 L F3 M3 F4 U2 F3 G2 F3 U2 F4 O B F6 X F3 R F3 C L F3 N4 F2 G3 F3 M4 F5 T5 F3 X F3 D3 F3 O B F6 L F3 M4 G3 F4 L F3 B F6 E"
+  },
+  {
+   "name": "용암 심장",
+   "rock": 0.24,
+   "gold": 0.09,
+   "colors": {
+    "1": "#5a3a2a",
+    "2": "#7a3a22",
+    "3": "#5a4a4a",
+    "4": "#3a2a2a",
+    "5": "#ffb020",
+    "6": "#1a0a0a",
+    "7": "#ff5a3a"
+   },
+   "sky": "#ff9a6a",
+   "course": "F5 O M3 F4 L F3 R F3 G3 F3 X F3 U3 B F6 C M4 F4 L N5 F3 G3 F3 O T6 F3 X F4 D3 B F6 L F3 M5 F4 G3 F3 R F3 X F4 L M4 B F6 E"
+  }
+ ],
+ "letters": [
+  "보",
+  "물",
+  "찾",
+  "기"
+ ],
+ "barrel": {
+  "speed": 5.5,
+  "every": 2.6
+ },
+ "mole": {
+  "speed": 2.2,
+  "hp": 2,
+  "chase": 7
+ }
 }
