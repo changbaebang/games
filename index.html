@@ -879,7 +879,7 @@ const REC={
   'beat-jump':()=>{const v=B('beatJumpLevels');return v?`${n(v)}단계 완주`:null},
   'gulp-jelly':()=>{const v=B('gulpJellyLevels');return v?`${n(v)}단계 깼어요`:null},
   'barrel-tower':()=>{const v=B('barrelTowerBest');return v?`최고 ${n(v)}점`:null},
-  'dig-kong':()=>{const v=B('digKongDepth');return v?`${n(v)}층까지`:null},
+  'dig-kong':()=>{const v=B('digKongDepth');return v?`${n(v)}단계 클리어`:null},
   'ink-turf':()=>{const v=B('inkTurfWins');return v?`${n(v)}승`:null},
   'monster-pals':()=>{const v=B('monsterPalsCaught');return v?`도감 ${n(v)}`:null},
   'sports-day':()=>{const v=B('sportsBowlBest');const w=B('sportsTennisWins');return v||w?[v?`볼링 ${n(v)}점`:'',w?`테니스 ${n(w)}승`:''].filter(Boolean).join(' · '):null},
