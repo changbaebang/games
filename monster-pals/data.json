@@ -1,5 +1,5 @@
 {
- "_설명": "몬스터 친구들 데이터. types: 속성과 색, chart: 공격 속성 → 맞는 속성 배율(2 아주 좋음, 0.5 별로). moves: 기술(power 위력, heal 체력 회복 비율). species: 몬스터(hp 체력, atk 공격, def 방어, spd 빠르기, shape 모양, moves 레벨이 오르며 배우는 기술 순서). map: # 나무·벽, \" 풀숲(야생 몬스터가 나와요), ~ 물, H 회복 센터, T 트레이너(위치는 trainerPos), L 관장, S 출발. wild: 풀숲에서 나오는 몬스터와 레벨 범위. trainers: 트레이너 이름과 몬스터들 [종류, 레벨].",
+ "_설명": "몬스터 친구들 데이터. types: 속성과 색, chart: 공격 속성 → 맞는 속성 배율(2 아주 좋음, 0.5 별로). moves: 기술(power 위력, heal 체력 회복 비율). species: 몬스터(hp 체력, atk 공격, def 방어, spd 빠르기, shape 모양, moves 레벨이 오르며 배우는 기술 순서). map: # 나무·벽, \" 풀숲(야생 몬스터가 나와요), ~ 물, H 회복 센터, T 트레이너(위치는 trainerPos), L 관장, S 출발. wild: 풀숲에서 나오는 몬스터와 레벨 범위. trainers: 트레이너 이름과 몬스터들 [종류, 레벨]. quest: 안내 단계(trainLv 트레이너에 도전하기 전 키울 레벨, rec 트레이너별 추천 레벨, tutFoe 연습 대결 상대). start.potions 처음 회복약, shop.potion 회복약 값.",
  "types": {
   "fire": {
    "name": "불",
@@ -349,7 +349,7 @@
    ],
    "lv": [
     2,
-    5
+    4
    ]
   },
   {
@@ -379,7 +379,7 @@
     ],
     [
      "hwihwi",
-     4
+     5
     ]
    ],
    "prize": 40
@@ -510,11 +510,28 @@
   8
  ],
  "shop": {
-  "ball": 20
+  "ball": 20,
+  "potion": 15
  },
  "start": {
   "coins": 60,
   "balls": 5,
-  "level": 5
+  "level": 5,
+  "potions": 3
+ },
+ "quest": {
+  "trainLv": 7,
+  "rec": {
+   "T1": 6,
+   "T2": 8,
+   "T3": 9,
+   "T4": 11,
+   "L": 13
+  },
+  "tutFoe": {
+   "bulmung": "kongnamu",
+   "pongdang": "bulssi",
+   "ipsae": "pongdang"
+  }
  }
 }

@@ -55,3 +55,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:#6cc06a;font-family:'J
 .acts button{flex:1;border:0;border-radius:14px;background:#e8dcc0;color:#5a4a30;font:inherit;font-size:17px;padding:10px 4px;box-shadow:0 4px 0 #b8a880}
 .acts button:disabled{opacity:.4}
 button:active{transform:translateY(2px)}
+
+#quest{position:fixed;left:50%;transform:translateX(-50%);top:max(58px,calc(env(safe-area-inset-top) + 58px));background:#ffd23f;color:#5a3a00;padding:6px 14px;border-radius:14px;font-size:16px;box-shadow:0 3px 0 #b8860b;z-index:5;pointer-events:none;white-space:nowrap;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis}
+#quest[hidden]{display:none}
+.acts button.glow,.moves button.glow{animation:glow 1s ease-in-out infinite;outline:4px solid #ffd23f;outline-offset:2px}
+@keyframes glow{50%{transform:scale(1.05)}}
+#msg b{color:#e0602a}

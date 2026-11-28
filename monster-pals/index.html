@@ -9,6 +9,7 @@
 </head><body>
 <canvas id="c"></canvas>
 <div class="hud"><span>🏅 <b id="hBadge">0</b></span><span>🪙 <b id="hCoin">0</b></span><span>⚪ <b id="hBall">0</b></span><span>📖 <b id="hDex">0</b></span></div>
+<div id="quest" hidden></div>
 <button id="partyBtn">내 몬스터</button>
 <button id="pauseBtn" aria-label="메뉴">≡</button>
 <div id="toast"></div>
@@ -21,7 +22,7 @@
     <div id="msg">야생 몬스터가 나타났다!</div>
     <div id="menu">
       <div class="moves" id="moves"></div>
-      <div class="acts"><button id="aBall">⚪ 공 던지기</button><button id="aSwap">교체</button><button id="aRun">도망</button></div>
+      <div class="acts"><button id="aBall">⚪ 공</button><button id="aPot">💊 회복약</button><button id="aSwap">교체</button><button id="aRun">도망</button></div>
     </div>
   </div>
 </div>
@@ -40,7 +41,7 @@
 <div class="overlay" id="titleOv"><div class="card">
   <h1>몬스터 친구들</h1>
   <p>풀숲에서 몬스터를 만나 <b>공</b>으로 잡고, 함께 자라며 트레이너 네 명과 <b>관장</b>을 이겨 배지를 따요!</p>
-  <p class="small">불은 풀에, 풀은 물에, 물은 불에 강해요. 번개·바위·바람도 서로 상성이 있어요.</p>
+  <p class="small">첫 친구를 골라요! 🔥불은 🌿풀에, 🌿풀은 💧물에, 💧물은 🔥불에 강해요. 하늘 박사가 하나하나 알려 줄 거예요.</p>
   <div id="starters"></div>
   <div class="btns"><button class="btn" id="contBtn" hidden>이어서 하기</button><button class="btn soft" id="newBtn" hidden>처음부터</button></div>
   <p class="small mob">화면을 누른 채 끌면 그 방향으로 걸어요.</p>

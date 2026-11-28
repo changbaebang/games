@@ -71,9 +71,12 @@ function drawMon(c,sp,x,y,s,flip,t=0,hurt=0){const S0=SP[sp],col=S0.color,dk=sha
 function monCanvas(sp,px){const k=document.createElement('canvas');k.width=k.height=px*2;const g=k.getContext('2d');drawMon(g,sp,px,px*1.05,px*1.7,false);return k}
 
 // ---------- 저장
-const fresh=()=>({party:[],box:[],x:0,y:0,coins:D.start.coins,balls:D.start.balls,beaten:{},badge:0,seen:{},caught:{},started:false});
-let G=Object.assign(fresh(),(()=>{try{return JSON.parse(localStorage.getItem(SAVE))||{}}catch(_){return {}}})());
-const store=()=>{try{localStorage.setItem(SAVE,JSON.stringify(G))}catch(_){}};
+const fresh=()=>({v:2,party:[],box:[],x:0,y:0,coins:D.start.coins,balls:D.start.balls,potions:D.start.potions,beaten:{},badge:0,seen:{},caught:{},started:false,tut:0});
+const readSave=k=>{try{const o=JSON.parse(localStorage.getItem(k));return o&&Array.isArray(o.party)?o:null}catch(_){return null}};
+const RAW=readSave(SAVE)||readSave(SAVE+'.bak')||{};let G=Object.assign(fresh(),RAW);
+if(G.started&&G.party.length&&RAW.tut===undefined)G.tut=RAW.beaten&&RAW.beaten.L?9:4;if(G.potions===undefined)G.potions=D.start.potions;
+let lastStore=0;const store=()=>{try{const j=JSON.stringify(G);localStorage.setItem(SAVE,j);localStorage.setItem(SAVE+'.bak',j);lastStore=performance.now()}catch(_){}};
+addEventListener('pagehide',()=>store());document.addEventListener('visibilitychange',()=>{if(document.hidden)store()});
 for(const m of [...G.party,...G.box])stats(m);
 
 // ---------- 맵
@@ -106,7 +109,8 @@ function tryMove(d){P.dir=d;const nx=P.x+d[0],ny=P.y+d[1];const c=map[ny]&&map[n
   if(bumpCd>0)return;bumpCd=.5;
   if(c==='T'||c==='L'){talkTrainer(tAt[ny*MW+nx]);return}
   if(c==='H'){talkHome();return}}
-function arrive(){G.x=P.x;G.y=P.y;if(map[P.y][P.x]==='"'&&Math.random()<D.encounter)wildBattle()}
+function arrive(){G.x=P.x;G.y=P.y;if(performance.now()-lastStore>1500)store();
+  if(map[P.y][P.x]==='"'){if(G.tut===1){tutorialBattle();return}if(G.tut>=2&&Math.random()<D.encounter)wildBattle()}questCheck()}
 function updateWalk(dt){bumpCd-=dt;if(P.moving>0){P.moving-=dt*5.5;P.walk+=dt*10;if(P.moving<=0){P.moving=0;arrive()}return}const d=wantDir();if(d&&state==='walk')tryMove(d)}
 
 // ---------- 말 걸기
@@ -114,15 +118,52 @@ function talk(name,txt,btns){$('tName').textContent=name;$('tTxt').innerHTML=jos
   for(const [label,fn,soft] of btns){const e=document.createElement('button');e.className='btn'+(soft?' soft':'');e.textContent=label;e.onclick=()=>{snd('click');$('talkOv').hidden=true;state='walk';fn&&fn()};b.appendChild(e)}
   $('talkOv').hidden=false;state='talk';stick=null;$('stick').style.display='none'}
 function healAll(){for(const m of G.party)m.hp=m.max}
-function talkHome(){healAll();store();snd('coin');
-  talk('몬스터 쉼터','몬스터들이 모두 기운을 되찾았어요! 💖<br>몬스터 공은 <b>'+D.shop.ball+'코인</b>이에요. (가진 코인 '+G.coins+')',[['공 1개 사기',()=>buy(1)],['공 5개 사기',()=>buy(5)],['괜찮아요',null,1]])}
-function buy(n){const c=D.shop.ball*n;if(G.coins<c){toast('코인이 모자라요');snd('bad');return}G.coins-=c;G.balls+=n;store();hud();toast('몬스터 공 '+n+'개!');snd('coin')}
+function talkHome(){healAll();snd('coin');
+  if(G.tut===2){G.tut=3;store();talk('쉼터 누나','어서 와! 여기는 <b>몬스터 쉼터</b>야. 들르기만 하면 몬스터들이 <b>모두 회복</b>돼. 💖<br><br>코인으로 <b>⚪ 몬스터 공</b>과 <b>💊 회복약</b>도 살 수 있어. 회복약은 대결 중에 쓰면 체력이 반이나 돌아와!<br><br>이제 풀숲에서 몬스터를 만나 <b>Lv'+D.quest.trainLv+'</b>까지 키워 보자!',[['알겠어요!',()=>{questCheck();shop()}]]);return}
+  store();shop()}
+function shop(){talk('몬스터 쉼터','몬스터들이 모두 기운을 되찾았어요! 💖<br>⚪ 공 <b>'+D.shop.ball+'코인</b> · 💊 회복약 <b>'+D.shop.potion+'코인</b><br>가진 코인 <b>'+G.coins+'</b> · 공 '+G.balls+' · 회복약 '+G.potions,[['⚪ 공 1개',()=>{buy('ball',1);shop()}],['⚪ 공 5개',()=>{buy('ball',5);shop()}],['💊 회복약',()=>{buy('potion',1);shop()}],['다 샀어요',null,1]])}
+function buy(k,n){const c=D.shop[k]*n;if(G.coins<c){toast('코인이 모자라요');snd('bad');return}G.coins-=c;if(k==='ball')G.balls+=n;else G.potions+=n;store();hud();toast((k==='ball'?'몬스터 공 ':'회복약 ')+n+'개!');snd('coin')}
 const trainerDone=()=>Object.keys(D.trainers).filter(k=>k!=='L').every(k=>G.beaten[k]);
 function talkTrainer(id){const tr=D.trainers[id];if(!tr)return;
   if(G.beaten[id]){talk(tr.name,id==='L'?'정말 멋진 대결이었어! 배지를 소중히 해 줘. 이제 도감을 채워 볼까?':'너 정말 강하구나! 다음에 또 붙자.',[['좋아요',null]]);return}
   if(id==='L'&&!trainerDone()){const left=Object.keys(D.trainers).filter(k=>k!=='L'&&!G.beaten[k]).length;talk(tr.name,'마을 트레이너 <b>'+left+'명</b>을 더 이기고 오렴!',[['알겠어요',null]]);return}
   if(!G.party.some(m=>m.hp>0)){talk(tr.name,'몬스터들이 지쳐 있네. 쉼터에 먼저 다녀와!',[['네',null]]);return}
-  talk(tr.name,tr.say,[['대결!',()=>trainerBattle(id)],['나중에',null,1]])}
+  if(G.tut<4){talk(tr.name,'아직 몬스터가 약해 보이는걸? 풀숲에서 조금 더 키워서 와! (Lv'+D.quest.trainLv+' 추천)',[['키우고 올게요',null],['그래도 대결!',()=>trainerBattle(id),1]]);return}
+  const rec=D.quest.rec[id],lead=Math.max(...G.party.map(m=>m.lv));
+  talk(tr.name,tr.say+(lead<rec?'<br><small>💡 추천 레벨 Lv'+rec+' · 지금 가장 강한 몬스터 Lv'+lead+'</small>':''),[['대결!',()=>trainerBattle(id)],['나중에',null,1]])}
+
+
+// ---------- 할 일 안내 (퀘스트)
+const timers0=[];function setTimeout0(fn,t){timers0.push({fn,t})}
+function runTimers0(dt){for(let i=timers0.length-1;i>=0;i--){timers0[i].t-=dt;if(timers0[i].t<=0){const f=timers0[i].fn;timers0.splice(i,1);f()}}}
+const ORDER=['T1','T2','T3','T4','L'];
+const leadLv=()=>G.party.length?Math.max(...G.party.map(m=>m.lv)):0;
+function questCheck(){if(!G.started)return;
+  if(G.tut===3&&leadLv()>=D.quest.trainLv){G.tut=4;store();setTimeout0(()=>talk('하늘 박사','와, 많이 컸구나! 이제 마을 <b>트레이너</b>들과 대결할 차례야. 노란 화살표가 다음 상대를 알려 줄 거야. 💪<br><small>💡 질 것 같으면 쉼터에서 회복하고, 풀숲에서 레벨을 더 올려 와도 돼!</small>',[['도전!',null]]),.2)}
+  if(G.tut>=4&&G.tut<9&&G.beaten.L){G.tut=9;store()}
+  questUI()}
+function questTarget(){if(!G.started)return null;
+  if(G.tut===1){let b=null,bd=1e9;for(let y=0;y<MH;y++)for(let x=0;x<MW;x++)if(map[y][x]==='"'){const d=Math.abs(x-P.x)+Math.abs(y-P.y);if(d<bd){bd=d;b={x,y}}}return b}
+  if(G.tut===2)return homes[0];
+  if(G.tut>=4&&G.tut<9){const id=ORDER.find(k=>!G.beaten[k]);if(id){const [x,y]=D.trainerPos[id];return {x,y,id}}}
+  if(G.party.length&&G.party.every(m=>m.hp<m.max*.25))return nearestHome();
+  return null}
+function questText(){const t=G.tut;
+  if(t===1)return '🌿 풀숲에 들어가 몬스터를 만나 봐요';
+  if(t===2)return '🏠 빨간 지붕 쉼터에 들러 회복해요';
+  if(t===3)return '⭐ 풀숲에서 몬스터 키우기: Lv'+leadLv()+' / '+D.quest.trainLv;
+  if(t>=4&&t<9){const id=ORDER.find(k=>!G.beaten[k]);if(id){const tr=D.trainers[id];return (id==='L'?'🏅 관장 ':'⚔️ 트레이너 ')+tr.name+' 이기기 (추천 Lv'+D.quest.rec[id]+')'}}
+  return '📖 도감 채우기 '+Object.keys(G.caught).length+'/'+Object.keys(SP).length;}
+function questUI(){const q=$('quest');if(!q)return;setT(q,josa(questText()));q.hidden=!G.started||state==='title'}
+function intro(sp){const n=SP[sp].name;
+  talk('하늘 박사','안녕! 나는 이 마을의 <b>하늘 박사</b>야. 🧑‍🔬<br>오늘부터 너와 <b>'+n+'</b>은(는) 단짝이야!',[['다음 ▶',()=>
+  talk('하늘 박사','<b>걷기</b>: 화면을 누른 채 가고 싶은 쪽으로 끌어요. (컴퓨터는 방향키)<br><br>화면 위 <b>노란 줄</b>에 지금 할 일이 나오고, <b>노란 화살표</b>가 갈 곳을 알려 줘요!',[['다음 ▶',()=>
+  talk('하늘 박사','몬스터마다 <b>속성</b>이 있어. 🔥불은 🌿풀에, 🌿풀은 💧물에, 💧물은 🔥불에 강해!<br><br>자, 바로 옆 <b>풀숲</b>에 들어가서 첫 야생 몬스터를 만나 보자. 내가 대결하는 법을 알려 줄게!',[['풀숲으로 출발!',()=>{G.tut=1;store();questUI();snd('go')}]])]])]])}
+function helpTalk(){talk('도움말','<b>대결</b>: 기술 버튼으로 공격. 「효과 굉장!」은 2배, 「별로…」는 절반.<br><b>상성</b>: 불→풀→물→불 · 번개→물·바람 · 바위→불·바람·번개 · 바람→풀<br><b>잡기</b>: 상대 체력이 적을 때 ⚪ 공! 트레이너 몬스터는 못 잡아요.<br><b>회복</b>: 빨간 지붕 쉼터에 가면 무료로 모두 회복. 💊 회복약은 대결 중에 써요.<br><b>교체</b>: 상성이 나쁘면 다른 몬스터로 바꿔요.<br><b>저장</b>: 걸을 때마다 자동 저장돼요.',[['알겠어요',null]])}
+function drawQuestArrow(ox,oy){const t=questTarget();if(!t||state!=='walk')return;const x=ox+(t.x+.5)*T,y=oy+(t.y+.5)*T;const W=Wd,H=Ht;
+  if(x>20&&x<W-20&&y>90&&y<H-20){const b=Math.abs(Math.sin(time*4))*T*.2;ctx.fillStyle='#ffd23f';ctx.strokeStyle='#8a5a00';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y-T*.55-b);ctx.lineTo(x-T*.25,y-T*.95-b);ctx.lineTo(x+T*.25,y-T*.95-b);ctx.closePath();ctx.fill();ctx.stroke();return}
+  const cx=W/2,cy=H/2,a=Math.atan2(y-cy,x-cx);const r=Math.min(W,H)*.38;const px=cx+Math.cos(a)*r,py=cy+Math.sin(a)*r;ctx.save();ctx.translate(px,py);ctx.rotate(a);const s=1+Math.sin(time*5)*.12;ctx.scale(s,s);
+  ctx.fillStyle='#ffd23f';ctx.strokeStyle='#8a5a00';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(24,0);ctx.lineTo(-10,-16);ctx.lineTo(-4,0);ctx.lineTo(-10,16);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
 
 // ---------- 대결
 let B=null;const seq=[];let msgT=0,cur=null;
@@ -132,6 +173,8 @@ function openBattle(){seq.length=0;cur=null;state='battle';stick=null;$('stick')
 function wildBattle(){if(!G.party.some(m=>m.hp>0))return;const zone=[...D.wild].reverse().find(z=>P.y>=z.from)||D.wild[0];
   const sp=pick(zone.list);B={wild:true,foes:[makeMon(sp,ri(zone.lv[0],zone.lv[1]))],fi:0};openBattle();
   say('야생 '+nm(foe())+'(Lv'+foe().lv+')이(가) 나타났다!');say('가랏, '+nm(act())+'!');}
+function tutorialBattle(){const st=G.party[0].sp;const sp=D.quest.tutFoe[st]||'jjirit';B={wild:true,tut:true,foes:[makeMon(sp,2)],fi:0};openBattle();
+  say('야생 '+nm(foe())+'(Lv2)이(가) 나타났다!');say('가랏, '+nm(act())+'!')}
 function trainerBattle(id){const tr=D.trainers[id];B={wild:false,id,tr,foes:tr.team.map(([s,l])=>makeMon(s,l)),fi:0};openBattle();
   say(tr.name+'이(가) 대결을 걸어왔다!');say(tr.name+'은(는) '+nm(foe())+'을(를) 내보냈다!');say('가랏, '+nm(act())+'!')}
 function say(m,fn){seq.push(m&&typeof m==='object'?m:{m,fn})}
@@ -140,9 +183,13 @@ function showMenu(){const m=act();$('menu').hidden=false;const mv=$('moves');mv.
   for(const id of m.moves){const k=MV[id],b=document.createElement('button');const col=k.type==='none'?'#e06aa8':TY[k.type].color;b.style.background=col;
     const e=k.type==='none'?'':eff(k.type,SP[foe().sp].type);b.innerHTML=k.name+'<small>'+(k.type==='none'?'체력 회복':TY[k.type].name+' · 위력 '+k.power+(e>1?' · 효과 굉장!':e<1?' · 별로…':''))+'</small>';
     b.onclick=()=>choose({k:'move',id});mv.appendChild(b)}
-  $('aBall').disabled=!B.wild||G.balls<=0;$('aBall').textContent='⚪ 공 던지기 ('+G.balls+')';$('aRun').disabled=!B.wild;
-  setT($('msg'),nm(m)+'은(는) 무엇을 할까?')}
-$('aBall').onclick=()=>choose({k:'ball'});$('aRun').onclick=()=>choose({k:'run'});$('aSwap').onclick=()=>openParty(true);
+  $('aBall').disabled=!B.wild||G.balls<=0;$('aBall').textContent='⚪ 공 ('+G.balls+')';$('aRun').disabled=!B.wild||B.tut;$('aPot').disabled=G.potions<=0||m.hp>=m.max;$('aPot').textContent='💊 회복약 ('+G.potions+')';
+  $('aBall').classList.remove('glow');for(const b of mv.children)b.classList.remove('glow');
+  let tip='';if(B.tut){if(foe().hp>foe().max*.55){tip='👆 아래 <b>기술 버튼</b>을 눌러 공격해요! 「효과 굉장!」이 붙은 기술이 가장 세요.';for(const b of mv.children)if(b.textContent.includes('굉장'))b.classList.add('glow')}else{tip='지금이야! 체력이 줄었을 때 <b>⚪ 공</b>을 던지면 잘 잡혀요!';$('aBall').classList.add('glow')}}
+  else if(m.hp<m.max*.3&&G.potions>0)tip='💡 체력이 얼마 없어요! 💊 회복약을 쓰거나 교체해 봐요.';
+  else if(G.tut<6&&B.wild&&!G.caught[foe().sp]&&foe().hp<foe().max*.5&&G.balls>0)tip='💡 처음 보는 몬스터! 지금 공을 던지면 잡을 수 있어요.';
+  if(tip){$('msg').innerHTML=josa(tip)}else setT($('msg'),nm(m)+'은(는) 무엇을 할까?')}
+$('aBall').onclick=()=>choose({k:'ball'});$('aPot').onclick=()=>choose({k:'potion'});$('aRun').onclick=()=>choose({k:'run'});$('aSwap').onclick=()=>openParty(true);
 $('msg').onclick=()=>{if(cur)msgT=Math.min(msgT,.12)};
 function foeMove(){const f=foe(),m=act();let best=null,bs=-1;for(const id of f.moves){const k=MV[id];let s;
     if(k.heal)s=f.hp<f.max*.35?120:0;else s=k.power*eff(k.type,SP[m.sp].type)*(k.type===SP[f.sp].type?1.2:1);s*=rand(.7,1.3);if(s>bs){bs=s;best=id}}return best}
@@ -150,13 +197,13 @@ function damage(a,d,k){const st=k.type===SP[a.sp].type?1.2:1,e=eff(k.type,SP[d.s
 function attack(mine,id){return ()=>{const a=mine?act():foe(),d=mine?foe():act();if(!a||!d||a.hp<=0||d.hp<=0||(mine&&a!==B.actor)||(!mine&&a!==B.foeActor))return null;
   const k=MV[id];const who=(mine?'':(B.wild?'야생 ':'상대 '))+nm(a);
   if(k.heal){const h=Math.ceil(a.max*k.heal);a.hp=Math.min(a.max,a.hp+h);snd('coin');return who+'은(는) '+k.name+'! 체력을 회복했다.'}
-  const {dmg,e}=damage(a,d,k);d.hp=Math.max(0,d.hp-dmg);B.anim[mine?'hurtF':'hurtM']=.6;B.anim[mine?'me':'foe']=1;B.anim.fxs.push({mine,type:k.type,t:0});snd(e>1?'boom':'hit');
+  let {dmg,e}=damage(a,d,k);if(B.tut&&!mine)dmg=Math.max(1,Math.floor(dmg*.35));if(B.tut&&mine)dmg=Math.max(1,Math.min(dmg,d.hp-Math.ceil(d.max*.25)));d.hp=Math.max(B.tut&&mine?1:0,d.hp-dmg);B.anim[mine?'hurtF':'hurtM']=.6;B.anim[mine?'me':'foe']=1;B.anim.fxs.push({mine,type:k.type,t:0});snd(e>1?'boom':'hit');
   const after=[];if(e>1)after.push({m:'효과가 굉장했다!'});else if(e<1)after.push({m:'효과가 별로인 것 같다…'});
   if(d.hp<=0)after.push(...faint(!mine));sayNow(after);return who+'의 '+k.name+'!'}}
 function faint(meDown){const out=[];
   if(!meDown){const f=foe();out.push({m:(B.wild?'야생 ':'상대 ')+nm(f)+'은(는) 쓰러졌다!',fn:()=>snd('pop')});
     const gain=Math.floor((f.lv*6+5)*(B.wild?1:1.5));out.push(...giveExp(act(),gain));
-    for(const m of G.party)if(m!==act()&&m.hp>0)out.push(...giveExp(m,Math.floor(gain*.3),true));
+    for(const m of G.party)if(m!==act()&&m.hp>0)out.push(...giveExp(m,Math.floor(gain*.5),true));
     if(!B.wild&&B.fi<B.foes.length-1)out.push({m:'',fn:()=>{B.fi++;seen(foe().sp);B.anim.fhp=foe().hp;B.foeActor=null},skip:1},{m:()=>B.tr.name+'은(는) '+nm(foe())+'을(를) 내보냈다!'});
     else out.push({m:'',fn:()=>winBattle(),skip:1})}
   else{out.push({m:nm(act())+'은(는) 쓰러졌다…',fn:()=>snd('bad')})}
@@ -170,16 +217,19 @@ function winBattle(){if(B.wild){sayNow([{m:'',fn:()=>endBattle('win'),skip:1}]);
   if(B.id==='L'){G.badge=1;list.push({m:'🏅 별빛 배지를 받았다! 축하해요!',fn:()=>{snd('goal');Arcade.record&&Arcade.record('monsterPalsBadge',1)}})}
   list.push({m:'',fn:()=>endBattle('win'),skip:1});sayNow(list)}
 function endBattle(r){seq.length=0;cur=null;$('battle').hidden=true;$('menu').hidden=true;state='walk';
-  if(r==='lose'){const h=nearestHome();P.x=h.x;P.y=h.y+1;P.moving=0;G.coins=Math.floor(G.coins/2);healAll();talk('몬스터 쉼터','눈앞이 캄캄해졌다… 쉼터로 돌아와 몬스터들이 회복했어요. (코인 절반을 잃었어요)',[['다시 힘내기',null]])}
+  const wasTut=B&&B.tut;
+  if(r==='lose'){const h=nearestHome();P.x=h.x;P.y=h.y+1;P.moving=0;const lost=Math.floor(G.coins*.2);G.coins-=lost;healAll();talk('몬스터 쉼터','눈앞이 캄캄해졌다… 쉼터로 돌아와 몬스터들이 회복했어요.'+(lost?' (코인 '+lost+'개를 잃었어요)':'')+'<br><small>💡 풀숲에서 레벨을 올리고, 상성이 좋은 몬스터로 다시 도전해 봐요!</small>',[['다시 힘내기',null]])}
+  if(wasTut&&G.tut===1){G.tut=2;setTimeout0(()=>talk('하늘 박사',(r==='caught'?'잘했어! 몬스터를 <b>잡았구나</b>! 이제 친구가 둘이야. 🎉<br><br>':'좋아, 대결이 어떤 건지 알겠지?<br><br>')+'대결을 하면 몬스터가 지쳐. 저기 <b>빨간 지붕 집(쉼터)</b>에 가면 회복할 수 있어. 화살표를 따라가 봐!',[['쉼터로 갈게요',null]]),.3)}
   if(r==='caught'&&G.badge===0&&Object.keys(G.caught).length>=6)toast('도감이 점점 채워져요!');
-  G.x=P.x;G.y=P.y;store();hud();B=null}
+  G.x=P.x;G.y=P.y;B=null;questCheck();store();hud()}
 function choose(c){$('menu').hidden=true;B.actor=act();B.foeActor=foe();const fm=foeMove();
   if(c.k==='move'){const mineFirst=act().spd>=foe().spd*rand(.9,1.1);const a=attack(true,c.id),b=attack(false,fm);
     if(mineFirst){say(a);say(b)}else{say(b);say(a)}}
   else if(c.k==='ball'){G.balls--;hud();say(throwBall())}
   else if(c.k==='run'){const ok=Math.random()<clamp(.5+(act().spd-foe().spd)/40,.3,.95);if(ok){say('무사히 도망쳤다!',()=>snd('jump'));say({m:'',fn:()=>endBattle('run'),skip:1})}else{say('도망칠 수 없었다!');say(attack(false,fm))}}
+  else if(c.k==='potion'){G.potions--;const m=act();const h=Math.max(20,Math.ceil(m.max*.5));m.hp=Math.min(m.max,m.hp+h);hud();say('💊 회복약! '+nm(m)+'의 체력이 돌아왔다.',()=>snd('power'));say(attack(false,fm))}
   else if(c.k==='swap'){const prev=act();B.mi=c.i;B.actor=act();B.anim.mhp=act().hp;say(nm(prev)+', 돌아와! 가랏, '+nm(act())+'!');say(attack(false,fm))}}
-function throwBall(){return ()=>{const f=foe();const chance=clamp((1-f.hp/f.max*.72)*.85+(f.lv<act().lv?.08:0),.12,.95);const caught=Math.random()<chance;
+function throwBall(){return ()=>{const f=foe();const chance=B.tut?1:clamp((1-f.hp/f.max*.72)*.85+(f.lv<act().lv?.08:0)+(G.tut<6?.1:0),.12,.95);const caught=Math.random()<chance;
   B.anim.ball={t:0,caught,shakes:caught?3:ri(0,2)};snd('jump');
   if(caught){sayNow([{m:'...',wait:2.2},{m:'잡았다! '+nm(f)+'이(가) 친구가 되었다! 🎉',fn:()=>{snd('win');f.exp=0;G.caught[f.sp]=1;Arcade.record&&Arcade.record('monsterPalsCaught',Object.keys(G.caught).length);if(G.party.length<6)G.party.push(f);else{G.box.push(f);toast('보관함으로 보냈어요')}}},{m:'',fn:()=>endBattle('caught'),skip:1}])}
   else{const fm=foeMove();sayNow([{m:'...',wait:.6+B.anim.ball.shakes*.5},{m:'앗, 공에서 빠져나왔다!',fn:()=>{B.anim.ball=null;snd('bad')}},attackStep(fm)])}
@@ -210,17 +260,17 @@ function renderParty(){const pl=$('plist'),bl=$('blist');pl.innerHTML='';bl.inne
   $('pClose').hidden=pForce;}
 $('pClose').onclick=()=>{snd('click');$('partyOv').hidden=true;if(!pBattle)state='walk';else showMenu()};
 $('partyBtn').onclick=()=>{if(state==='walk')openParty(false)};
-$('pauseBtn').onclick=()=>{if(state!=='walk')return;talk('메뉴','진행은 자동으로 저장돼요.',[['계속하기',null],['처음 화면',()=>{state='title';showTitle()},1]])};
+$('pauseBtn').onclick=()=>{if(state!=='walk')return;store();talk('메뉴','진행은 걸을 때마다 자동으로 저장돼요. ✅',[['계속하기',null],['도움말',helpTalk],['처음 화면',()=>{state='title';showTitle()},1]])};
 
 // ---------- 시작 화면
 function showTitle(){$('titleOv').hidden=false;state='title';const st=$('starters');st.innerHTML='';
   const has=G.started&&G.party.length;$('contBtn').hidden=!has;$('newBtn').hidden=!has;st.hidden=!!has;
   if(!has)for(const sp of D.starters){const b=document.createElement('button');b.className='mon';b.appendChild(monCanvas(sp,36));
     const nb=document.createElement('b');nb.textContent=SP[sp].name;const ts=document.createElement('span');ts.className='ty';ts.style.background=TY[SP[sp].type].color;ts.textContent=TY[SP[sp].type].name;b.appendChild(nb);b.appendChild(ts);
-    b.onclick=()=>{snd('click');G=fresh();G.started=true;const m=makeMon(sp,D.start.level);G.party=[m];G.caught[sp]=1;G.seen[sp]=1;G.x=start.x;G.y=start.y;store();begin();toast(SP[sp].name+'와(과) 모험 시작!')};st.appendChild(b)}}
+    b.onclick=()=>{snd('click');G=fresh();G.started=true;const m=makeMon(sp,D.start.level);G.party=[m];G.caught[sp]=1;G.seen[sp]=1;G.x=start.x;G.y=start.y;G.tut=0;store();begin()};st.appendChild(b)}}
 $('contBtn').onclick=()=>{snd('click');begin()};
-$('newBtn').onclick=()=>{snd('click');G.started=false;G.party=[];showTitle()};
-function begin(){$('titleOv').hidden=true;P.x=G.x||start.x;P.y=G.y||start.y;if(!walkable(map[P.y][P.x])){P.x=start.x;P.y=start.y}P.moving=0;state='walk';hud();snd('go')}
+$('newBtn').onclick=()=>{snd('click');if(!confirm('지금까지 모험이 사라져요. 처음부터 할까요?'))return;G.started=false;G.party=[];showTitle()};
+function begin(){$('titleOv').hidden=true;setTimeout0(()=>{if(G.tut===0)intro(G.party[0].sp);else questCheck()},.2);P.x=G.x||start.x;P.y=G.y||start.y;if(!walkable(map[P.y][P.x])){P.x=start.x;P.y=start.y}P.moving=0;state='walk';hud();snd('go')}
 
 // ---------- 그리기: 마을
 function drawWorld(){const W=Wd,H=Ht;ctx.setTransform(DPR,0,0,DPR,0,0);
@@ -239,7 +289,7 @@ function drawWorld(){const W=Wd,H=Ht;ctx.setTransform(DPR,0,0,DPR,0,0);
   // 나
   const bob=P.moving>0?Math.abs(Math.sin(P.walk))*T*.06:0;person(ox+(px+.5)*T,oy+(py+.5)*T-bob,'#ff8a3a',false,false,true);
   // 앞장선 몬스터 졸졸
-  if(G.party[0]){const fx=px-P.dir[0]*.75,fy=py-P.dir[1]*.75;drawMon(ctx,G.party[0].sp,ox+(fx+.5)*T,oy+(fy+.55)*T,T*.62,P.dir[0]<0,time)}}
+  if(G.party[0]){const fx=px-P.dir[0]*.75,fy=py-P.dir[1]*.75;drawMon(ctx,G.party[0].sp,ox+(fx+.5)*T,oy+(fy+.55)*T,T*.62,P.dir[0]<0,time)}drawQuestArrow(ox,oy)}
 function person(x,y,col,done,star,me){const s=T;ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(x,y+s*.38,s*.26,s*.08,0,0,7);ctx.fill();
   ctx.fillStyle=col;ctx.beginPath();ctx.roundRect(x-s*.2,y-s*.02,s*.4,s*.38,s*.12);ctx.fill();
   ctx.fillStyle='#ffd8b0';ctx.beginPath();ctx.arc(x,y-s*.18,s*.2,0,7);ctx.fill();
@@ -281,10 +331,9 @@ function infoBox(x,y,w,m,hp,tr,mine){const c=bx;c.fillStyle='rgba(255,251,234,.9
 
 // ---------- 루프
 let last=performance.now();
-function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;time+=dt;if(tst>0){tst-=dt;if(tst<=0)$('toast').classList.remove('on')}
+function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;time+=dt;runTimers0(dt);if(Math.floor(time*2)!==Math.floor((time-dt)*2))questUI();if(tst>0){tst-=dt;if(tst<=0)$('toast').classList.remove('on')}
   if(state==='walk'||state==='talk'||state==='party'||state==='title'){updateWalk(dt);drawWorld()}
-  if(state==='battle'&&B){runSeq(dt);if(B)drawBattle(dt)}
-  requestAnimationFrame(frame)}
+  if(state==='battle'&&B){runSeq(dt);if(B)drawBattle(dt)}}
 fit();showTitle();if(G.started&&G.party.length){P.x=G.x;P.y=G.y}else{P.x=start.x;P.y=start.y}hud();requestAnimationFrame(frame);
-window.__mp={G:()=>G,B:()=>B,P,choose,tryMove,wildBattle,trainerBattle,state:()=>state,openParty,renderParty,map,makeMon,talkHome};
+window.__mp={pickStarter:sp=>{G=fresh();G.started=true;G.party=[makeMon(sp,D.start.level)];G.caught[sp]=1;G.x=start.x;G.y=start.y;store();begin()},questText,questTarget,talkClick:i=>{const b=document.getElementById('tBtns').children[i];b&&b.onclick()},G:()=>G,B:()=>B,P,choose,tryMove,wildBattle,trainerBattle,state:()=>state,openParty,renderParty,map,makeMon,talkHome};
 });
