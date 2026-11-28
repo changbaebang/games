@@ -101,7 +101,7 @@ cv.addEventListener('pointerup',pEnd);cv.addEventListener('pointercancel',pEnd);
 cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.max(5,Math.min(16,dist+e.deltaY*.01))},{passive:false});
 function hold(id,dn,up){const el=$(id);el.addEventListener('pointerdown',e=>{e.preventDefault();el.classList.add('on');try{el.setPointerCapture(e.pointerId)}catch(_){}dn()});
   for(const ev of ['pointerup','pointercancel'])el.addEventListener(ev,()=>{if(el.classList.contains('on')){el.classList.remove('on');up&&up()}})}
-hold('tPunch',()=>punchHeld=true,()=>{releasePunch();punchHeld=false});hold('tJump',()=>jumpQ=true);hold('tDown',()=>downQ=true);
+hold('tPunch',()=>punchHeld=true,()=>{releasePunch();punchHeld=false});let jumpHeld=false;hold('tJump',()=>{jumpQ=true;jumpHeld=true},()=>jumpHeld=false);hold('tDown',()=>downQ=true);
 
 // ---------- 빛나는 물건들
 const GB_G=new THREE.BoxGeometry(.32,.9,.32);const gbMat=glow('#ffd23f','#c08a00'),nanaMat=glow('#ffe14a','#6a5a00');
@@ -161,6 +161,7 @@ function punch(power){
   const R0=bananza>0?1:0;
   for(let s=.6;s<=PS.punch&&!hit;s+=.3){const px=pl.x+fx_*s,pz=pl.z+fz*s;for(const hy of [pl.y+.4,pl.y+1.2,pl.y-.4,pl.y+2]){const bx=Math.floor(px),by=Math.floor(hy),bz=Math.floor(pz);if(get(bx,by,bz)&&get(bx,by,bz)!==6){
       if(power>1){const r=1+R0;for(let a=-r;a<=r;a++)for(let b=-1;b<=r;b++)for(let c=-r;c<=r;c++)breakBlock(bx+a,by+b,bz+c,power);shake=.35}else breakBlock(bx,by,bz,1);hit=true;break}}}
+  if(!hit){const ux=Math.floor(pl.x),uz=Math.floor(pl.z);for(const hy of [pl.y+HT+.3,pl.y+HT+1.1]){const uy=Math.floor(hy);if(get(ux,uy,uz)&&get(ux,uy,uz)!==6){breakBlock(ux,uy,uz,power);if(power>1)for(const [a,c] of [[1,0],[-1,0],[0,1],[0,-1]])breakBlock(ux+a,uy,uz+c,power);hit=true;break}}}
   if(!hit&&power>1)shake=.2}
 function killMole(m){m.dead=true;scene.remove(m.g);coins+=5;combo++;comboT=2;toast(combo>1?'두더지 '+combo+'연속!':'두더지 퇴치! +5');if(combo>1)coins+=5*(combo-1);snd('power');burst(m.x,m.y+.4,m.z,'#8a6a5a',10);if(Math.random()<.6)cave.nanas.push({x:m.x,y:m.y+1,z:m.z})}
 const R=.32,HT=1.7;
@@ -182,6 +183,15 @@ function updThrown(dt){for(let i=throwns.length-1;i>=0;i--){const t=throwns[i];t
     if(solidAt(t.x,t.y,t.z)){const bx=Math.floor(t.x),by=Math.floor(t.y),bz=Math.floor(t.z);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++)for(let c=-1;c<=1;c++)breakBlock(bx+a,by+b,bz+c,3);boom=true;shake=.3}
     if(boom){burst(t.x,t.y,t.z,LV.colors[t.t],12);snd('boom');scene.remove(t.m);throwns.splice(i,1)}}
   if(held){held.m.position.set(pl.x,pl.y+2.5+(bananza>0?.6:0),pl.z);held.m.rotation.y=pl.face}}
+
+// ---------- 손뼉 (벽 속 보물 보기)
+let clapT=0,clapCd=0,xray=[];const xMat=new THREE.MeshBasicMaterial({color:0xffd23f,transparent:true,opacity:.85,depthTest:false}),xMat2=new THREE.MeshBasicMaterial({color:0xc070ff,transparent:true,opacity:.75,depthTest:false});
+function clap(){if(state!=='play'||paused)return;if(clapCd>0){toast('손뼉은 '+Math.ceil(clapCd)+'초 뒤에');return}clapCd=6;clapT=3.5;snd('boom');shake=.15;toast('👏 짝! 벽 속이 보여요');
+  for(const m of xray)scene.remove(m);xray=[];for(const g of cave.gold)if(!g.got&&g.buried&&Math.hypot(g.x-pl.x,g.z-pl.z)<14){const m=new THREE.Mesh(GB_G,xMat);m.scale.set(1.4,1.2,1.4);m.position.set(g.x,g.y,g.z);m.renderOrder=10;scene.add(m);xray.push(m)}
+  let n=0;for(const [i,k] of items){if(k!=='gem'||n>40)continue;const x=i%WX,z=Math.floor(i/WX)%WZ,y=Math.floor(i/(WX*WZ));if(Math.hypot(x-pl.x,z-pl.z)>10)continue;const m=new THREE.Mesh(BOX,xMat2);m.scale.setScalar(.35);m.position.set(x+.5,y+.5,z+.5);m.renderOrder=10;scene.add(m);xray.push(m);n++}
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1,.08,6,32),new THREE.MeshBasicMaterial({color:0xfff6a0,transparent:true,opacity:.8}));ring.rotation.x=Math.PI/2;ring.position.set(pl.x,pl.y+.3,pl.z);scene.add(ring);xray.push(ring);ring.ring=true}
+function updClap(dt){clapCd=Math.max(0,clapCd-dt);if(clapT<=0)return;clapT-=dt;for(const m of xray){if(m.ring){m.scale.setScalar(1+(3.5-clapT)*8);m.material.opacity=Math.max(0,.8-(3.5-clapT)*.6)}else m.material.opacity=Math.min(.85,clapT)}if(clapT<=0){for(const m of xray)scene.remove(m);xray=[]}}
+function rescue(){let best=null,bd=1e9;for(const r of cave.rooms){const d=Math.hypot(r.x-pl.x,r.z-pl.z);if(d<bd){bd=d;best=r}}const y=floorAt(best.x,best.z,WY-3);for(let a=-1;a<=1;a++)for(let c=-1;c<=1;c++)for(let b=0;b<3;b++){const t=get(Math.floor(best.x)+a,y+b,Math.floor(best.z)+c);if(t&&t!==6)setB(Math.floor(best.x)+a,y+b,Math.floor(best.z)+c,0)}dirty=true;Object.assign(pl,{x:best.x,z:best.z,y:y+.1,vx:0,vy:0,vz:0,inv:1});setPause(false);toast('🆘 넓은 곳으로 나왔어요')}
 
 // ---------- 바난자 변신
 let meter=0,bananza=0;
@@ -221,21 +231,26 @@ function update(dt){
   const sp=PS.speed*(bananza>0?1.4:1);pl.vx=mx*sp;pl.vz=mz*sp;if(ml>.1)pl.face=Math.atan2(mx,mz);
   if(ml>.1&&pl.ground){const ax=pl.x+mx*.5,az=pl.z+mz*.5;if(blocked(ax,pl.y,az)&&!blocked(ax,pl.y+1.05,az)&&!blocked(pl.x,pl.y+1.05,pl.z))pl.vy=Math.max(pl.vy,6.5)}
   if(jumpQ&&pl.ground){pl.vy=PS.jump*(bananza>0?1.15:1);snd('jump')}jumpQ=false;
-  if(ml>.1&&!pl.ground){const ax=pl.x+mx*.45,az=pl.z+mz*.45;if(blocked(ax,pl.y,az)){pl.vy=Math.max(pl.vy,4.2);pl.climb=true}else pl.climb=false}else pl.climb=false;
+  const jh=jumpHeld||keys.Space;
+  // 천장 매달리기: 점프를 누른 채 천장에 닿으면 매달려서 움직여요
+  const ceil=solidAt(pl.x,pl.y+HT+.15,pl.z)||solidAt(pl.x+R,pl.y+HT+.15,pl.z)||solidAt(pl.x-R,pl.y+HT+.15,pl.z)||solidAt(pl.x,pl.y+HT+.15,pl.z+R)||solidAt(pl.x,pl.y+HT+.15,pl.z-R);
+  if(jh&&ceil&&!pl.ground&&(pl.vy>-2||pl.hang)){if(!pl.hang){pl.hang=true;snd('thud')}pl.vy=0}else pl.hang=false;
+  if(ml>.1&&!pl.ground&&!pl.hang){const ax=pl.x+mx*.45,az=pl.z+mz*.45;if(blocked(ax,pl.y,az)||blocked(ax,pl.y+1,az)){pl.vy=Math.max(pl.vy,5);pl.climb=true}else pl.climb=false}else pl.climb=false;
   if(ml>.1&&pl.ground){const ax=pl.x+mx*.45,az=pl.z+mz*.45;if(blocked(ax,pl.y,az)&&blocked(ax,pl.y+1.05,az))pl.vy=Math.max(pl.vy,4.2)}
-  moveBody(pl,dt);
+  if(pl.hang){const g=PS.gravity;PS.gravity=0;moveBody(pl,dt);PS.gravity=g}else moveBody(pl,dt);
+  if(blocked(pl.x,pl.y,pl.z)){pl.y+=Math.min(1,dt*8)}
   if(punchHeld){pl.charge+=dt;if(pl.charge>.15){$('chargeBar').classList.add('on');$('chargeBar').querySelector('i').style.width=Math.min(100,pl.charge/PS.charge*100)+'%'}}
   if(downQ){downQ=false;punchDown()}
   pl.inv=Math.max(0,pl.inv-dt);pl.punchT=Math.max(0,pl.punchT-dt);comboT-=dt;if(comboT<=0)combo=0;
   if(bananza>0){bananza-=dt;if(bananza<=0)toast('변신이 풀렸어요')}
-  updMoles(dt);if(state!=='play')return;updBats(dt);if(state!=='play')return;updThrown(dt);updThings(dt);if(state!=='play')return;
+  updClap(dt);updMoles(dt);if(state!=='play')return;updBats(dt);if(state!=='play')return;updThrown(dt);updThings(dt);if(state!=='play')return;
   for(let i=pick.length-1;i>=0;i--){const p=pick[i];p.t+=dt;p.vy-=12*dt;const ny=p.y+p.vy*dt;if(solidAt(p.x,ny-.3,p.z)){p.vy=0}else p.y=ny;p.m.position.set(p.x,p.y+Math.sin(time*3)*.1,p.z);p.m.rotation.y+=dt*2;
     if(p.t>.3&&Math.hypot(p.x-pl.x,p.z-pl.z)<1.3&&Math.abs(p.y-(pl.y+.8))<1.8){scene.remove(p.m);pick.splice(i,1);if(p.kind==='gem'){gems++;snd('coin');if(gems%10===0){maxHp=Math.min(8,maxHp+1);pl.hp=maxHp;toast('보석 '+gems+'개! 하트 +1')}}else gotNana()}}
   for(let i=fx.length-1;i>=0;i--){const p=fx[i];p.t-=dt;p.vy-=14*dt;p.m.position.x+=p.vx*dt;p.m.position.y+=p.vy*dt;p.m.position.z+=p.vz*dt;if(p.t<=0){scene.remove(p.m);fx.splice(i,1)}}
   if(dirty)rebuild();
   G.position.set(pl.x,pl.y,pl.z);G.scale.setScalar(bananza>0?.8:.55);let dd=pl.face-G.rotation.y;dd=Math.atan2(Math.sin(dd),Math.cos(dd));G.rotation.y+=dd*Math.min(1,dt*14);
   pl.phase+=dt*ml*10;const w=pl.ground?Math.sin(pl.phase)*Math.min(1,ml):0;legL.rotation.x=w*.7;legR.rotation.x=-w*.7;
-  armR.rotation.x=held?-3:pl.climb?-2.8:pl.punchT>0?-1.6:punchHeld?-.5:-w*.6;armL.rotation.x=held?-3:pl.punchT>0&&pl.charge===0?-1.6:w*.6;Gb.visible=!(pl.inv>0&&bananza<=0&&Math.floor(time*12)%2);
+  armR.rotation.x=held||pl.hang?-3:pl.climb?-2.8:pl.punchT>0?-1.6:punchHeld?-.5:-w*.6;armL.rotation.x=held||pl.hang?-3:pl.punchT>0&&pl.charge===0?-1.6:w*.6;Gb.visible=!(pl.inv>0&&bananza<=0&&Math.floor(time*12)%2);
   lamp.position.set(pl.x,pl.y+3,pl.z);lamp.intensity=bananza>0?2.4:1.5;
   setT($('hearts'),'♥'.repeat(Math.max(0,pl.hp))+'♡'.repeat(Math.max(0,maxHp-pl.hp)));setT($('gold'),collected()+'/'+cave.gold.length);setT($('gems'),gems);setT($('nanas'),nanas);setT($('coins'),coins);
   const mb=$('meter');mb.querySelector('i').style.width=(bananza>0?bananza/D.bananza.time*100:meter/D.bananza.need*100)+'%';mb.classList.toggle('full',meter>=D.bananza.need&&bananza<=0);mb.classList.toggle('on',bananza>0);$('tBana').classList.toggle('ready',meter>=D.bananza.need&&bananza<=0)}
@@ -246,9 +261,10 @@ function lose(){state='over';snd('lose');setT($('eTitle'),'쾅쾅이가 지쳤�
 function toast(t){const el=$('toast');el.textContent=t;el.classList.remove('on');void el.offsetWidth;el.classList.add('on')}
 function setPause(on){if(state!=='play')on=false;paused=on;$('pauseOv').hidden=!on}
 // 카메라: 벽에 막히면 가까이
-function camPlace(px,py,pz,dd){const cp=Math.cos(pitch);const tx=px-Math.sin(yaw)*cp*dd,ty=py+1.5+Math.sin(pitch)*dd,tz=pz-Math.cos(yaw)*cp*dd;let k=1;
-  for(let s=.1;s<=1;s+=.05){const x=px+(tx-px)*s,y=py+1.6+(ty-py-1.6)*s,z=pz+(tz-pz)*s;if(solidAt(x,y,z)){k=Math.max(.08,s-.08);break}}
-  camD+=((dd*k)-camD)*.25;const kk=camD/dd;camera.position.set(px+(tx-px)*kk,py+1.6+(ty-py-1.6)*kk,pz+(tz-pz)*kk)}
+function camPlace(px,py,pz,dd){const cp=Math.cos(pitch);camera.position.set(px-Math.sin(yaw)*cp*dd,py+1.6+Math.sin(pitch)*dd,pz-Math.cos(yaw)*cp*dd);
+  // 사이에 있는 벽은 앞쪽을 잘라서 안 보이게 (가까운 면 자르기)
+  let blockedView=false;for(let s=.15;s<=.95;s+=.1){if(solidAt(px+(camera.position.x-px)*s,py+1.6+(camera.position.y-py-1.6)*s,pz+(camera.position.z-pz)*s)){blockedView=true;break}}
+  const nearT=blockedView?Math.max(.1,dd-1.6):.1;camera.near+=(nearT-camera.near)*.3;camera.updateProjectionMatrix()}
 let last=performance.now();
 function frame(now){requestAnimationFrame(frame);const dt=Math.min((now-last)/1000||0,.05);last=now;if(!paused){time+=dt;if(state==='play')update(dt);else if(state==='title')yaw+=dt*.15}
   shake=Math.max(0,shake-dt);const title=state==='title';
@@ -257,8 +273,8 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min((now-last)/10
   renderer.render(scene,camera)}
 function toTitle(){state='title';for(const id of ['pauseOv','endOv'])$(id).hidden=true;if(!LV){LV=D.levels[0];gen();makeInst();rebuild();placeThings()}
   const l=$('lvls');l.innerHTML='';D.levels.forEach((L,i)=>{const b=document.createElement('button');b.disabled=i>save.best;b.textContent='지하 '+(i+1)+'층 · '+L.name;const s=document.createElement('small');s.textContent=save.gold[i]?'🍌'+save.gold[i]+'/'+L.gold:'';b.appendChild(s);b.onclick=()=>{snd('select');begin(i)};l.appendChild(b)});$('titleOv').hidden=false}
-addEventListener('keydown',e=>{if(e.repeat)return;if(e.code==='KeyG'||e.code==='KeyL')grab();if(e.code==='KeyV'||e.code==='KeyB')transform()});
-hold('tGrab',grab);hold('tBana',transform);
+addEventListener('keydown',e=>{if(e.repeat)return;if(e.code==='KeyC')clap();if(e.code==='KeyG'||e.code==='KeyL')grab();if(e.code==='KeyV'||e.code==='KeyB')transform()});
+hold('tGrab',grab);hold('tBana',transform);hold('tClap',clap);$('rescueBtn').onclick=()=>{snd('click');rescue()};
 $('nextBtn').onclick=()=>{snd('click');begin(lvl+1,true)};$('retryBtn').onclick=()=>{snd('click');begin(lvl)};$('eMenu').onclick=()=>{snd('click');toTitle()};
 $('pauseBtn').onclick=()=>{snd('click');setPause(!paused)};$('resumeBtn').onclick=()=>{snd('click');setPause(false)};$('quitBtn').onclick=()=>{snd('click');toTitle()};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)setPause(true)});

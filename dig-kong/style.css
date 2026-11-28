@@ -56,3 +56,4 @@ html,body{margin:0;height:100%;overflow:hidden;background:#1a1410;font-family:'J
 #tGrab{right:calc(132px + env(safe-area-inset-right));bottom:calc(100px + env(safe-area-inset-bottom));width:66px;height:66px;background:rgba(90,60,30,.8);border:2px solid rgba(255,255,255,.5);font-size:13px}
 #tBana{right:calc(118px + env(safe-area-inset-right));bottom:calc(176px + env(safe-area-inset-bottom));width:64px;height:64px;background:rgba(60,40,20,.6);border:2px solid rgba(255,210,63,.5);font-size:15px;opacity:.5}
 #tBana.ready{opacity:1;background:radial-gradient(circle at 35% 30%,#fff6a0,#ffb020);color:#5a3000;animation:mfull .6s infinite alternate}
+#tClap{right:calc(200px + env(safe-area-inset-right));bottom:calc(150px + env(safe-area-inset-bottom));width:58px;height:58px;background:rgba(90,60,30,.75);border:2px solid rgba(255,255,255,.5);font-size:24px}

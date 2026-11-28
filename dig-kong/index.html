@@ -13,17 +13,17 @@
 <button id="pauseBtn" aria-label="일시정지">II</button>
 <div id="toast"></div>
 <div id="chargeBar"><i></i></div>
-<div class="help">WASD 이동 · Space 점프 · J 주먹(꾹 = 강펀치) · K 아래로 파기 · G 블록 들기/던지기 · V 바난자 변신 · 드래그 시점 · P 일시정지</div>
-<div id="touch"><div id="joy"><div id="knob"></div></div><button class="tb" id="tPunch">주먹</button><button class="tb" id="tDown">아래<br>파기</button><button class="tb" id="tJump">점프</button><button class="tb" id="tGrab">들기<br>던지기</button><button class="tb" id="tBana">변신</button></div>
+<div class="help">WASD 이동 · Space 점프 · J 주먹(꾹 = 강펀치) · K 아래로 파기 · G 블록 들기/던지기 · C 손뼉(벽 속 보기) · V 바난자 변신 · 점프 누른 채 천장에 닿으면 매달리기 · 드래그 시점 · P 일시정지</div>
+<div id="touch"><div id="joy"><div id="knob"></div></div><button class="tb" id="tPunch">주먹</button><button class="tb" id="tDown">아래<br>파기</button><button class="tb" id="tJump">점프</button><button class="tb" id="tGrab">들기<br>던지기</button><button class="tb" id="tBana">변신</button><button class="tb" id="tClap">👏</button></div>
 <div class="overlay" id="titleOv"><div class="card">
   <h1>파고파고 고릴라</h1>
   <p>힘센 고릴라 <b>쾅쾅이</b>가 땅속 동굴을 주먹으로 부수며 <b>황금 바나나</b>를 찾아요! 모으면 아래층 문이 열려요.</p>
-  <p class="small">📡 신호가 세지면 근처 벽 속에 황금 바나나! · 반짝이는 곳을 파 보세요 · 수정을 깨면 💎 · 블록을 <b>들어서 던지고</b>, 게이지가 차면 <b>바난자 변신!</b></p>
+  <p class="small">📡 신호가 세지면 근처 벽 속에 황금 바나나! · 반짝이는 곳을 파 보세요 · 수정을 깨면 💎 · 블록을 <b>들어서 던지고</b>, 👏 <b>손뼉</b>으로 벽 속 보물을 비춰 보고, 게이지가 차면 <b>바난자 변신!</b> 벽은 밀면 기어오르고, 점프를 누른 채 천장에 닿으면 <b>매달려요</b>. 갇히면 일시정지 → 🆘</p>
   <div class="lvls" id="lvls"></div>
   <p class="small mob">왼쪽 아래 조이스틱으로 이동, 오른쪽 화면을 끌어 시점 회전. 주먹을 꾹 누르면 강펀치!</p>
   <p class="back"><a href="../">← 게임 목록으로</a></p>
 </div></div>
-<div class="overlay" id="pauseOv" hidden><div class="card"><h2>일시정지</h2><div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="quitBtn">처음 화면</button></div></div></div>
+<div class="overlay" id="pauseOv" hidden><div class="card"><h2>일시정지</h2><div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="rescueBtn">🆘 갇혔어요 (꺼내 주기)</button><button class="btn soft" id="quitBtn">처음 화면</button></div></div></div>
 <div class="overlay" id="endOv" hidden><div class="card"><h1 id="eTitle">층 클리어!</h1><p id="eTxt"></p><div class="btns"><button class="btn" id="nextBtn">다음 단계</button><button class="btn soft" id="retryBtn">다시 하기</button><button class="btn soft" id="eMenu">처음 화면</button></div></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="game.js"></script>
