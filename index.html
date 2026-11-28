@@ -317,6 +317,16 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>흑백 저택 탈출</h2><p>색을 잃은 흑백 저택에 갇혔어요! 판자를 떼고 아래층으로 내려가 서랍장에서 색깔 열쇠 4개와 번호 쪽지를 찾아요. 뿔뿔이가 돌아다니니 쿵쿵 발소리가 들리면 옷장에 숨어요. 열쇠를 꽂을 때마다 세상에 색이 돌아와요.</p>
       <div class="tags"><span>탈출</span><span>숨바꼭질</span><span>열쇠 찾기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./tsunami-run/" style="--c:#3a9aff">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#4a9ad8"/><rect x="110" y="0" width="100" height="200" fill="#f0dca8"/><rect x="110" y="0" width="100" height="60" fill="#d8b8f8"/><rect x="110" y="60" width="100" height="60" fill="#b8d8ff"/>
+      <rect x="90" y="0" width="140" height="40" fill="#2a7ac8"/><path d="M90 40 q10 12 20 0 q10 12 20 0 q10 12 20 0 q10 12 20 0 q10 12 20 0 q10 12 20 0 q10 12 20 0" fill="#e8f8ff"/><circle cx="145" cy="18" r="7" fill="#fff"/><circle cx="175" cy="18" r="7" fill="#fff"/><circle cx="145" cy="20" r="3" fill="#1a2a4a"/><circle cx="175" cy="20" r="3" fill="#1a2a4a"/>
+      <g transform="translate(160,150)"><circle cy="-12" r="10" fill="#ffd8b0"/><rect x="-9" y="-2" width="18" height="14" rx="5" fill="#ff6a5a"/><ellipse cx="0" cy="-34" rx="12" ry="10" fill="#ff8aa8"/><circle cx="-4" cy="-35" r="2" fill="#2a2420"/><circle cx="4" cy="-35" r="2" fill="#2a2420"/></g>
+      <g transform="translate(140,95)"><ellipse rx="12" ry="10" fill="#ffd23f"/><circle cx="-4" cy="-1" r="2" fill="#2a2420"/><circle cx="4" cy="-1" r="2" fill="#2a2420"/></g><circle cx="98" cy="120" r="10" fill="none" stroke="#ff6a5a" stroke-width="5"/>
+    </svg>
+    <div class="info"><h2>쓰나미 탈출 말랑이</h2><p>긴 바닷가 길 끝으로 달려가 말랑이를 데려와요! 기지에 놓은 말랑이는 매초 금화를 벌어요. 멀리 갈수록 귀한 말랑이가 있지만 파도가 밀려와요. 벽의 🛟 구멍에 숨어서 피해요. 빠르기와 가방을 키우고 도감 30마리를 모아요.</p>
+      <div class="tags"><span>달리기</span><span>수집</span><span>키우기</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -897,7 +907,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>규칙과 대응·평균과 가능성</span><span>5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 69개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 70개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -926,6 +936,7 @@ const REC={
   'forest-99':()=>{const v=B('forest99Nights');return v?`${n(v)}밤 버팀`:null},
   'door-100':()=>{const v=B('door100Best');return v?`${n(v)}번 방까지`:null},
   'mono-escape':()=>{const v=B('monoWins');return v?`탈출 ${n(v)}번`:null},
+  'tsunami-run':()=>{const v=B('tsunamiInc');return v?`매초 🪙${n(v)}`:null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},

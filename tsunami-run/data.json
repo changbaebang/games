@@ -1,0 +1,390 @@
+{
+ "_설명": "쓰나미 탈출 말랑이 설정. length 길 길이(px), width 길 너비. rar 등급(from 그 거리부터 나와요, inc 초당 금화). crit 말랑이 30마리(ear 귀 모양). waves 파도 종류(speed 빠르기, w 나올 확률 가중치, from 이 거리까지 가 본 뒤부터 나와요). waveEvery 파도 사이 시간(초). alcoveEvery 숨는 구멍 간격. mut 특별 무늬(x 배수, p 확률). speed 빠르기 단계, carry 들 수 있는 수, slots 기지 자리 수(값과 가격). rebirth 다시 태어나기 가격과 보너스. offlineMax 꺼져 있을 때 버는 최대 시간(초).",
+ "length": 6600,
+ "width": 400,
+ "base": 420,
+ "rar": [
+  {
+   "id": "common",
+   "name": "흔함",
+   "c": "#9aa0a8",
+   "from": 0,
+   "inc": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "uncommon",
+   "name": "드묾",
+   "c": "#4ac85a",
+   "from": 600,
+   "inc": [
+    20,
+    40
+   ]
+  },
+  {
+   "id": "rare",
+   "name": "희귀",
+   "c": "#3a8aff",
+   "from": 1500,
+   "inc": [
+    100,
+    160
+   ]
+  },
+  {
+   "id": "epic",
+   "name": "전설",
+   "c": "#b05aff",
+   "from": 2800,
+   "inc": [
+    500,
+    800
+   ]
+  },
+  {
+   "id": "mythic",
+   "name": "신화",
+   "c": "#ff5a7a",
+   "from": 4300,
+   "inc": [
+    3000,
+    5000
+   ]
+  },
+  {
+   "id": "celestial",
+   "name": "천상",
+   "c": "#ffd23f",
+   "from": 5800,
+   "inc": [
+    20000,
+    35000
+   ]
+  }
+ ],
+ "crit": [
+  {
+   "id": "common0",
+   "name": "말랑콩",
+   "rar": "common",
+   "c": "#c8a878",
+   "ear": "round"
+  },
+  {
+   "id": "common1",
+   "name": "젤리곰",
+   "rar": "common",
+   "c": "#e8a070",
+   "ear": "none"
+  },
+  {
+   "id": "common2",
+   "name": "솜사탕새",
+   "rar": "common",
+   "c": "#ffc8e0",
+   "ear": "wing"
+  },
+  {
+   "id": "common3",
+   "name": "도토리쥐",
+   "rar": "common",
+   "c": "#b88a5a",
+   "ear": "long"
+  },
+  {
+   "id": "common4",
+   "name": "감자냥",
+   "rar": "common",
+   "c": "#e8d070",
+   "ear": "horn"
+  },
+  {
+   "id": "uncommon0",
+   "name": "구름양",
+   "rar": "uncommon",
+   "c": "#e8eef8",
+   "ear": "round"
+  },
+  {
+   "id": "uncommon1",
+   "name": "딸기토끼",
+   "rar": "uncommon",
+   "c": "#ff8aa8",
+   "ear": "none"
+  },
+  {
+   "id": "uncommon2",
+   "name": "꿀벌곰",
+   "rar": "uncommon",
+   "c": "#ffcc40",
+   "ear": "wing"
+  },
+  {
+   "id": "uncommon3",
+   "name": "별가재",
+   "rar": "uncommon",
+   "c": "#ff7a5a",
+   "ear": "long"
+  },
+  {
+   "id": "uncommon4",
+   "name": "무지개달팽이",
+   "rar": "uncommon",
+   "c": "#a0d8a0",
+   "ear": "horn"
+  },
+  {
+   "id": "rare0",
+   "name": "우주펭귄",
+   "rar": "rare",
+   "c": "#3a4a7a",
+   "ear": "round"
+  },
+  {
+   "id": "rare1",
+   "name": "푸딩용",
+   "rar": "rare",
+   "c": "#f0d890",
+   "ear": "none"
+  },
+  {
+   "id": "rare2",
+   "name": "레몬여우",
+   "rar": "rare",
+   "c": "#fff070",
+   "ear": "wing"
+  },
+  {
+   "id": "rare3",
+   "name": "블루베리부엉",
+   "rar": "rare",
+   "c": "#6a7ad8",
+   "ear": "long"
+  },
+  {
+   "id": "rare4",
+   "name": "마카롱고래",
+   "rar": "rare",
+   "c": "#ffb0d0",
+   "ear": "horn"
+  },
+  {
+   "id": "epic0",
+   "name": "왕관고양이",
+   "rar": "epic",
+   "c": "#ffd8a0",
+   "ear": "round"
+  },
+  {
+   "id": "epic1",
+   "name": "오로라사슴",
+   "rar": "epic",
+   "c": "#a0f0e8",
+   "ear": "none"
+  },
+  {
+   "id": "epic2",
+   "name": "초코드래곤",
+   "rar": "epic",
+   "c": "#8a5a3a",
+   "ear": "wing"
+  },
+  {
+   "id": "epic3",
+   "name": "해님사자",
+   "rar": "epic",
+   "c": "#ffb030",
+   "ear": "long"
+  },
+  {
+   "id": "epic4",
+   "name": "팝콘판다",
+   "rar": "epic",
+   "c": "#f8f8f8",
+   "ear": "horn"
+  },
+  {
+   "id": "mythic0",
+   "name": "은하해파리",
+   "rar": "mythic",
+   "c": "#9a7aff",
+   "ear": "round"
+  },
+  {
+   "id": "mythic1",
+   "name": "번개여우",
+   "rar": "mythic",
+   "c": "#ffe040",
+   "ear": "none"
+  },
+  {
+   "id": "mythic2",
+   "name": "크리스탈곰",
+   "rar": "mythic",
+   "c": "#a0e8ff",
+   "ear": "wing"
+  },
+  {
+   "id": "mythic3",
+   "name": "불꽃새",
+   "rar": "mythic",
+   "c": "#ff6a3a",
+   "ear": "long"
+  },
+  {
+   "id": "mythic4",
+   "name": "달토끼왕",
+   "rar": "mythic",
+   "c": "#f0f0ff",
+   "ear": "horn"
+  },
+  {
+   "id": "celestial0",
+   "name": "별님고래",
+   "rar": "celestial",
+   "c": "#7ab8ff",
+   "ear": "round"
+  },
+  {
+   "id": "celestial1",
+   "name": "하늘용",
+   "rar": "celestial",
+   "c": "#ffffff",
+   "ear": "none"
+  },
+  {
+   "id": "celestial2",
+   "name": "시계부엉이",
+   "rar": "celestial",
+   "c": "#d8c0ff",
+   "ear": "wing"
+  },
+  {
+   "id": "celestial3",
+   "name": "천사햄찌",
+   "rar": "celestial",
+   "c": "#fff0c0",
+   "ear": "long"
+  },
+  {
+   "id": "celestial4",
+   "name": "우주판다",
+   "rar": "celestial",
+   "c": "#2a2a4a",
+   "ear": "horn"
+  }
+ ],
+ "perZone": 7,
+ "waves": [
+  {
+   "name": "느릿 파도",
+   "speed": 230,
+   "w": 6,
+   "from": 0
+  },
+  {
+   "name": "보통 파도",
+   "speed": 340,
+   "w": 5,
+   "from": 0
+  },
+  {
+   "name": "빠른 파도",
+   "speed": 520,
+   "w": 3,
+   "from": 1500
+  },
+  {
+   "name": "번개 파도",
+   "speed": 800,
+   "w": 1.5,
+   "from": 3500
+  }
+ ],
+ "waveEvery": [
+  20,
+  27
+ ],
+ "firstWave": 28,
+ "warnTime": 3,
+ "alcoveEvery": 330,
+ "mut": [
+  {
+   "id": "gold",
+   "name": "황금",
+   "x": 2,
+   "p": 0.07,
+   "c": "#ffd23f"
+  },
+  {
+   "id": "rainbow",
+   "name": "무지개",
+   "x": 4,
+   "p": 0.025,
+   "c": "#ff7ad8"
+  },
+  {
+   "id": "spark",
+   "name": "번쩍",
+   "x": 8,
+   "p": 0.008,
+   "c": "#7af0ff"
+  }
+ ],
+ "speed": {
+  "base": 190,
+  "step": 10,
+  "max": 30,
+  "cost": 15,
+  "grow": 1.42
+ },
+ "carry": {
+  "vals": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "cost": [
+   0,
+   120,
+   1200,
+   12000,
+   120000,
+   1200000
+  ]
+ },
+ "slots": {
+  "vals": [
+   6,
+   8,
+   10,
+   12,
+   14,
+   16
+  ],
+  "cost": [
+   0,
+   250,
+   3000,
+   30000,
+   300000,
+   3000000
+  ]
+ },
+ "rebirth": {
+  "cost": 3000000,
+  "grow": 4,
+  "bonus": 0.5
+ },
+ "offlineMax": 7200,
+ "sparkle": {
+  "every": 150,
+  "len": 30
+ }
+}

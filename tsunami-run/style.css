@@ -1,0 +1,49 @@
+/* VOICE: 신나는 바닷가 달리기, 파도는 무섭기보다 장난꾸러기
+   PICTURE: 위에서 본 긴 바닷가 길, 아래쪽에 내 기지, 위쪽에서 파도가 밀려와요
+   COLOUR and TYPE: 모래색·하늘색·산호색, 등급마다 다른 바닥색 / Jua */
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#3a8ac8;font-family:'Jua',system-ui,sans-serif;color:#2a2a2a;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{position:fixed;left:max(8px,env(safe-area-inset-left));top:max(8px,env(safe-area-inset-top));display:flex;flex-wrap:wrap;gap:6px;z-index:5;pointer-events:none;max-width:calc(100% - 70px)}
+.hud>div{background:rgba(255,252,240,.94);border-radius:12px;padding:4px 10px;font-size:16px;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.hud b{font-weight:400}#coinBox{background:#ffd23f!important;color:#5a3a00}#incBox{color:#2a8a3a}
+#waveBar{position:fixed;left:50%;top:max(46px,calc(env(safe-area-inset-top) + 46px));transform:translateX(-50%);width:min(64vw,300px);background:rgba(20,60,110,.8);color:#fff;border-radius:12px;padding:3px 10px 6px;z-index:5;pointer-events:none;text-align:center;font-size:13px}
+#waveBar b{font-weight:400}#waveBar .bar{height:8px;background:rgba(255,255,255,.25);border-radius:4px;overflow:hidden;margin-top:2px}#waveBar i{display:block;height:100%;width:0;background:#7ad8ff}
+#waveBar.danger{background:#e8505a;animation:wb .4s infinite alternate}
+#quest{position:fixed;left:50%;top:max(92px,calc(env(safe-area-inset-top) + 92px));transform:translateX(-50%);background:rgba(255,255,255,.92);padding:4px 12px;border-radius:12px;font-size:14px;z-index:5;pointer-events:none;max-width:86vw;text-align:center;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+#quest:empty{display:none}
+#warn{position:fixed;left:50%;top:38%;transform:translateX(-50%);background:#ff5a4a;color:#fff;padding:8px 18px;border-radius:16px;font-size:22px;z-index:6;pointer-events:none;box-shadow:0 3px 0 #a02a1a;animation:wb .4s infinite alternate;white-space:nowrap}
+#warn:empty{display:none}
+@keyframes wb{to{transform:translateX(-50%) scale(1.06)}}
+.sideBtns{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));display:flex;flex-direction:column;gap:8px;z-index:6}
+.sideBtns button{width:46px;height:46px;border:0;border-radius:12px;background:rgba(255,255,255,.9);font:inherit;font-size:22px;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+#menuBtn{background:rgba(0,0,0,.4);color:#fff}
+#shopBtn.glow{animation:gl .6s infinite alternate}@keyframes gl{to{background:#ffd23f;transform:scale(1.1)}}
+#toast{position:fixed;left:50%;top:30%;transform:translateX(-50%);display:flex;flex-direction:column;gap:4px;align-items:center;z-index:7;pointer-events:none}
+#toast div{background:rgba(20,40,70,.85);color:#fff;padding:6px 14px;border-radius:12px;font-size:16px;white-space:nowrap}
+#banner{position:fixed;left:50%;top:22%;transform:translate(-50%,-50%) scale(.7);background:linear-gradient(180deg,#fff6d0,#ffd27a);color:#6a3a00;border:4px solid #fff;border-radius:20px;padding:12px 22px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);opacity:0;transition:opacity .25s,transform .25s;z-index:20;pointer-events:none;max-width:92vw}
+#banner.on{opacity:1;transform:translate(-50%,-50%) scale(1)}#banner b{display:block;font-size:22px;font-weight:400}#banner small{font-size:15px}
+.help{position:fixed;bottom:8px;left:10px;background:rgba(0,0,0,.45);color:#fff;padding:5px 10px;border-radius:10px;font-size:12px;z-index:4;pointer-events:none;max-width:calc(100% - 20px)}
+@media (pointer:coarse){.help{display:none}}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,30,60,.55);z-index:10;padding:14px}
+.overlay[hidden]{display:none}
+.card{background:#fffaf0;border-radius:22px;padding:20px;max-width:420px;width:100%;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.3);max-height:92vh;overflow:auto}
+.card.wide{max-width:480px}
+.logo{font-size:40px}
+.card h1{margin:0 0 8px;font-weight:400;font-size:34px;color:#2a6ab8}
+.card h2{margin:0 0 8px;font-weight:400;font-size:24px;color:#2a6ab8}
+.card p{margin:6px 0;font-size:16px;line-height:1.45}
+.small{font-size:14px!important;color:#6a6a70}
+.back a{color:#6a6a70;font-size:15px}
+.btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.btn{border:0;border-radius:14px;background:#3a9aff;color:#fff;font:inherit;font-size:19px;padding:10px 20px;box-shadow:0 4px 0 #1a6ac8;cursor:pointer}
+.btn.soft{background:#ece8e0;color:#5a4a40;box-shadow:0 4px 0 #b8a898}
+.row{display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:8px;margin:6px 0;text-align:left;box-shadow:0 2px 0 #e0d8c8}
+.row .ic{font-size:26px;width:34px;text-align:center}.row .nm{flex:1}.row small{display:block;color:#8a7a70}
+.row button{border:0;border-radius:10px;background:#5ac84a;color:#fff;font:inherit;padding:8px 10px;font-size:15px;white-space:nowrap}
+.row button:disabled{background:#ddd;color:#999}
+.dex{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0}
+.dex div{background:#fff;border-radius:10px;padding:4px 2px;font-size:11px;box-shadow:0 2px 0 #e0d8c8;min-height:70px}
+.dex canvas{display:block;margin:0 auto}
+.dex .no{opacity:.35}
+.rar{font-size:15px;margin:10px 0 2px;text-align:left}
