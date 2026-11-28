@@ -1,5 +1,5 @@
 {
- "_설명": "숲속 99밤 설정. world 숲 크기, day/night 낮·밤 길이(초), fire.levels 모닥불 단계별로 필요한 연료 점수와 빛·탐험 반지름, fuel 연료별 타는 시간과 단계 점수, bench 작업대 단계별 재료와 만들 수 있는 것, items 물건(무게 칸 수), creatures 동물과 밤 손님(나오는 밤, 빠르기, 체력), trader 털 상인 교환표, kids 길 잃은 아기 동물 4마리.",
+ "_설명": "숲속 99밤 설정. world 숲 크기, day/night 낮·밤 길이(초), fire.levels 모닥불 단계별로 필요한 연료 점수와 빛·탐험 반지름, fuel 연료별 타는 시간과 단계 점수, bench 작업대 단계별 재료와 만들 수 있는 것, items 물건(무게 칸 수), creatures 동물과 밤 손님(나오는 밤, 빠르기, 체력), trader 털 상인 교환표, kids 길 잃은 아기 동물 4마리. ram 뿔 염소 대장: 12번째 밤부터, '음메에!' 하고 멈췄다가 한 방향으로 돌진해요. 옆으로 피하거나 손전등으로 비춰요. kids 동굴에 갇힌 동물 옷 입은 아이 4명.",
  "world": {
   "size": 4200,
   "trees": 620,
@@ -13,7 +13,7 @@
  "night": 55,
  "player": {
   "speed": 190,
-  "hp": 5,
+  "hp": 8,
   "hunger": 100,
   "hungerRate": 0.55,
   "bag": 4
@@ -284,7 +284,7 @@
  "creatures": {
   "bunny": {
    "name": "토끼",
-   "speed": 150,
+   "speed": 100,
    "hp": 1
   },
   "wolf": {
@@ -313,24 +313,34 @@
    "speed": 140,
    "hp": 2,
    "from": 8
+  },
+  "ram": {
+   "name": "뿔 염소 대장",
+   "speed": 120,
+   "hp": 5,
+   "from": 12
   }
  },
  "kids": [
   {
-   "name": "아기 곰",
-   "c": "#a0704a"
+   "name": "공룡옷 아이",
+   "c": "#5ac86a",
+   "suit": "dino"
   },
   {
-   "name": "아기 여우",
-   "c": "#ff8a3a"
+   "name": "문어옷 아이",
+   "c": "#ff7a9a",
+   "suit": "octo"
   },
   {
-   "name": "아기 토끼",
-   "c": "#f4ecec"
+   "name": "오징어옷 아이",
+   "c": "#7ab8ff",
+   "suit": "squid"
   },
   {
-   "name": "아기 다람쥐",
-   "c": "#c88a4a"
+   "name": "코알라옷 아이",
+   "c": "#a8a8b8",
+   "suit": "koala"
   }
  ],
  "milestones": [
