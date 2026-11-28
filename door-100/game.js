@@ -143,7 +143,8 @@ function update(dt){time+=dt;for(let i=timers.length-1;i>=0;i--){timers[i].t-=dt
   if(P.hidden){P.hideT+=dt;$('hideBar').hidden=false;$('hideBar').querySelector('i').style.width=Math.max(0,100-P.hideT/D.hide*100)+'%';if(P.hideT>D.hide){unhide();toast('😮‍💨 숨이 차서 나왔어요!')}}
   else{let mx=0,my=0;if(keys.arrowleft||keys.a)mx--;if(keys.arrowright||keys.d)mx++;if(keys.arrowup||keys.w)my--;if(keys.arrowdown||keys.s)my++;if(joy){mx=joy.x;my=joy.y}const ml=Math.hypot(mx,my);
     if(ml>.15){const sp=D.speed*(P.fast>0?1.6:1)*(P.sneak?.45:1)*Math.min(1,ml);const vx=mx/Math.max(1,ml)*sp*dt,vy=my/Math.max(1,ml)*sp*dt;
-      if(!blockedAt(P.x+vx,P.y))P.x+=vx;if(!blockedAt(P.x,P.y+vy))P.y+=vy;P.face=Math.atan2(my,mx);P.walk+=dt*(P.sneak?5:11);if(!P.sneak)noise(.25);
+      if(!blockedAt(P.x+vx,P.y))P.x+=vx;else if(Math.abs(vy)<1e-6){const cy=(Math.floor(P.y/T)+.5)*T;for(const o of [cy-P.y]){const ny=P.y+Math.sign(o)*Math.min(Math.abs(o),sp*dt);if(!blockedAt(P.x,ny)&&!blockedAt(P.x+vx,cy))P.y=ny}}
+      if(!blockedAt(P.x,P.y+vy))P.y+=vy;else if(Math.abs(vx)<1e-6){const cx=(Math.floor(P.x/T)+.5)*T;const ox=[cx-P.x,cx+T-P.x,cx-T-P.x].find(o=>!blockedAt(P.x+o,P.y+vy*4)&&!blockedAt(P.x+o,P.y));if(ox!==undefined&&Math.abs(ox)<T*.75){P.x+=Math.sign(ox)*Math.min(Math.abs(ox),sp*dt)}}P.face=Math.atan2(my,mx);P.walk+=dt*(P.sneak?5:11);if(!P.sneak)noise(.25);
       if(screechE){const a=Math.atan2(screechE.y-P.y,screechE.x-P.x);let d=a-P.face;d=Math.atan2(Math.sin(d),Math.cos(d));if(Math.abs(d)<.5)shooScreech()}}}
   // 문 열기 / 방 넘어가기
   if(!R.open&&!R.locked&&R.type!=='library'&&R.type!=='final'&&Math.hypot(P.x/T-(R.dx+.5),P.y/T-R.y)<1.6&&!(seekE&&false)){openDoor(R)}
