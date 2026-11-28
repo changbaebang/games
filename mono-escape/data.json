@@ -1,0 +1,75 @@
+{
+"_설명": "흑백 저택 탈출 설정. tile 한 칸 크기. hp 하트. levels 저택 크기(rw×rh 방 개수), mons 뿔뿔이 수, mspeed 돌아다니는 빠르기, chase 쫓는 빠르기, sight 보이는 거리(칸), hear 달리기 소리가 들리는 거리(칸). walk/run 내 빠르기. pry 판자 하나 떼는 시간(초), search 서랍장 뒤지는 시간. radar 레이더가 보여 주는 시간과 다시 쓰는 시간. sat 열쇠마다 돌아오는 색.",
+"tile": 44,
+"hp": 3,
+"walk": 150,
+"run": 225,
+"levels": [
+{
+"name": "작은 저택",
+"rw": 4,
+"rh": 3,
+"mons": 1,
+"mspeed": 80,
+"chase": 160,
+"sight": 8,
+"hear": 7
+},
+{
+"name": "큰 저택",
+"rw": 5,
+"rh": 4,
+"mons": 1,
+"mspeed": 90,
+"chase": 170,
+"sight": 9,
+"hear": 8
+},
+{
+"name": "아주 큰 저택",
+"rw": 6,
+"rh": 5,
+"mons": 2,
+"mspeed": 80,
+"chase": 165,
+"sight": 8,
+"hear": 8
+}
+],
+"pry": 1.0,
+"boards": 3,
+"search": 0.8,
+"radar": {
+"show": 8,
+"cool": 25
+},
+"keys": [
+{
+"id": "red",
+"name": "빨강",
+"c": "#ff4a5a"
+},
+{
+"id": "yellow",
+"name": "노랑",
+"c": "#ffcc20"
+},
+{
+"id": "green",
+"name": "초록",
+"c": "#3ac85a"
+},
+{
+"id": "blue",
+"name": "파랑",
+"c": "#3a8aff"
+}
+],
+"sat": [
+0.06,
+0.3,
+0.55,
+0.8,
+1
+]
+}
