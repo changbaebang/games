@@ -131,7 +131,7 @@ function draw(){ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#3a8ac8';ctx.fi
   // 벽
   ctx.fillStyle='#e8c890';ctx.fillRect(-90,Math.max(y0,-L-40),W+180,Math.min(y1,BASE+30)-Math.max(y0,-L-40));
   // 구역 바닥
-  for(let z=0;z<D.rar.length;z++){const r=D.rar[z],top=z+1<D.rar.length?-D.rar[z+1].from:-L,bot=z===0?0:-r.from;if(bot<y0||top>y1)continue;ctx.fillStyle=shade(r.c,.72);ctx.fillRect(0,top,W,bot-top);ctx.fillStyle=shade(r.c,.62);for(let y=Math.floor(Math.max(top,y0)/80)*80;y<Math.min(bot,y1);y+=80)ctx.fillRect(0,y,W,40);
+  for(let z=0;z<D.rar.length;z++){const r=D.rar[z],top=z+1<D.rar.length?-D.rar[z+1].from:-L,bot=z===0?0:-r.from;if(bot<y0||top>y1)continue;ctx.fillStyle=z?shade(r.c,.72):'#f4e2b4';ctx.fillRect(0,top,W,bot-top);ctx.fillStyle=z?shade(r.c,.62):'#ecd6a2';for(let y=Math.floor(Math.max(top,y0)/80)*80;y<Math.min(bot,y1);y+=80)ctx.fillRect(0,y,W,40);
     if(z>0&&-r.from>y0&&-r.from<y1){ctx.fillStyle=r.c;ctx.fillRect(0,-r.from-4,W,8);ctx.font='22px Jua';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#fff';ctx.strokeText('✨ '+r.name+' 구역 · '+Math.round(r.from/10)+'m',W/2,-r.from-14);ctx.fillStyle=r.c;ctx.fillText('✨ '+r.name+' 구역 · '+Math.round(r.from/10)+'m',W/2,-r.from-14)}}
   ctx.fillStyle='#fff';ctx.font='15px Jua';ctx.textAlign='left';for(let m=500;m<L;m+=500)if(-m>y0&&-m<y1){ctx.globalAlpha=.6;ctx.fillText(m/10+'m',8,-m);ctx.globalAlpha=1}
   if(-L>y0){ctx.fillStyle='#7a5a3a';ctx.fillRect(0,-L-30,W,30);ctx.fillStyle='#fff';ctx.font='18px Jua';ctx.textAlign='center';ctx.fillText('🏁 길의 끝',W/2,-L-8)}
