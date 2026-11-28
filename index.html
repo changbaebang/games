@@ -285,6 +285,17 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>블록 쌓기</h2><p>나만의 네모네모 세계에 블록을 놓고 부수며 마음껏 지어요! 잔디·돌·나무·벽돌·유리·양털 등 16가지 블록, 날기 모드로 하늘 높이. 지은 세계는 자동 저장.</p>
       <div class="tags"><span>3D 짓기</span><span>놓기·부수기</span><span>자동 저장</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./forest-99/" style="--c:#ff8a3a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#2a3a6a"/><circle cx="160" cy="120" r="90" fill="#ffb020" opacity=".25"/><circle cx="160" cy="120" r="55" fill="#d8b878"/>
+      <g fill="#3a9a4a"><circle cx="40" cy="60" r="28"/><circle cx="280" cy="55" r="30"/><circle cx="30" cy="170" r="26"/><circle cx="290" cy="175" r="26"/></g>
+      <path d="M146 128 q4 -30 14 -40 q10 10 14 40z" fill="#ff6a2a"/><path d="M152 128 q3 -18 8 -26 q6 8 8 26z" fill="#fff2a0"/><rect x="140" y="126" width="40" height="8" fill="#5a3a1a"/>
+      <g transform="translate(250,110)"><ellipse cx="0" cy="0" rx="20" ry="14" fill="#6a4a8a"/><circle cx="14" cy="-18" r="10" fill="#6a4a8a"/><path d="M10 -28 l-6 -14 M18 -28 l6 -14" stroke="#c8a0ff" stroke-width="3"/><circle cx="11" cy="-19" r="2.5" fill="#fff6a0"/><circle cx="18" cy="-19" r="2.5" fill="#fff6a0"/></g>
+      <g transform="translate(120,140)"><circle r="10" fill="#ffd8b0"/><path d="M-10 -3 a10 10 0 0 1 20 0z" fill="#3a7a3a"/></g><circle cx="80" cy="30" r="2" fill="#fff6a0"/><circle cx="230" cy="20" r="2" fill="#fff6a0"/><path d="M270 20 a12 12 0 1 0 10 18 a9 9 0 1 1 -10 -18z" fill="#fff6c0"/>
+    </svg>
+    <div class="info"><h2>숲속 99밤</h2><p>숲 한가운데 모닥불을 지키며 99번의 밤을 버텨요! 낮엔 나무를 베고 먹을 것을 모으고, 작업대와 털 상인으로 도구를 만들어요. 모닥불이 클수록 숲이 넓게 열리고, 동굴 속 아기 동물 4마리를 구할 수 있어요.</p>
+      <div class="tags"><span>생존</span><span>모닥불 지키기</span><span>귀여운 밤 손님</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -865,7 +876,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>규칙과 대응·평균과 가능성</span><span>5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 66개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 67개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -891,6 +902,7 @@ const REC={
   'bomb-maze':()=>{const v=B('bombMazeCups');return v?`${n(v)}번 우승`:null},
   'ghost-maze':()=>{const v=B('ghostMazeBest');return v?`최고 ${n(v)}점`:null},
   'block-craft':()=>{const v=B('blockCraftPlaced');return v?`블록 ${n(v)}개`:null},
+  'forest-99':()=>{const v=B('forest99Nights');return v?`${n(v)}밤 버팀`:null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},

@@ -1,0 +1,352 @@
+{
+ "_설명": "숲속 99밤 설정. world 숲 크기, day/night 낮·밤 길이(초), fire.levels 모닥불 단계별로 필요한 연료 점수와 빛·탐험 반지름, fuel 연료별 타는 시간과 단계 점수, bench 작업대 단계별 재료와 만들 수 있는 것, items 물건(무게 칸 수), creatures 동물과 밤 손님(나오는 밤, 빠르기, 체력), trader 털 상인 교환표, kids 길 잃은 아기 동물 4마리.",
+ "world": {
+  "size": 4200,
+  "trees": 620,
+  "bushes": 120,
+  "scrap": 90,
+  "rocks": 60,
+  "chests": 40,
+  "seed": 99
+ },
+ "day": 75,
+ "night": 55,
+ "player": {
+  "speed": 190,
+  "hp": 5,
+  "hunger": 100,
+  "hungerRate": 0.55,
+  "bag": 4
+ },
+ "fire": {
+  "levels": [
+   {
+    "need": 0,
+    "light": 190,
+    "explore": 700
+   },
+   {
+    "need": 12,
+    "light": 230,
+    "explore": 1000
+   },
+   {
+    "need": 40,
+    "light": 270,
+    "explore": 1300
+   },
+   {
+    "need": 100,
+    "light": 310,
+    "explore": 1600
+   },
+   {
+    "need": 200,
+    "light": 350,
+    "explore": 1850
+   },
+   {
+    "need": 360,
+    "light": 400,
+    "explore": 2100
+   }
+  ],
+  "max": 180,
+  "burnDay": 0.7,
+  "burnNight": 1.3
+ },
+ "fuel": {
+  "log": {
+   "time": 28,
+   "points": 1
+  },
+  "coal": {
+   "time": 60,
+   "points": 3
+  },
+  "can": {
+   "time": 120,
+   "points": 8
+  }
+ },
+ "items": {
+  "log": {
+   "name": "통나무",
+   "icon": "🪵"
+  },
+  "coal": {
+   "name": "석탄",
+   "icon": "⚫"
+  },
+  "can": {
+   "name": "연료통",
+   "icon": "🛢️"
+  },
+  "scrap": {
+   "name": "고물",
+   "icon": "🔩"
+  },
+  "berry": {
+   "name": "산딸기",
+   "icon": "🍓",
+   "food": 15
+  },
+  "carrot": {
+   "name": "당근",
+   "icon": "🥕",
+   "food": 20
+  },
+  "meat": {
+   "name": "생고기",
+   "icon": "🥩"
+  },
+  "steak": {
+   "name": "구운 고기",
+   "icon": "🍖",
+   "food": 45
+  },
+  "foot": {
+   "name": "토끼 발",
+   "icon": "🐾"
+  },
+  "fur": {
+   "name": "늑대 털",
+   "icon": "🧶"
+  },
+  "bandage": {
+   "name": "반창고",
+   "icon": "🩹",
+   "heal": 2
+  }
+ },
+ "bench": {
+  "levels": [
+   {
+    "cost": {},
+    "name": "작업대 1단계"
+   },
+   {
+    "cost": {
+     "log": 5,
+     "scrap": 1
+    },
+    "name": "작업대 2단계"
+   },
+   {
+    "cost": {
+     "log": 10,
+     "scrap": 4
+    },
+    "name": "작업대 3단계"
+   },
+   {
+    "cost": {
+     "log": 20,
+     "scrap": 10
+    },
+    "name": "작업대 4단계"
+   }
+  ],
+  "recipes": [
+   {
+    "id": "map",
+    "name": "지도",
+    "lv": 1,
+    "cost": {
+     "log": 3
+    },
+    "desc": "화면 구석에 지도가 생겨요"
+   },
+   {
+    "id": "bed",
+    "name": "낡은 침대",
+    "lv": 1,
+    "cost": {
+     "log": 4,
+     "scrap": 1
+    },
+    "desc": "잠자면 밤을 건너뛰어요(모닥불 곁)"
+   },
+   {
+    "id": "bandage",
+    "name": "반창고",
+    "lv": 1,
+    "cost": {
+     "fur": 1
+    },
+    "desc": "하트 2칸 회복",
+    "item": true
+   },
+   {
+    "id": "fence",
+    "name": "울타리",
+    "lv": 2,
+    "cost": {
+     "log": 6,
+     "scrap": 2
+    },
+    "desc": "캠프에 밤 손님이 덜 와요"
+   },
+   {
+    "id": "cooker",
+    "name": "요리 솥",
+    "lv": 2,
+    "cost": {
+     "log": 4,
+     "scrap": 3
+    },
+    "desc": "고기가 2배 빨리 익어요"
+   },
+   {
+    "id": "lamp",
+    "name": "반딧불 랜턴",
+    "lv": 3,
+    "cost": {
+     "scrap": 6,
+     "coal": 1
+    },
+    "desc": "손전등이 더 멀리, 오래"
+   },
+   {
+    "id": "bigsack",
+    "name": "아주 큰 자루",
+    "lv": 3,
+    "cost": {
+     "fur": 3,
+     "scrap": 4
+    },
+    "desc": "가방 12칸"
+   },
+   {
+    "id": "farm",
+    "name": "딸기 밭",
+    "lv": 2,
+    "cost": {
+     "log": 3,
+     "berry": 2
+    },
+    "desc": "캠프에서 산딸기가 자라요"
+   },
+   {
+    "id": "radar",
+    "name": "아기 찾기 나침반",
+    "lv": 4,
+    "cost": {
+     "scrap": 10,
+     "coal": 2
+    },
+    "desc": "길 잃은 아기 쪽을 가리켜요"
+   }
+  ]
+ },
+ "trader": [
+  {
+   "give": {
+    "foot": 1
+   },
+   "get": "goodaxe",
+   "name": "좋은 도끼",
+   "desc": "나무를 두 번에 베요"
+  },
+  {
+   "give": {
+    "foot": 1
+   },
+   "get": "flash",
+   "name": "낡은 손전등",
+   "desc": "밤 손님을 멈춰요"
+  },
+  {
+   "give": {
+    "foot": 2
+   },
+   "get": "goodsack",
+   "name": "좋은 자루",
+   "desc": "가방 8칸"
+  },
+  {
+   "give": {
+    "fur": 3
+   },
+   "get": "strongflash",
+   "name": "튼튼한 손전등",
+   "desc": "더 넓고 오래 비춰요"
+  },
+  {
+   "give": {
+    "fur": 4
+   },
+   "get": "armor",
+   "name": "털 조끼",
+   "desc": "하트 +2"
+  }
+ ],
+ "creatures": {
+  "bunny": {
+   "name": "토끼",
+   "speed": 150,
+   "hp": 1
+  },
+  "wolf": {
+   "name": "늑대 멍멍이",
+   "speed": 150,
+   "hp": 3,
+   "from": 1
+  },
+  "alpha": {
+   "name": "대장 늑대",
+   "speed": 160,
+   "hp": 6
+  },
+  "deer": {
+   "name": "사슴 대장",
+   "speed": 120,
+   "from": 2
+  },
+  "owl": {
+   "name": "부엉 대장",
+   "speed": 260,
+   "from": 5
+  },
+  "raccoon": {
+   "name": "망토 너구리",
+   "speed": 140,
+   "hp": 2,
+   "from": 8
+  }
+ },
+ "kids": [
+  {
+   "name": "아기 곰",
+   "c": "#a0704a"
+  },
+  {
+   "name": "아기 여우",
+   "c": "#ff8a3a"
+  },
+  {
+   "name": "아기 토끼",
+   "c": "#f4ecec"
+  },
+  {
+   "name": "아기 다람쥐",
+   "c": "#c88a4a"
+  }
+ ],
+ "milestones": [
+  1,
+  3,
+  5,
+  10,
+  15,
+  20,
+  30,
+  40,
+  50,
+  60,
+  70,
+  80,
+  90,
+  99
+ ]
+}

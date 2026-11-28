@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>숲속 99밤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script src="../common/arcade.js"></script>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<canvas id="c"></canvas>
+<div class="hud">
+  <div id="dayBox"><b id="dayTxt">1일째 낮</b><div class="bar"><i id="dayBar"></i></div></div>
+  <div id="hearts"></div>
+  <div class="hunger">🍖<div class="bar"><i id="hungerBar"></i></div></div>
+  <div id="kidsBox">🧸 <b id="kidsTxt">0/4</b></div>
+</div>
+<div id="quest"></div>
+<canvas id="mini" width="140" height="140" hidden></canvas>
+<button id="menuBtn" aria-label="메뉴">≡</button>
+<div id="bag"></div>
+<div id="toast"></div>
+<div id="banner"></div>
+<button id="actBtn" class="act">행동</button>
+<button id="flashBtn" hidden>🔦<i></i></button>
+<div class="help">WASD·방향키 이동 · Space 행동(베기·줍기·넣기) · F 손전등 · 1~9 가방 물건 쓰기</div>
+
+<div class="overlay" id="panel" hidden><div class="card wide"><h2 id="pTitle">작업대</h2><div id="pBody"></div><div class="btns"><button class="btn soft" id="pClose">닫기</button></div></div></div>
+<div class="overlay" id="titleOv"><div class="card">
+  <div class="logo">🔥🌲🌙</div>
+  <h1>숲속 99밤</h1>
+  <p>숲 한가운데 <b>모닥불</b>을 지키며 99번의 밤을 버텨요! 낮에는 나무를 베고 먹을 것을 모으고, 밤에는 불빛 곁에 있어요.</p>
+  <p class="small">모닥불이 클수록 숲이 넓게 열려요. 숲 어딘가 동굴에 <b>길 잃은 아기 동물 4마리</b>가 기다리고 있어요. 🧸</p>
+  <div class="btns"><button class="btn" id="contBtn" hidden>이어 하기</button><button class="btn" id="newBtn">새로 시작</button></div>
+  <p class="small mob">왼쪽 화면을 끌어 걷고, 오른쪽 큰 버튼으로 베기·줍기·넣기!</p>
+  <p class="back"><a href="../">← 게임 목록으로</a></p>
+</div></div>
+<div class="overlay" id="menuOv" hidden><div class="card"><h2>잠깐 쉬기</h2><p class="small" id="mStat"></p><div class="btns"><button class="btn" id="resumeBtn">계속하기</button><button class="btn soft" id="helpBtn">도움말</button><button class="btn soft" id="quitBtn">처음 화면</button></div></div></div>
+<script src="game.js"></script>
+</body></html>
