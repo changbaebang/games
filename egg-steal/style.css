@@ -49,3 +49,6 @@ h3{font-weight:400;margin:4px 0 8px;font-size:20px}h3 small{font-size:14px;color
 .pet b{font-weight:400;font-size:17px}.pet .sell{margin-top:4px;font:inherit;font-size:14px;border:0;border-radius:10px;min-height:38px;background:#fff;cursor:pointer}
 .empty{color:#8a7e6a;font-size:15px}
 @media(max-height:520px){.card{padding:14px 18px}.card h1{font-size:32px}.how{font-size:14px}}
+
+#banner{position:fixed;left:50%;top:26%;transform:translate(-50%,-50%) scale(.7);background:linear-gradient(180deg,#fff6c8,#ffd23f);color:#5a3a00;border:4px solid #fff;border-radius:20px;padding:12px 24px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);opacity:0;transition:opacity .25s,transform .25s;z-index:20;pointer-events:none;font-family:Jua,sans-serif;white-space:nowrap}
+#banner.on{opacity:1;transform:translate(-50%,-50%) scale(1)}#banner b{display:block;font-size:24px;font-weight:400}#banner small{font-size:15px}

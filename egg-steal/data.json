@@ -1,5 +1,5 @@
 {
- "_설명": "계란 훔치기 데이터. 세계는 왼쪽 기지(base)에서 오른쪽으로 지역(biomes)이 이어진다. 지역 좌표는 그 지역 왼쪽 끝 기준(너비 width, 높이는 world.height). cost 금화로 문을 연다. nests는 둥지 위치, eggs는 그 지역 둥지에서 나오는 알 등급 비율. guards는 경비 수·속도·추격 속도·시야 거리(vision)·시야각(angle, 도). rarities는 알 등급: 부화 시간(hatch 초), 무게(weight, 들고 가면 느려지는 정도), 펫 목록(이름·색·초당 금화). mutations는 부화할 때 붙는 특별 무늬와 수입 배율. upgrades는 가게 물건: 값은 base x growth^레벨.",
+ "_설명": "계란 훔치기 데이터. 세계는 왼쪽 기지(base)에서 오른쪽으로 지역(biomes)이 이어진다. 지역 좌표는 그 지역 왼쪽 끝 기준(너비 width, 높이는 world.height). cost 금화로 문을 연다. nests는 둥지 위치, eggs는 그 지역 둥지에서 나오는 알 등급 비율. guards는 경비 수·속도·추격 속도·시야 거리(vision)·시야각(angle, 도). rarities는 알 등급: 부화 시간(hatch 초), 무게(weight, 들고 가면 느려지는 정도), 펫 목록(이름·색·초당 금화). mutations는 부화할 때 붙는 특별 무늬와 수입 배율. upgrades는 가게 물건: 값은 base x growth^레벨. 경비는 알을 들고 있을 때만 쫓아와요(chase는 내 속도보다 느리게 맞춰져요). sparkle: every초마다 둥지 하나에 한 등급 높은 반짝 알이 나와요(부화하면 특별 무늬 확정). streak: 안 잡히고 연속으로 가져오면 금화 보너스(bonus x 연속 수, 최대 max). achievements: 업적과 보상 금화.",
  "world": {
   "height": 640,
   "baseWidth": 440
@@ -14,7 +14,7 @@
    "color": "#f4efe2",
    "spot": "#c9bfa6",
    "hatch": 8,
-   "weight": 0.1,
+   "weight": 0.05,
    "pets": [
     {
      "name": "병아리",
@@ -38,7 +38,7 @@
    "color": "#7fd0ff",
    "spot": "#3a9ad8",
    "hatch": 15,
-   "weight": 0.2,
+   "weight": 0.1,
    "pets": [
     {
      "name": "여우",
@@ -62,7 +62,7 @@
    "color": "#c79bff",
    "spot": "#8a4ad8",
    "hatch": 25,
-   "weight": 0.32,
+   "weight": 0.16,
    "pets": [
     {
      "name": "부엉이",
@@ -86,7 +86,7 @@
    "color": "#ffd23f",
    "spot": "#e09a1a",
    "hatch": 45,
-   "weight": 0.45,
+   "weight": 0.22,
    "pets": [
     {
      "name": "유니콘",
@@ -105,7 +105,7 @@
    "color": "#ff5a8a",
    "spot": "#7a2ad8",
    "hatch": 80,
-   "weight": 0.6,
+   "weight": 0.3,
    "pets": [
     {
      "name": "별고래",
@@ -122,23 +122,23 @@
  },
  "mutations": [
   {
-   "id": "gold",
-   "name": "황금",
-   "chance": 0.08,
-   "mult": 2,
-   "c": "#ffd23f"
-  },
-  {
    "id": "rainbow",
    "name": "무지개",
-   "chance": 0.02,
+   "chance": 0.06,
    "mult": 3,
    "c": "rainbow"
   },
   {
+   "id": "gold",
+   "name": "황금",
+   "chance": 0.18,
+   "mult": 2,
+   "c": "#ffd23f"
+  },
+  {
    "id": "giant",
    "name": "거대",
-   "chance": 0.06,
+   "chance": 0.14,
    "mult": 1.5,
    "scale": 1.4
   }
@@ -148,116 +148,154 @@
    "id": "meadow",
    "name": "초원 둥지",
    "cost": 0,
-   "width": 900,
+   "width": 1500,
    "ground": "#7cc657",
    "ground2": "#72bb4f",
    "deco": "#4f9a3a",
    "decoKind": "tree",
    "nests": [
     [
-     220,
-     150
+     121,
+     180
     ],
     [
-     420,
-     470
+     309,
+     465
     ],
     [
-     640,
-     200
+     506,
+     274
     ],
     [
-     780,
-     500
+     778,
+     496
+    ],
+    [
+     966,
+     167
+    ],
+    [
+     1137,
+     178
+    ],
+    [
+     1404,
+     453
     ]
    ],
    "eggs": {
-    "common": 80,
-    "rare": 20
+    "common": 65,
+    "rare": 30,
+    "epic": 5
    },
-   "respawn": 6,
+   "respawn": 5,
    "guards": {
     "count": 2,
-    "speed": 55,
-    "chase": 120,
-    "vision": 150,
-    "angle": 70
+    "speed": 40,
+    "chase": 95,
+    "vision": 140,
+    "angle": 65
    }
   },
   {
    "id": "desert",
    "name": "모래 사막",
    "cost": 600,
-   "width": 900,
+   "width": 1500,
    "ground": "#ecc77a",
    "ground2": "#e3bb6c",
    "deco": "#6aa84a",
    "decoKind": "cactus",
    "nests": [
     [
-     180,
+     84,
+     125
+    ],
+    [
+     315,
+     466
+    ],
+    [
+     448,
+     285
+    ],
+    [
+     631,
+     525
+    ],
+    [
+     854,
+     133
+    ],
+    [
+     1052,
+     127
+    ],
+    [
+     1188,
      480
     ],
     [
-     360,
-     160
-    ],
-    [
-     560,
-     420
-    ],
-    [
-     760,
-     180
-    ],
-    [
-     800,
-     520
+     1420,
+     307
     ]
    ],
    "eggs": {
-    "common": 45,
+    "common": 35,
     "rare": 45,
-    "epic": 10
+    "epic": 18,
+    "legend": 2
    },
-   "respawn": 8,
+   "respawn": 6,
    "guards": {
     "count": 3,
-    "speed": 65,
-    "chase": 135,
-    "vision": 165,
-    "angle": 75
+    "speed": 45,
+    "chase": 100,
+    "vision": 150,
+    "angle": 70
    }
   },
   {
-   "id": "snow",
-   "name": "눈 덮인 숲",
-   "cost": 4000,
-   "width": 900,
-   "ground": "#e8f1f8",
-   "ground2": "#dde9f3",
-   "deco": "#2f6e56",
-   "decoKind": "pine",
+   "id": "mushroom",
+   "name": "버섯 숲",
+   "cost": 1800,
+   "width": 1500,
+   "ground": "#8a7ac8",
+   "ground2": "#8070be",
+   "deco": "#ff6a8a",
+   "decoKind": "mushroom",
    "nests": [
     [
-     200,
-     160
+     87,
+     156
     ],
     [
-     300,
-     500
+     334,
+     465
     ],
     [
-     520,
-     320
+     446,
+     284
     ],
     [
-     700,
-     140
+     625,
+     525
     ],
     [
-     780,
-     480
+     817,
+     148
+    ],
+    [
+     1033,
+     129
+    ],
+    [
+     1229,
+     447
+    ],
+    [
+     1413,
+     289
     ]
    ],
    "eggs": {
@@ -265,106 +303,309 @@
     "epic": 40,
     "legend": 10
    },
-   "respawn": 10,
+   "respawn": 7,
+   "guards": {
+    "count": 3,
+    "speed": 48,
+    "chase": 104,
+    "vision": 155,
+    "angle": 72
+   }
+  },
+  {
+   "id": "snow",
+   "name": "눈 덮인 숲",
+   "cost": 4000,
+   "width": 1500,
+   "ground": "#e8f1f8",
+   "ground2": "#dde9f3",
+   "deco": "#2f6e56",
+   "decoKind": "pine",
+   "nests": [
+    [
+     151,
+     172
+    ],
+    [
+     283,
+     446
+    ],
+    [
+     514,
+     306
+    ],
+    [
+     644,
+     513
+    ],
+    [
+     812,
+     165
+    ],
+    [
+     988,
+     156
+    ],
+    [
+     1167,
+     479
+    ],
+    [
+     1366,
+     301
+    ]
+   ],
+   "eggs": {
+    "rare": 35,
+    "epic": 45,
+    "legend": 18,
+    "mythic": 2
+   },
+   "respawn": 7,
    "guards": {
     "count": 4,
-    "speed": 70,
-    "chase": 145,
-    "vision": 175,
-    "angle": 80
+    "speed": 50,
+    "chase": 108,
+    "vision": 160,
+    "angle": 75
+   }
+  },
+  {
+   "id": "candy",
+   "name": "사탕 나라",
+   "cost": 12000,
+   "width": 1500,
+   "ground": "#ffd0e8",
+   "ground2": "#ffc4e0",
+   "deco": "#ff5ab0",
+   "decoKind": "candy",
+   "nests": [
+    [
+     148,
+     147
+    ],
+    [
+     277,
+     469
+    ],
+    [
+     469,
+     329
+    ],
+    [
+     610,
+     513
+    ],
+    [
+     748,
+     145
+    ],
+    [
+     890,
+     164
+    ],
+    [
+     1056,
+     445
+    ],
+    [
+     1255,
+     289
+    ],
+    [
+     1407,
+     521
+    ]
+   ],
+   "eggs": {
+    "epic": 50,
+    "legend": 42,
+    "mythic": 8
+   },
+   "respawn": 8,
+   "guards": {
+    "count": 4,
+    "speed": 52,
+    "chase": 110,
+    "vision": 165,
+    "angle": 78
    }
   },
   {
    "id": "volcano",
    "name": "화산 계곡",
    "cost": 25000,
-   "width": 900,
+   "width": 1500,
    "ground": "#5a3a34",
    "ground2": "#4e322d",
    "deco": "#ff6a2a",
    "decoKind": "rock",
    "nests": [
     [
-     160,
-     320
+     123,
+     166
     ],
     [
-     340,
+     294,
+     458
+    ],
+    [
+     472,
+     274
+    ],
+    [
+     567,
+     522
+    ],
+    [
+     763,
      140
     ],
     [
-     420,
-     500
+     910,
+     129
     ],
     [
-     640,
-     300
+     1087,
+     466
     ],
     [
-     800,
-     140
+     1187,
+     312
     ],
     [
-     800,
-     520
+     1349,
+     538
     ]
    ],
    "eggs": {
-    "epic": 55,
-    "legend": 38,
-    "mythic": 7
+    "epic": 35,
+    "legend": 50,
+    "mythic": 15
    },
-   "respawn": 12,
+   "respawn": 9,
    "guards": {
     "count": 5,
-    "speed": 78,
-    "chase": 158,
-    "vision": 185,
-    "angle": 85
+    "speed": 55,
+    "chase": 114,
+    "vision": 170,
+    "angle": 80
    }
   },
   {
    "id": "sky",
    "name": "구름 섬",
    "cost": 150000,
-   "width": 900,
+   "width": 1500,
    "ground": "#cfe6ff",
    "ground2": "#c2ddfb",
    "deco": "#ffffff",
    "decoKind": "cloud",
    "nests": [
     [
-     200,
-     200
+     151,
+     156
     ],
     [
      300,
-     480
+     461
     ],
     [
-     480,
-     320
+     484,
+     308
     ],
     [
-     660,
-     160
+     683,
+     527
     ],
     [
-     780,
-     460
+     858,
+     134
+    ],
+    [
+     991,
+     180
+    ],
+    [
+     1194,
+     470
+    ],
+    [
+     1348,
+     273
     ]
    ],
    "eggs": {
-    "legend": 65,
-    "mythic": 35
+    "legend": 55,
+    "mythic": 45
    },
-   "respawn": 15,
+   "respawn": 10,
+   "guards": {
+    "count": 5,
+    "speed": 58,
+    "chase": 118,
+    "vision": 175,
+    "angle": 82
+   }
+  },
+  {
+   "id": "stars",
+   "name": "반짝 별나라",
+   "cost": 600000,
+   "width": 1500,
+   "ground": "#2a2a5a",
+   "ground2": "#24244e",
+   "deco": "#ffe680",
+   "decoKind": "star",
+   "nests": [
+    [
+     119,
+     161
+    ],
+    [
+     310,
+     483
+    ],
+    [
+     452,
+     288
+    ],
+    [
+     601,
+     546
+    ],
+    [
+     754,
+     131
+    ],
+    [
+     926,
+     142
+    ],
+    [
+     1046,
+     479
+    ],
+    [
+     1196,
+     301
+    ],
+    [
+     1347,
+     503
+    ]
+   ],
+   "eggs": {
+    "legend": 35,
+    "mythic": 65
+   },
+   "respawn": 10,
    "guards": {
     "count": 6,
-    "speed": 85,
-    "chase": 168,
-    "vision": 195,
-    "angle": 90
+    "speed": 60,
+    "chase": 122,
+    "vision": 180,
+    "angle": 85
    }
   }
  ],
@@ -419,5 +660,129 @@
   "maxHours": 2,
   "rate": 0.5
  },
- "caughtStun": 1.0
+ "caughtStun": 1.0,
+ "sparkle": {
+  "every": 22,
+  "label": "반짝 알"
+ },
+ "streak": {
+  "bonus": 0.25,
+  "max": 8
+ },
+ "achievements": [
+  {
+   "id": "s1",
+   "name": "첫 알 훔치기",
+   "stolen": 1,
+   "reward": 30
+  },
+  {
+   "id": "s10",
+   "name": "알 도둑 10개",
+   "stolen": 10,
+   "reward": 150
+  },
+  {
+   "id": "s30",
+   "name": "알 도둑 30개",
+   "stolen": 30,
+   "reward": 800
+  },
+  {
+   "id": "s100",
+   "name": "전설의 알 도둑 100개",
+   "stolen": 100,
+   "reward": 6000
+  },
+  {
+   "id": "s300",
+   "name": "알 도둑 왕 300개",
+   "stolen": 300,
+   "reward": 40000
+  },
+  {
+   "id": "r_rare",
+   "name": "처음 만난 희귀 펫",
+   "rarity": "rare",
+   "reward": 100
+  },
+  {
+   "id": "r_epic",
+   "name": "처음 만난 에픽 펫",
+   "rarity": "epic",
+   "reward": 600
+  },
+  {
+   "id": "r_legend",
+   "name": "처음 만난 전설 펫",
+   "rarity": "legend",
+   "reward": 5000
+  },
+  {
+   "id": "r_mythic",
+   "name": "처음 만난 신화 펫",
+   "rarity": "mythic",
+   "reward": 40000
+  },
+  {
+   "id": "m_gold",
+   "name": "반짝반짝 황금 펫",
+   "mutation": "gold",
+   "reward": 300
+  },
+  {
+   "id": "m_rainbow",
+   "name": "무지개 펫 발견",
+   "mutation": "rainbow",
+   "reward": 2000
+  },
+  {
+   "id": "m_giant",
+   "name": "커다란 거대 펫",
+   "mutation": "giant",
+   "reward": 300
+  },
+  {
+   "id": "st3",
+   "name": "3연속 안 잡히기",
+   "streak": 3,
+   "reward": 120
+  },
+  {
+   "id": "st8",
+   "name": "8연속 안 잡히기",
+   "streak": 8,
+   "reward": 1500
+  },
+  {
+   "id": "b3",
+   "name": "새 지역 3곳",
+   "open": 3,
+   "reward": 1000
+  },
+  {
+   "id": "b6",
+   "name": "새 지역 6곳",
+   "open": 6,
+   "reward": 30000
+  },
+  {
+   "id": "b8",
+   "name": "모든 지역 열기",
+   "open": 8,
+   "reward": 300000
+  },
+  {
+   "id": "sp1",
+   "name": "반짝 알 훔치기",
+   "sparkle": 1,
+   "reward": 200
+  },
+  {
+   "id": "sp10",
+   "name": "반짝 알 10개",
+   "sparkle": 10,
+   "reward": 5000
+  }
+ ]
 }
