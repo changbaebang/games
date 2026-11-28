@@ -1,9 +1,9 @@
 {
- "_설명": "파고파고 고릴라 데이터. 각 단계는 앞으로 쭉 이어진 길(course)이에요. course 글자: F숫자 평평한 길, U숫자 오르막 계단, D숫자 내리막, G숫자 구멍(건너뛰기), W 흙벽(주먹으로 뚫기), R 바위벽(강펀치), T숫자 언덕 굴(파거나 넘기), N숫자 좁은 다리, X 보물 표시(빨간 칸 아래 2칸에 보석), L 금글자(보·물·찾·기), O 금화 고리, M숫자 두더지, B 굴러오는 통, C 중간 깃발, E 도착 바나나. blocks: 블록 단단함과 금화. player: 빠르기·점프·하트 등.",
+ "_설명": "파고파고 고릴라(동굴 편). 땅속 동굴을 한 층씩 내려가요. world: 동굴 크기(x, 높이, z). levels: 층 이름, 색(1 이끼 바닥, 2 흙, 3 돌, 4 단단한 바위, 5 금광석, 6 바깥 바위(못 부숨), 7 수정 — 부수면 보석), fog 동굴 어둠 색, light 등불 색, gold 황금 바나나 수, need 아래층 문을 여는 데 필요한 수, gems 벽 속 보석 수, moles 두더지, bats 박쥐, rock 단단한 바위 비율, ore 금광맥 수, crystal 수정 무리 수. bananza: 변신 게이지(블록을 부술 때 차요)와 변신 시간. player: 빠르기·점프·하트·주먹 사거리·강펀치 모으는 시간.",
  "world": [
-  17,
-  20,
-  0
+  28,
+  18,
+  28
  ],
  "player": {
   "speed": 5.2,
@@ -15,7 +15,7 @@
  },
  "blocks": {
   "1": {
-   "name": "풀",
+   "name": "이끼 바닥",
    "hp": 1,
    "coin": 0
   },
@@ -30,90 +30,114 @@
    "coin": 1
   },
   "4": {
-   "name": "바위",
+   "name": "단단한 바위",
    "hp": 4,
    "coin": 2
   },
   "5": {
    "name": "금광석",
    "hp": 2,
-   "coin": 8
+   "coin": 6
   },
   "6": {
-   "name": "바닥돌",
+   "name": "바깥 바위",
    "hp": 0,
    "coin": 0
   },
   "7": {
-   "name": "보물 표시",
-   "hp": 1,
+   "name": "수정",
+   "hp": 2,
    "coin": 0
   }
  },
  "levels": [
   {
-   "name": "바나나 섬",
-   "rock": 0.08,
-   "gold": 0.04,
+   "name": "바나나 뿌리 동굴",
    "colors": {
-    "1": "#6ccf4a",
-    "2": "#b07a46",
-    "3": "#9a9aa6",
-    "4": "#5f5f6e",
-    "5": "#e0b030",
-    "6": "#2a2a33",
-    "7": "#ff5a3a"
+    "1": "#5aa84a",
+    "2": "#9a6a3e",
+    "3": "#7d7468",
+    "4": "#4e4842",
+    "5": "#ffcc33",
+    "6": "#2a2420",
+    "7": "#ff9ae0"
    },
-   "sky": "#8fd8ff",
-   "course": "F6 O F3 L F4 M3 F5 W F4 X F3 U2 F5 O G2 F4 C L F3 M3 F5 T4 F3 D2 F4 X F4 B F6 L G2 F3 M3 F4 O F3 N3 F3 L F4 M2 F4 E"
+   "fog": "#1a1410",
+   "light": "#ffd8a0",
+   "gold": 8,
+   "need": 5,
+   "gems": 30,
+   "moles": 6,
+   "bats": 3,
+   "rock": 0.06,
+   "ore": 6,
+   "crystal": 4
   },
   {
-   "name": "모래 동굴",
-   "rock": 0.14,
-   "gold": 0.06,
+   "name": "반짝 수정 동굴",
    "colors": {
-    "1": "#e8d08a",
-    "2": "#d0a860",
-    "3": "#b8a080",
-    "4": "#806850",
-    "5": "#ffd040",
-    "6": "#2a2a33",
-    "7": "#ff5a3a"
+    "1": "#6ab8c8",
+    "2": "#6a6a8a",
+    "3": "#5a5a7a",
+    "4": "#3a3a5a",
+    "5": "#ffd23f",
+    "6": "#1a1a2a",
+    "7": "#b07aff"
    },
-   "sky": "#ffd9a0",
-   "course": "F5 O F3 L M3 F4 R F3 X F3 U3 F4 G3 F4 B F6 C O F3 T5 F3 L M4 F4 D3 F4 X F3 N4 F3 O G2 F3 L F4 M4 B F6 W F3 X F3 L F4 E"
+   "fog": "#100c20",
+   "light": "#c8b8ff",
+   "gold": 8,
+   "need": 5,
+   "gems": 36,
+   "moles": 7,
+   "bats": 5,
+   "rock": 0.1,
+   "ore": 6,
+   "crystal": 9
   },
   {
-   "name": "얼음 산",
-   "rock": 0.18,
-   "gold": 0.07,
+   "name": "꽁꽁 얼음 동굴",
    "colors": {
-    "1": "#f4faff",
-    "2": "#a8d0f0",
-    "3": "#7aa0c8",
+    "1": "#e8f6ff",
+    "2": "#a8c8e0",
+    "3": "#7a9ac0",
     "4": "#4a6a90",
     "5": "#ffe070",
-    "6": "#1a2233",
-    "7": "#ff5a3a"
+    "6": "#101a28",
+    "7": "#7ae0ff"
    },
-   "sky": "#cfe8ff",
-   "course": "F5 L F3 M3 F4 U2 F3 G2 F3 U2 F4 O B F6 X F3 R F3 C L F3 N4 F2 G3 F3 M4 F5 T5 F3 X F3 D3 F3 O B F6 L F3 M4 G3 F4 L F3 B F6 E"
+   "fog": "#0c1420",
+   "light": "#d0f0ff",
+   "gold": 9,
+   "need": 6,
+   "gems": 36,
+   "moles": 8,
+   "bats": 5,
+   "rock": 0.14,
+   "ore": 7,
+   "crystal": 6
   },
   {
-   "name": "용암 심장",
-   "rock": 0.24,
-   "gold": 0.09,
+   "name": "부글부글 용암 심장",
    "colors": {
-    "1": "#5a3a2a",
-    "2": "#7a3a22",
-    "3": "#5a4a4a",
-    "4": "#3a2a2a",
+    "1": "#7a3a22",
+    "2": "#6a3424",
+    "3": "#4a3a3a",
+    "4": "#2e2424",
     "5": "#ffb020",
-    "6": "#1a0a0a",
+    "6": "#140808",
     "7": "#ff5a3a"
    },
-   "sky": "#ff9a6a",
-   "course": "F5 O M3 F4 L F3 R F3 G3 F3 X F3 U3 B F6 C M4 F4 L N5 F3 G3 F3 O T6 F3 X F4 D3 B F6 L F3 M5 F4 G3 F3 R F3 X F4 L M4 B F6 E"
+   "fog": "#200806",
+   "light": "#ffb080",
+   "gold": 10,
+   "need": 7,
+   "gems": 40,
+   "moles": 10,
+   "bats": 6,
+   "rock": 0.2,
+   "ore": 8,
+   "crystal": 6
   }
  ],
  "letters": [
@@ -130,5 +154,9 @@
   "speed": 2.2,
   "hp": 2,
   "chase": 7
+ },
+ "bananza": {
+  "need": 60,
+  "time": 12
  }
 }
