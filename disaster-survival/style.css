@@ -1,0 +1,54 @@
+/* VOICE: 무섭지 않은 재난 놀이, 함께 버티는 동물 친구들
+   PICTURE: 옆에서 본 초록 섬 마을, 블록으로 지은 집과 탑
+   COLOUR and TYPE: 하늘색 배경, 초록 섬, 재난마다 다른 하늘빛 / Jua */
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;overflow:hidden;background:#8ad0ff;font-family:'Jua',system-ui,sans-serif;color:#2a2a2a;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{position:fixed;left:max(8px,env(safe-area-inset-left));top:max(8px,env(safe-area-inset-top));display:flex;flex-wrap:wrap;gap:6px;z-index:5;pointer-events:none;max-width:calc(100% - 70px)}
+.hud>div{background:rgba(255,252,240,.94);border-radius:12px;padding:4px 10px;font-size:16px;box-shadow:0 2px 0 rgba(0,0,0,.25);display:flex;align-items:center;gap:6px}
+.hud b{font-weight:400}
+.bar{width:90px;height:10px;background:#e0d8d0;border-radius:5px;overflow:hidden}.bar i{display:block;height:100%;background:#ff5a6a;width:100%;transition:width .15s}
+#airFill{background:#5ab8ff}#coldFill{background:#8ad8ff}
+#stage{position:fixed;left:50%;top:max(48px,calc(env(safe-area-inset-top) + 48px));transform:translateX(-50%);background:rgba(30,40,70,.85);color:#fff;padding:5px 14px;border-radius:14px;font-size:17px;z-index:5;pointer-events:none;white-space:nowrap}
+#stage:empty{display:none}
+#meters{position:fixed;left:50%;top:max(88px,calc(env(safe-area-inset-top) + 88px));transform:translateX(-50%);display:flex;gap:6px;z-index:5;pointer-events:none}
+#meters>div{background:rgba(255,255,255,.92);border-radius:12px;padding:3px 8px;display:flex;align-items:center;gap:5px}
+#meters>div[hidden]{display:none}
+#menuBtn{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));width:44px;height:44px;border:0;border-radius:12px;background:rgba(0,0,0,.4);color:#fff;font:inherit;font-size:22px;z-index:6}
+#toast{position:fixed;left:50%;top:30%;transform:translateX(-50%);display:flex;flex-direction:column;gap:4px;align-items:center;z-index:7;pointer-events:none}
+#toast div{background:rgba(30,30,50,.85);color:#fff;padding:6px 14px;border-radius:12px;font-size:16px;white-space:nowrap}
+#banner{position:fixed;left:50%;top:24%;transform:translate(-50%,-50%) scale(.7);background:linear-gradient(180deg,#fff6d0,#ffc85a);color:#6a3a00;border:4px solid #fff;border-radius:20px;padding:12px 22px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);opacity:0;transition:opacity .25s,transform .25s;z-index:20;pointer-events:none;max-width:92vw}
+#banner.on{opacity:1;transform:translate(-50%,-50%) scale(1)}#banner b{display:block;font-size:24px;font-weight:400}#banner small{font-size:16px}
+.pad{position:fixed;bottom:max(16px,env(safe-area-inset-bottom));display:flex;gap:12px;z-index:6}
+#leftPad{left:max(14px,env(safe-area-inset-left))}#rightPad{right:max(14px,env(safe-area-inset-right));align-items:flex-end}
+.pad button{width:74px;height:74px;border:0;border-radius:50%;background:rgba(255,255,255,.85);font:inherit;font-size:30px;box-shadow:0 4px 0 rgba(0,0,0,.25);color:#3a4a6a}
+.pad button:active,.pad button.on{background:#ffd23f}
+#jBtn{width:86px;height:86px;background:#ffb020;color:#fff}
+#appleBtn{width:58px;height:58px;font-size:26px}
+#appleBtn[hidden]{display:none}
+@media (pointer:fine){.pad{opacity:.55}}
+.help{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.45);color:#fff;padding:5px 10px;border-radius:10px;font-size:12px;z-index:4;pointer-events:none}
+@media (pointer:coarse){.help{display:none}}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(20,30,60,.5);z-index:10;padding:14px}
+.overlay[hidden]{display:none}
+.card{background:#fffaf0;border-radius:22px;padding:18px;max-width:420px;width:100%;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.3);max-height:92vh;overflow:auto}
+.card.wide{max-width:480px}
+.logo{font-size:40px}
+.card h1{margin:0 0 8px;font-weight:400;font-size:34px;color:#3a7a3a}
+.card h2{margin:0 0 6px;font-weight:400;font-size:24px;color:#3a7a3a}
+.card p{margin:6px 0;font-size:16px;line-height:1.45}
+.small{font-size:14px!important;color:#6a6a70}
+.back a{color:#6a6a70;font-size:15px}
+.btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.btn{border:0;border-radius:14px;background:#4ab85a;color:#fff;font:inherit;font-size:19px;padding:10px 20px;box-shadow:0 4px 0 #2a8a3a;cursor:pointer}
+.btn.soft{background:#ece8e0;color:#5a4a40;box-shadow:0 4px 0 #b8a898;font-size:16px}
+#vote{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+#vote button{border:3px solid transparent;border-radius:14px;background:#fff;font:inherit;font-size:16px;padding:10px 12px;box-shadow:0 3px 0 #d8d0c0;min-width:110px}
+#vote button.me{border-color:#4ab85a;background:#eaffea}
+#vote small{display:block;color:#8a7a70}
+.row{display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:8px;margin:6px 0;text-align:left;box-shadow:0 2px 0 #e0d8c8}
+.row .ic{font-size:26px;width:34px;text-align:center}.row .nm{flex:1}.row small{display:block;color:#8a7a70}
+.row button{border:0;border-radius:10px;background:#4ab85a;color:#fff;font:inherit;padding:8px 10px;font-size:15px;white-space:nowrap}
+.row button:disabled{background:#ddd;color:#999}
+.surv{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.surv div{background:#fff;border-radius:10px;padding:6px;font-size:16px}
+.surv .ok{background:#eaffea}.surv .no{background:#ffecec;color:#a05a5a}

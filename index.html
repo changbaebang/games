@@ -327,6 +327,17 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
     <div class="info"><h2>쓰나미 탈출 말랑이</h2><p>긴 바닷가 길 끝으로 달려가 말랑이를 데려와요! 기지에 놓은 말랑이는 매초 금화를 벌어요. 멀리 갈수록 귀한 말랑이가 있지만 파도가 밀려와요. 벽의 🛟 구멍에 숨어서 피해요. 빠르기와 가방을 키우고 도감 30마리를 모아요.</p>
       <div class="tags"><span>달리기</span><span>수집</span><span>키우기</span></div><span class="play">플레이</span></div>
   </a>
+  <a class="game" href="./disaster-survival/" style="--c:#4ab85a">
+    <svg viewBox="0 0 320 200" aria-hidden="true">
+      <rect width="320" height="200" fill="#8ad0ff"/><rect y="160" width="320" height="40" fill="#a8744a"/><rect y="154" width="320" height="8" fill="#5ac85a"/>
+      <rect x="120" y="80" width="80" height="74" fill="#d86a4a"/><path d="M110 82 L160 50 L210 82z" fill="#c8945a"/><rect x="120" y="124" width="14" height="30" fill="#8ad0ff"/><rect x="150" y="96" width="20" height="16" fill="#b4e6ff"/>
+      <g fill="rgba(150,150,170,.7)"><ellipse cx="255" cy="150" rx="14" ry="6"/><ellipse cx="258" cy="130" rx="22" ry="7"/><ellipse cx="254" cy="110" rx="30" ry="8"/><ellipse cx="259" cy="88" rx="38" ry="9"/></g>
+      <circle cx="60" cy="40" r="12" fill="#ff8a3a"/><path d="M66 34 L110 -10 L72 44z" fill="rgba(255,200,80,.5)"/>
+      <g transform="translate(60,152)"><ellipse cy="-11" rx="11" ry="11" fill="#f4ecec"/><ellipse cx="-4" cy="-26" rx="3" ry="7" fill="#f4ecec"/><ellipse cx="4" cy="-26" rx="3" ry="7" fill="#f4ecec"/><circle cx="-3" cy="-13" r="1.8" fill="#2a2420"/><circle cx="3" cy="-13" r="1.8" fill="#2a2420"/></g>
+    </svg>
+    <div class="info"><h2>자연재해 살아남기</h2><p>섬 마을에 재난이 찾아와요! 홍수·쓰나미·지진·별똥별·회오리·불·따끔 비·모래바람·눈보라·화산·번개 중 무엇이 올지 몰라요. 경고를 보고 높은 곳, 지붕 아래, 먼 곳으로 피해서 동물 친구들과 끝까지 살아남아요.</p>
+      <div class="tags"><span>생존</span><span>재난 11가지</span><span>동물 친구들</span></div><span class="play">플레이</span></div>
+  </a>
   <a class="game" href="./night-rush/" style="--c:#ff3b8a">
     <svg viewBox="0 0 320 200" aria-hidden="true">
       <rect width="320" height="200" fill="#0b1030"/>
@@ -907,7 +918,7 @@ footer{max-width:1100px;margin:30px auto 0;color:var(--mute);font-size:15px}
       <div class="tags"><span>규칙과 대응·평균과 가능성</span><span>5학년</span><span>단계별 별 모으기</span></div><span class="play">플레이</span></div>
   </a>
 </main>
-<footer>게임 70개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
+<footer>게임 71개 · 처음 열 때는 인터넷이 필요하고, 한 번 연 게임은 오프라인에서도 열려요. 기록은 이 기기의 브라우저에만 저장돼요.</footer>
 <script>
 {
 const B=k=>window.Arcade?Arcade.best(k):null,n=v=>Math.round(v).toLocaleString(),mmss=s=>`${s/60|0}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -937,6 +948,7 @@ const REC={
   'door-100':()=>{const v=B('door100Best');return v?`${n(v)}번 방까지`:null},
   'mono-escape':()=>{const v=B('monoWins');return v?`탈출 ${n(v)}번`:null},
   'tsunami-run':()=>{const v=B('tsunamiInc');return v?`매초 🪙${n(v)}`:null},
+  'disaster-survival':()=>{const v=B('disasterWins');return v?`${n(v)}판 살아남음`:null},
   'night-rush':()=>{const w=B('nightRushWins'),e=B('nightRushEscapes');const a=[];if(w)a.push(`우승 ${n(w)}번`);if(e)a.push(`탈출 ${n(e)}번`);return a.length?a.join(' · '):null},
   'block-hunter':()=>{const v=B('blockHunterBest'),w=B('blockHunterWave');return v?`최다 처치 ${n(v)}마리`+(w?` · 웨이브 ${n(w)}`:''):null},
   'ace-strike':()=>{const v=B('aceHi');return v?`최고 ${n(v)}점`:null},
